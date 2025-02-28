@@ -24,30 +24,6 @@ const EventNode = ({ data, isConnectable, selected }) => {
     textColor = 'text-purple-700';
   }
   
-  // Déterminer les icônes selon le type
-  let icon;
-  if (isStart) {
-    icon = (
-      <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-    );
-  } else if (isEnd) {
-    icon = (
-      <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
-      </svg>
-    );
-  } else {
-    icon = (
-      <svg className="w-8 h-8 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-      </svg>
-    );
-  }
-  
   return (
     <div className="flex flex-col items-center justify-center">
       {/* Handle target sur les différents côtés avec des IDs spécifiques */}
@@ -90,7 +66,6 @@ const EventNode = ({ data, isConnectable, selected }) => {
       <div 
         className={`w-28 h-28 rounded-full ${bgColor} border-2 ${borderColor} shadow-lg flex flex-col items-center justify-center p-2`}
       >
-        {icon}
         <div className={`font-semibold ${textColor} text-sm mt-1 text-center`}>
           {data.label}
         </div>
