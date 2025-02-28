@@ -2,7 +2,7 @@
 
 Twool Labs est une application de bureau permettant de modéliser, simuler et optimiser des processus métier grâce au concept de jumeau numérique et à l'intelligence artificielle.
 
-![Logo Twool Labs](./public/images/twool-labs-logo.png)
+![Logo Twool Labs](./public/images/logo.png)
 
 ## 📋 Sommaire
 
