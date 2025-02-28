@@ -6,7 +6,7 @@ export default function Modeling() {
   return (
     <Layout>
       <div className="h-full flex flex-col">
-        <div className="flex-1">
+        <div className="flex-1 overflow-hidden">
           <ProcessCanvas />
         </div>
       </div>

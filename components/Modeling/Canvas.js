@@ -9,15 +9,19 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   Panel,
-  getBezierPath,
+  getBezierPath
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
 import TaskNode from './Nodes/TaskNode';
 import DecisionNode from './Nodes/DecisionNode';
 import EventNode from './Nodes/EventNode';
+import FormulaNode from './Nodes/FormulaNode';
+import ScenarioNode from './Nodes/ScenarioNode';
+import ScenarioSimulator from './utils/scenarioSimulator';
 import PropertyPanel from './PropertyPanel';
 import Toolbar from './Toolbar';
+import FormulaCalculator from './utils/formulaCalculator';
 import { 
   getConnectionLineStyle, 
   getEdgeStyle, 
@@ -32,35 +36,37 @@ const nodeTypes = {
   task: TaskNode,
   decision: DecisionNode,
   event: EventNode,
+  formula: FormulaNode,
+  scenario: ScenarioNode
 };
 
-// Composant edge personnalisé pour gérer les styles et l'affichage du label
-const CustomEdge = ({ id, source, target, sourceX, sourceY, targetX, targetY, sourcePosition, targetPosition, data, selected, markerEnd, style }) => {
+// Composant edge personnalisé pour gérer les styles
+const CustomEdge = (props) => {
   const [edgePath, labelX, labelY] = getBezierPath({
-    sourceX,
-    sourceY,
-    sourcePosition,
-    targetX,
-    targetY,
-    targetPosition,
+    sourceX: props.sourceX,
+    sourceY: props.sourceY,
+    sourcePosition: props.sourcePosition,
+    targetX: props.targetX,
+    targetY: props.targetY,
+    targetPosition: props.targetPosition,
   });
 
   // Récupérer les styles en fonction des données
-  const edgeStyle = getEdgeStyle(data);
+  const edgeStyle = getEdgeStyle(props.data);
 
   return (
     <>
       <path
-        id={id}
+        id={props.id}
         className="react-flow__edge-path"
         d={edgePath}
         style={{
           ...edgeStyle,
-          ...(selected && { strokeWidth: edgeStyle.strokeWidth + 1, stroke: '#3b82f6' }),
+          ...(props.selected && { strokeWidth: (edgeStyle.strokeWidth || 2) + 1, stroke: '#3b82f6' }),
         }}
-        markerEnd={markerEnd}
+        markerEnd={props.markerEnd}
       />
-      {data?.label && (
+      {props.data?.label && (
         <text
           x={labelX}
           y={labelY}
@@ -75,7 +81,7 @@ const CustomEdge = ({ id, source, target, sourceX, sourceY, targetX, targetY, so
             dominantBaseline: 'middle',
           }}
         >
-          {data.label}
+          {props.data.label}
         </text>
       )}
     </>
@@ -106,7 +112,6 @@ const ProcessCanvas = () => {
   const onConnect = useCallback(
     (params) => {
       // Utilisez les paramètres de connexion des utils
-      const connectionParams = getConnectionParams();
       const newEdge = {
         ...params,
         type: 'custom',
@@ -114,10 +119,10 @@ const ProcessCanvas = () => {
           sourceHandle: params.sourceHandle,
           targetHandle: params.targetHandle,
           label: '',
-          animated: connectionParams.animated,
+          animated: false,
           style: {
-            strokeWidth: connectionParams.style.strokeWidth,
-            stroke: connectionParams.style.stroke,
+            strokeWidth: 2,
+            stroke: null // Sera défini automatiquement par getEdgeStyle
           }
         },
       };
@@ -150,6 +155,7 @@ const ProcessCanvas = () => {
         y: event.clientY - reactFlowBounds.top,
       });
 
+      // Générer un ID unique pour le nœud
       const nodeId = generateNodeId(type);
       
       let newNode = {
@@ -174,6 +180,23 @@ const ProcessCanvas = () => {
         ];
       } else if (type === 'event') {
         newNode.data.eventType = 'start';
+      } else if (type === 'formula') {
+        newNode.data = {
+          ...newNode.data,
+          formula: 'result = x + y',
+          variables: [
+            { name: 'x', value: 10 },
+            { name: 'y', value: 5 }
+          ],
+          result: 15,
+          triggerType: 'manual'
+        };
+      } else if (type === 'scenario') {
+        const defaultScenarioNode = ScenarioSimulator.createDefaultEsnScenarioNode();
+        newNode.data = {
+          ...newNode.data,
+          ...defaultScenarioNode.data
+        };
       }
 
       setNodes((nds) => nds.concat(newNode));
@@ -199,42 +222,81 @@ const ProcessCanvas = () => {
     }
   }, []);
 
-  // Mettre à jour les propriétés d'un nœud
+  // Mettre à jour les propriétés d'un nœud avec recalcul des formules
   const updateNodeProperties = useCallback((id, properties) => {
-    setNodes((nds) =>
-      nds.map((node) => {
+    setNodes((nds) => {
+      const updatedNodes = nds.map((node) => {
         if (node.id === id) {
-          return {
+          // Mettre à jour le nœud avec les nouvelles propriétés
+          const updatedNode = {
             ...node,
             data: {
               ...node.data,
               ...properties,
             },
           };
+          
+          // Si c'est une formule, recalculer le résultat
+          if (node.type === 'formula' && (properties.formula || properties.variables)) {
+            const processContext = {
+              nodes: nds.map(n => ({
+                id: n.id,
+                type: n.type,
+                data: n.data
+              }))
+            };
+            
+            return FormulaCalculator.executeFormulaNode(updatedNode, processContext);
+          }
+          
+          return updatedNode;
         }
         return node;
-      })
-    );
-  }, [setNodes]);
+      });
+      
+      // Si une propriété a été mise à jour et qu'il existe des formules
+      // qui se déclenchent sur les changements, les recalculer
+      const automaticFormulas = updatedNodes.filter(
+        node => node.type === 'formula' && node.data.triggerType === 'onChange'
+      );
+      
+      if (automaticFormulas.length > 0) {
+        const processContext = {
+          nodes: updatedNodes.map(node => ({
+            id: node.id,
+            type: node.type,
+            data: node.data
+          }))
+        };
+        
+        // Recalculer ces formules
+        automaticFormulas.forEach(formulaNode => {
+          const updatedFormula = FormulaCalculator.executeFormulaNode(formulaNode, processContext);
+          const nodeIndex = updatedNodes.findIndex(node => node.id === formulaNode.id);
+          if (nodeIndex !== -1) {
+            updatedNodes[nodeIndex] = updatedFormula;
+          }
+        });
+      }
+      
+      return updatedNodes;
+    });
+  }, []);
 
   // Mettre à jour les propriétés d'une arête
   const updateEdgeProperties = useCallback((id, properties) => {
     setEdges((eds) =>
       eds.map((edge) => {
         if (edge.id === id) {
-          // Construire le nouvel objet de données avec les propriétés mises à jour
-          const updatedData = {
-            ...edge.data,
-            ...properties,
-          };
-          
-          // Retourner l'arête mise à jour avec le label et les données
+          // Mettre à jour l'arête avec les nouvelles propriétés
           return {
             ...edge,
-            // Mettre à jour le label visible directement sur l'arête
-            label: properties.label !== undefined ? properties.label : edge.label,
-            // Mettre à jour l'objet data avec toutes les propriétés
-            data: updatedData,
+            data: {
+              ...edge.data,
+              ...properties,
+            },
+            // Si le label est défini, l'ajouter aussi directement à l'edge
+            ...(properties.label !== undefined ? { label: properties.label } : {})
           };
         }
         return edge;
@@ -262,6 +324,7 @@ const ProcessCanvas = () => {
       y: -y / zoom + 200,
     };
 
+    // Générer un ID unique pour le nœud
     const nodeId = generateNodeId(type);
     
     let newNode = {
@@ -286,11 +349,59 @@ const ProcessCanvas = () => {
       ];
     } else if (type === 'event') {
       newNode.data.eventType = 'start';
+    } else if (type === 'formula') {
+      newNode.data = {
+        ...newNode.data,
+        formula: 'result = x + y',
+        variables: [
+          { name: 'x', value: 10 },
+          { name: 'y', value: 5 }
+        ],
+        result: 15,
+        triggerType: 'manual'
+      };
+    } else if (type === 'scenario') {
+      const defaultScenarioNode = ScenarioSimulator.createDefaultEsnScenarioNode();
+      newNode.data = {
+        ...newNode.data,
+        ...defaultScenarioNode.data
+      };
     }
 
     setNodes((nds) => nds.concat(newNode));
     setNodeIdCounter(nodeIdCounter + 1);
   }, [reactFlowInstance, nodeIdCounter, setNodes]);
+
+  // Fonction pour exécuter toutes les formules du processus
+  const executeFormulas = useCallback(() => {
+    // Préparer le contexte du processus (tous les nœuds et leurs données)
+    const processContext = {
+      nodes: nodes.map(node => ({
+        id: node.id,
+        type: node.type,
+        data: node.data
+      }))
+    };
+    
+    // Identifier tous les nœuds de formule
+    const formulaNodes = nodes.filter(node => node.type === 'formula');
+    
+    // Exécuter chaque formule et mettre à jour les nœuds correspondants
+    const updatedNodes = [...nodes];
+    
+    formulaNodes.forEach(formulaNode => {
+      const updatedNode = FormulaCalculator.executeFormulaNode(formulaNode, processContext);
+      
+      // Mettre à jour le nœud dans la liste
+      const nodeIndex = updatedNodes.findIndex(node => node.id === formulaNode.id);
+      if (nodeIndex !== -1) {
+        updatedNodes[nodeIndex] = updatedNode;
+      }
+    });
+    
+    // Mettre à jour tous les nœuds
+    setNodes(updatedNodes);
+  }, [nodes, setNodes]);
 
   // Sauvegarder le processus
   const saveProcess = useCallback(() => {
@@ -310,6 +421,9 @@ const ProcessCanvas = () => {
 
   // Exécuter la simulation
   const runSimulation = useCallback(() => {
+    // Avant de simuler, exécutons d'abord toutes les formules
+    executeFormulas();
+    
     const processData = {
       nodes,
       edges
@@ -320,10 +434,52 @@ const ProcessCanvas = () => {
     // api.runSimulation(processData);
 
     alert('Simulation lancée ! Consultez l\'onglet Simulations pour les résultats.');
-  }, [nodes, edges]);
+  }, [nodes, edges, executeFormulas]);
+
+  const runScenarioSimulations = useCallback(() => {
+    // Identifier tous les nœuds de scénario
+    const scenarioNodes = nodes.filter(node => node.type === 'scenario');
+    
+    if (scenarioNodes.length === 0) {
+      alert('Aucun nœud de scénario trouvé dans le processus.');
+      return;
+    }
+    
+    // Exécuter d'abord toutes les formules pour avoir des valeurs à jour
+    executeFormulas();
+    
+    // Ensuite, exécuter les simulations pour chaque nœud de scénario
+    const updatedNodes = [...nodes];
+    
+    scenarioNodes.forEach(scenarioNode => {
+      const updatedScenarioNode = ScenarioSimulator.runSimulation(
+        scenarioNode, 
+        nodes, 
+        edges, 
+        {
+          threshold: scenarioNode.data.threshold || 15,
+          referenceVariable: scenarioNode.data.referenceVariable || 'tauxMarge'
+        }
+      );
+      
+      // Mettre à jour le nœud dans la liste
+      const nodeIndex = updatedNodes.findIndex(node => node.id === scenarioNode.id);
+      if (nodeIndex !== -1) {
+        updatedNodes[nodeIndex] = updatedScenarioNode;
+      }
+    });
+    
+    // Mettre à jour tous les nœuds
+    setNodes(updatedNodes);
+    
+    alert(`Simulation terminée pour ${scenarioNodes.length} scénario(s).`);
+  }, [nodes, edges, executeFormulas, setNodes]);
 
   // Obtenir des optimisations IA
   const getOptimizations = useCallback(() => {
+    // Avant d'optimiser, exécutons d'abord toutes les formules
+    executeFormulas();
+    
     const processData = {
       nodes,
       edges
@@ -334,18 +490,20 @@ const ProcessCanvas = () => {
     // api.getOptimizations(processData);
 
     alert('Analyse d\'optimisation lancée ! Consultez l\'onglet Optimisations pour les résultats.');
-  }, [nodes, edges]);
+  }, [nodes, edges, executeFormulas]);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       <Toolbar
         onSave={saveProcess}
         onSimulate={runSimulation}
         onOptimize={getOptimizations}
         onAddNode={addNode}
+        executeFormulas={executeFormulas}
+        runScenarioSimulations={runScenarioSimulations}
       />
-      <div className="flex flex-1 h-full">
-        <div className="flex-1" ref={reactFlowWrapper}>
+      <div className="flex flex-1 h-full overflow-hidden">
+        <div className="flex-1 h-full overflow-hidden" ref={reactFlowWrapper}>
           <ReactFlowProvider>
             <ReactFlow
               nodes={nodes}
@@ -379,6 +537,7 @@ const ProcessCanvas = () => {
                   <div>Tâches: {metrics.totalTasks}</div>
                   <div>Décisions: {metrics.totalDecisions}</div>
                   <div>Événements: {metrics.totalEvents}</div>
+                  <div>Formules: {metrics.totalFormulas || 0}</div>
                   <div>Connexions: {metrics.totalConnections}</div>
                   <div>Durée estimée: {metrics.estimatedDuration} min</div>
                   <div>Coût estimé: {metrics.estimatedCost}€</div>
@@ -388,12 +547,14 @@ const ProcessCanvas = () => {
           </ReactFlowProvider>
         </div>
         {selectedElement && (
-          <PropertyPanel
-            element={selectedElement}
-            onUpdateProperties={(id, properties) => 
-              updateElementProperties(id, properties, selectedElement.type)
-            }
-          />
+          <div className="h-full overflow-hidden flex-shrink-0">
+            <PropertyPanel
+              element={selectedElement}
+              onUpdateProperties={(id, properties) => 
+                updateElementProperties(id, properties, selectedElement.type)
+              }
+            />
+          </div>
         )}
       </div>
     </div>

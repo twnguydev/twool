@@ -113,20 +113,24 @@ export const getDefaultNodeLabel = (type, count) => {
       return `Décision ${count}`;
     case 'event':
       return `Événement ${count}`;
+    case 'formula':
+      return `Formule ${count}`;
     default:
       return `Nœud ${count}`;
   }
 };
 
-// Extraire les métriques d'un processus
+
 export const getProcessMetrics = (nodes, edges) => {
   const metrics = {
     totalTasks: 0,
     totalDecisions: 0, 
     totalEvents: 0,
+    totalFormulas: 0,
     estimatedDuration: 0,
     estimatedCost: 0,
     totalConnections: edges.length,
+    formulaResults: {},
     criticalPath: [],
   };
   
@@ -143,6 +147,17 @@ export const getProcessMetrics = (nodes, edges) => {
         break;
       case 'event':
         metrics.totalEvents++;
+        break;
+      case 'formula':
+        metrics.totalFormulas++;
+        // Stocker le résultat de la formule si disponible
+        if (node.data.result !== undefined) {
+          metrics.formulaResults[node.id] = {
+            label: node.data.label,
+            formula: node.data.formula,
+            result: node.data.result
+          };
+        }
         break;
     }
   });
