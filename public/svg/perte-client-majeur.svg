@@ -1,0 +1,275 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1300" viewBox="0 0 1200 1300">
+  <!-- Fond -->
+  <rect width="1200" height="1300" fill="#f8fafc" />
+  
+  <!-- Grille -->
+  <g stroke="#e5e7eb" stroke-width="1" opacity="0.3">
+    <line x1="0" y1="100" x2="1200" y2="100" />
+    <line x1="0" y1="200" x2="1200" y2="200" />
+    <line x1="0" y1="300" x2="1200" y2="300" />
+    <line x1="0" y1="400" x2="1200" y2="400" />
+    <line x1="0" y1="500" x2="1200" y2="500" />
+    <line x1="0" y1="600" x2="1200" y2="600" />
+    <line x1="0" y1="700" x2="1200" y2="700" />
+    <line x1="0" y1="800" x2="1200" y2="800" />
+    <line x1="0" y1="900" x2="1200" y2="900" />
+    
+    <line x1="100" y1="0" x2="100" y2="1000" />
+    <line x1="200" y1="0" x2="200" y2="1000" />
+    <line x1="300" y1="0" x2="300" y2="1000" />
+    <line x1="400" y1="0" x2="400" y2="1000" />
+    <line x1="500" y1="0" x2="500" y2="1000" />
+    <line x1="600" y1="0" x2="600" y2="1000" />
+    <line x1="700" y1="0" x2="700" y2="1000" />
+    <line x1="800" y1="0" x2="800" y2="1000" />
+    <line x1="900" y1="0" x2="900" y2="1000" />
+    <line x1="1000" y1="0" x2="1000" y2="1000" />
+    <line x1="1100" y1="0" x2="1100" y2="1000" />
+  </g>
+  
+  <!-- Titre et sous-titre -->
+  <text x="600" y="60" font-family="Arial" font-size="24" fill="#334155" font-weight="bold">Test de Résilience: Perte d'un Client Majeur</text>
+  <text x="600" y="85" font-family="Arial" font-size="14" fill="#64748b">Simulation de l'impact du départ soudain de votre client le plus important</text>
+  
+  <!-- Nœud Début -->
+  <g transform="translate(150, 120)">
+    <circle cx="40" cy="40" r="40" fill="#ecfdf5" stroke="#10b981" stroke-width="2" />
+    <text x="40" y="44" font-family="Arial" font-size="12" fill="#064e3b" text-anchor="middle">Début</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="190" y1="160" x2="190" y2="215" stroke="#6366f1" stroke-width="2" />
+    <polygon points="190,215 186,205 194,205" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Paramètres Actuels -->
+  <g transform="translate(65, 220)">
+    <rect x="0" y="0" width="250" height="140" rx="5" ry="5" fill="#f9f9ff" stroke="#c7d2fe" stroke-width="2" />
+    <text x="125" y="30" font-family="Arial" font-size="16" fill="#4338ca" font-weight="bold" text-anchor="middle">Paramètres Actuels</text>
+    <line x1="20" y1="45" x2="230" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="Arial" font-size="12" fill="#4b5563">• CA total: 1,2M€</text>
+    <text x="20" y="85" font-family="Arial" font-size="12" fill="#4b5563">• Client principal: 480K€ (40%)</text>
+    <text x="20" y="105" font-family="Arial" font-size="12" fill="#4b5563">• Marge opérationnelle: 25%</text>
+    <text x="20" y="125" font-family="Arial" font-size="12" fill="#4b5563">• Coûts fixes: 225K€/an</text>
+    <text x="20" y="145" font-family="Arial" font-size="12" fill="#4b5563">• Coûts variables: 675K€/an (45% du CA)</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="190" y1="360" x2="190" y2="415" stroke="#6366f1" stroke-width="2" />
+    <polygon points="190,415 186,405 194,405" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Formule 1 - Répartition des Coûts -->
+  <g transform="translate(65, 420)">
+    <rect x="0" y="0" width="250" height="100" rx="5" ry="5" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2" />
+    <text x="125" y="30" font-family="Arial" font-size="16" fill="#7c3aed" font-weight="bold" text-anchor="middle">Formule: Répartition des Coûts</text>
+    <line x1="20" y1="45" x2="230" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="monospace" font-size="12" fill="#4b5563">coutFixe = 225000</text>
+    <text x="20" y="85" font-family="monospace" font-size="12" fill="#4b5563">coutVariable = CA * 0.55</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="190" y1="520" x2="190" y2="575" stroke="#6366f1" stroke-width="2" />
+    <polygon points="190,575 186,565 194,565" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Événement Critique -->
+  <g transform="translate(65, 580)">
+    <rect x="0" y="0" width="250" height="100" rx="5" ry="5" fill="#fff7ed" stroke="#f97316" stroke-width="2" />
+    <text x="125" y="30" font-family="Arial" font-size="16" fill="#c2410c" font-weight="bold" text-anchor="middle">Événement Critique</text>
+    <line x1="20" y1="45" x2="230" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="Arial" font-size="12" fill="#f97316" font-weight="bold">Perte du client principal</text>
+    <text x="20" y="85" font-family="monospace" font-size="12" fill="#4b5563">nouveauCA = CAinitial - CAclientPrincipal</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="190" y1="680" x2="190" y2="735" stroke="#6366f1" stroke-width="2" />
+    <polygon points="190,735 186,725 194,725" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Formule 2 - Impact sur la Marge -->
+  <g transform="translate(65, 740)">
+    <rect x="0" y="0" width="250" height="140" rx="5" ry="5" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2" />
+    <text x="125" y="30" font-family="Arial" font-size="16" fill="#7c3aed" font-weight="bold" text-anchor="middle">Formule: Impact sur la Marge</text>
+    <line x1="20" y1="45" x2="230" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="monospace" font-size="12" fill="#4b5563">nouveauCA = 720000</text>
+    <text x="20" y="85" font-family="monospace" font-size="12" fill="#4b5563">nouveauxCoutVariables = nouveauCA * 0.55</text>
+    <text x="20" y="105" font-family="monospace" font-size="12" fill="#4b5563">nouvelleMarge = nouveauCA - coutFixe - </text>
+    <text x="20" y="120" font-family="monospace" font-size="12" fill="#4b5563">                 nouveauxCoutVariables</text>
+    <text x="20" y="140" font-family="Arial" font-size="12" fill="#ef4444">Résultat: 99K€ (13.7%)</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="190" y1="880" x2="190" y2="915" stroke="#6366f1" stroke-width="2" />
+    <polygon points="190,915 186,905 194,905" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Décision - Seuil de Viabilité -->
+  <g transform="translate(150, 920)">
+    <rect x="0" y="0" width="80" height="80" rx="5" ry="5" fill="#fff7ed" stroke="#f97316" stroke-width="2" transform="rotate(45, 40, 40)" />
+    <text x="40" y="30" font-family="Arial" font-size="12" fill="#9a3412" text-anchor="middle" transform="rotate(-45, 40, 40)">Marge</text>
+    <text x="40" y="45" font-family="Arial" font-size="12" fill="#9a3412" text-anchor="middle" transform="rotate(-45, 40, 40)">suffisante?</text>
+    <text x="40" y="60" font-family="Arial" font-size="12" fill="#9a3412" text-anchor="middle" transform="rotate(-45, 40, 40)">≥ 15%</text>
+  </g>
+  
+  <!-- Flèche Non -->
+  <g>
+    <line x1="233" y1="960" x2="310" y2="960" stroke="#ef4444" stroke-width="2" />
+    <polygon points="310,960 300,956 300,964" fill="#ef4444" />
+    <text x="266" y="950" font-family="Arial" font-size="12" fill="#ef4444" font-weight="bold">Non</text>
+  </g>
+  
+  <!-- Nœud Plan d'Urgence -->
+  <g transform="translate(320, 915)">
+    <rect x="0" y="0" width="240" height="130" rx="5" ry="5" fill="#fef2f2" stroke="#ef4444" stroke-width="2" />
+    <text x="120" y="30" font-family="Arial" font-size="14" fill="#b91c1c" font-weight="bold" text-anchor="middle">Plan d'Urgence</text>
+    <line x1="20" y1="45" x2="220" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="Arial" font-size="11" fill="#4b5563">1. Réduction des effectifs (-25%)</text>
+    <text x="20" y="85" font-family="Arial" font-size="11" fill="#4b5563">2. Renégociation des loyers et contrats</text>
+    <text x="20" y="105" font-family="Arial" font-size="11" fill="#4b5563">3. Report des investissements</text>
+    <text x="20" y="125" font-family="Arial" font-size="11" fill="#4b5563">4. Recherche de financement d'urgence</text>
+  </g>
+  
+  <!-- Flèche Oui -->
+  <g>
+    <line x1="148" y1="1002" x2="148" y2="1060" stroke="#10b981" stroke-width="2" />
+    <polygon points="148,1060 144,1050 152,1050" fill="#10b981" />
+    <text x="158" y="1030" font-family="Arial" font-size="12" fill="#10b981" font-weight="bold">Oui</text>
+  </g>
+  
+  <!-- Nœud Plan de Croissance -->
+  <g transform="translate(28, 1065)">
+    <rect x="0" y="0" width="240" height="120" rx="5" ry="5" fill="#ecfdf5" stroke="#10b981" stroke-width="2" />
+    <text x="120" y="30" font-family="Arial" font-size="14" fill="#047857" font-weight="bold" text-anchor="middle">Plan de Croissance Accélérée</text>
+    <line x1="20" y1="45" x2="220" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="Arial" font-size="11" fill="#4b5563">1. Intensification commerciale</text>
+    <text x="20" y="85" font-family="Arial" font-size="11" fill="#4b5563">2. Redéploiement de l'équipe</text>
+    <text x="20" y="105" font-family="Arial" font-size="11" fill="#4b5563">3. Acquisition de nouveaux clients</text>
+  </g>
+  
+  <!-- Nœud Analyse de Dépendance Client -->
+  <g transform="translate(600, 220)">
+    <rect x="0" y="0" width="280" height="160" rx="5" ry="5" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2" />
+    <text x="140" y="30" font-family="Arial" font-size="16" fill="#0369a1" font-weight="bold" text-anchor="middle">Analyse de Dépendance Client</text>
+    <line x1="20" y1="45" x2="260" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    
+    <text x="20" y="65" font-family="Arial" font-size="12" fill="#0369a1" font-weight="bold">Indice de concentration client (HHI):</text>
+    
+    <text x="30" y="85" font-family="Arial" font-size="11" fill="#4b5563">• Client A: 40% → 0.16</text>
+    <text x="30" y="105" font-family="Arial" font-size="11" fill="#4b5563">• Client B: 20% → 0.04</text>
+    <text x="30" y="125" font-family="Arial" font-size="11" fill="#4b5563">• Client C: 15% → 0.0225</text>
+    <text x="30" y="145" font-family="Arial" font-size="11" fill="#4b5563">• Autres clients: 25% → 0.0625</text>
+    
+    <text x="30" y="165" font-family="Arial" font-size="12" fill="#ef4444">HHI = 0.285 (CONCENTRATION ÉLEVÉE)</text>
+  </g>
+  
+  <!-- Flèche de connexion vers Analyses Dépendance -->
+  <g>
+    <line x1="320" y1="290" x2="590" y2="290" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="5,5" />
+    <polygon points="590,290 580,286 580,294" fill="#0ea5e9" />
+  </g>
+  
+  <!-- Nœud Trésorerie et Financement -->
+  <g transform="translate(600, 430)">
+    <rect x="0" y="0" width="280" height="170" rx="5" ry="5" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" />
+    <text x="140" y="30" font-family="Arial" font-size="16" fill="#1e40af" font-weight="bold" text-anchor="middle">Trésorerie et Financement</text>
+    <line x1="20" y1="45" x2="260" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    
+    <text x="20" y="65" font-family="Arial" font-size="12" fill="#1e40af" font-weight="bold">Analyse de survie financière:</text>
+    
+    <rect x="30" y="75" width="220" height="20" rx="3" ry="3" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="40" y="90" font-family="Arial" font-size="11" fill="#4b5563">Trésorerie disponible: 180K€</text>
+    
+    <rect x="30" y="100" width="220" height="20" rx="3" ry="3" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="40" y="115" font-family="Arial" font-size="11" fill="#4b5563">Burn rate mensuel: 18.75K€</text>
+    
+    <rect x="30" y="125" width="220" height="20" rx="3" ry="3" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="40" y="140" font-family="Arial" font-size="11" fill="#4b5563">Runway en cas de perte: 9.6 mois</text>
+    
+    <rect x="30" y="150" width="220" height="30" rx="3" ry="3" fill="#fef2f2" stroke="#ef4444" stroke-width="1" />
+    <text x="40" y="170" font-family="Arial" font-size="11" fill="#ef4444" font-weight="bold">Probabilité de découvert: 65%</text>
+  </g>
+  
+  <!-- Flèche de connexion vers Trésorerie -->
+  <g>
+    <line x1="320" y1="535" x2="590" y2="535" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5" />
+    <polygon points="590,535 580,531 580,539" fill="#3b82f6" />
+  </g>
+  
+  <!-- Tableau des Stratégies de Diversification -->
+  <g transform="translate(600, 650)">
+    <rect x="0" y="0" width="400" height="220" rx="5" ry="5" fill="#ffffff" stroke="#94a3b8" stroke-width="2" />
+    <text x="200" y="30" font-family="Arial" font-size="16" fill="#475569" font-weight="bold" text-anchor="middle">Stratégies de Diversification</text>
+    
+    <!-- En-têtes -->
+    <rect x="20" y="45" width="160" height="25" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="100" y="62" font-family="Arial" font-size="12" fill="#475569" font-weight="bold" text-anchor="middle">Stratégie</text>
+    
+    <rect x="180" y="45" width="100" height="25" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="62" font-family="Arial" font-size="12" fill="#475569" font-weight="bold" text-anchor="middle">Délai</text>
+    
+    <rect x="280" y="45" width="100" height="25" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="62" font-family="Arial" font-size="12" fill="#475569" font-weight="bold" text-anchor="middle">Impact</text>
+    
+    <!-- Ligne 1 -->
+    <rect x="20" y="70" width="160" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="90" font-family="Arial" font-size="11" fill="#475569" text-anchor="left">Expansion géographique</text>
+    
+    <rect x="180" y="70" width="100" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="90" font-family="Arial" font-size="11" fill="#475569" text-anchor="middle">9-12 mois</text>
+    
+    <rect x="280" y="70" width="100" height="30" fill="#fff7ed" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="90" font-family="Arial" font-size="11" fill="#f97316" text-anchor="middle">Moyen</text>
+    
+    <!-- Ligne 2 -->
+    <rect x="20" y="100" width="160" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="120" font-family="Arial" font-size="11" fill="#475569" text-anchor="left">Nouveau segment de marché</text>
+    
+    <rect x="180" y="100" width="100" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="120" font-family="Arial" font-size="11" fill="#475569" text-anchor="middle">6-9 mois</text>
+    
+    <rect x="280" y="100" width="100" height="30" fill="#f0fdf4" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="120" font-family="Arial" font-size="11" fill="#10b981" text-anchor="middle">Élevé</text>
+    
+    <!-- Ligne 3 -->
+    <rect x="20" y="130" width="160" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="150" font-family="Arial" font-size="11" fill="#475569" text-anchor="left">Cross-selling clients actuels</text>
+    
+    <rect x="180" y="130" width="100" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="150" font-family="Arial" font-size="11" fill="#475569" text-anchor="middle">1-3 mois</text>
+    
+    <rect x="280" y="130" width="100" height="30" fill="#f0fdf4" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="150" font-family="Arial" font-size="11" fill="#10b981" text-anchor="middle">Élevé</text>
+    
+    <!-- Ligne 4 -->
+    <rect x="20" y="160" width="160" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="180" font-family="Arial" font-size="11" fill="#475569" text-anchor="left">Offre de produits</text>
+    
+    <rect x="180" y="160" width="100" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="180" font-family="Arial" font-size="11" fill="#475569" text-anchor="middle">4-6 mois</text>
+    
+    <rect x="280" y="160" width="100" height="30" fill="#fff7ed" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="180" font-family="Arial" font-size="11" fill="#f97316" text-anchor="middle">Moyen</text>
+    
+    <!-- Ligne 5 -->
+    <rect x="20" y="190" width="160" height="30" fill="#f0fdf4" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="210" font-family="Arial" font-size="11" fill="#475569" text-anchor="left">Acquisitions stratégiques</text>
+    
+    <rect x="180" y="190" width="100" height="30" fill="#f0fdf4" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="210" font-family="Arial" font-size="11" fill="#475569" text-anchor="middle">2-4 mois</text>
+    
+    <rect x="280" y="190" width="100" height="30" fill="#f0fdf4" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="210" font-family="Arial" font-size="11" fill="#10b981" text-anchor="middle">Très élevé</text>
+  </g>
+  
+  <!-- Flèche de connexion vers Tableau -->
+  <g>
+    <line x1="320" y1="790" x2="590" y2="790" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,5" />
+    <polygon points="590,790 580,786 580,794" fill="#94a3b8" />
+  </g>
+</svg>

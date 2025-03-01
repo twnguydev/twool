@@ -1,0 +1,283 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1200" viewBox="0 0 1200 1200">
+  <!-- Fond -->
+  <rect width="1200" height="1200" fill="#f8fafc" />
+  
+  <!-- Grille -->
+  <g stroke="#e5e7eb" stroke-width="1" opacity="0.3">
+    <line x1="0" y1="100" x2="1200" y2="100" />
+    <line x1="0" y1="200" x2="1200" y2="200" />
+    <line x1="0" y1="300" x2="1200" y2="300" />
+    <line x1="0" y1="400" x2="1200" y2="400" />
+    <line x1="0" y1="500" x2="1200" y2="500" />
+    <line x1="0" y1="600" x2="1200" y2="600" />
+    <line x1="0" y1="700" x2="1200" y2="700" />
+    <line x1="0" y1="800" x2="1200" y2="800" />
+    <line x1="0" y1="900" x2="1200" y2="900" />
+    
+    <line x1="100" y1="0" x2="100" y2="1000" />
+    <line x1="200" y1="0" x2="200" y2="1000" />
+    <line x1="300" y1="0" x2="300" y2="1000" />
+    <line x1="400" y1="0" x2="400" y2="1000" />
+    <line x1="500" y1="0" x2="500" y2="1000" />
+    <line x1="600" y1="0" x2="600" y2="1000" />
+    <line x1="700" y1="0" x2="700" y2="1000" />
+    <line x1="800" y1="0" x2="800" y2="1000" />
+    <line x1="900" y1="0" x2="900" y2="1000" />
+    <line x1="1000" y1="0" x2="1000" y2="1000" />
+    <line x1="1100" y1="0" x2="1100" y2="1000" />
+  </g>
+  
+  <!-- Nœud Début -->
+  <g transform="translate(200, 100)">
+    <circle cx="40" cy="40" r="40" fill="#ecfdf5" stroke="#10b981" stroke-width="2" />
+    <text x="40" y="44" font-family="Arial" font-size="12" fill="#064e3b" text-anchor="middle">Début</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="240" y1="140" x2="240" y2="195" stroke="#6366f1" stroke-width="2" />
+    <polygon points="240,195 236,185 244,185" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Paramètres de Base -->
+  <g transform="translate(115, 200)">
+    <rect x="0" y="0" width="250" height="120" rx="5" ry="5" fill="#f9f9ff" stroke="#c7d2fe" stroke-width="2" />
+    <text x="125" y="30" font-family="Arial" font-size="16" fill="#4338ca" font-weight="bold" text-anchor="middle">Paramètres de Base</text>
+    <line x1="20" y1="45" x2="230" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="Arial" font-size="12" fill="#4b5563">• Nombre de consultants: 50</text>
+    <text x="20" y="85" font-family="Arial" font-size="12" fill="#4b5563">• CJM par profil: Junior (350€), Senior (450€)</text>
+    <text x="20" y="105" font-family="Arial" font-size="12" fill="#4b5563">• Durée année travail: 220 jours</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="240" y1="320" x2="240" y2="375" stroke="#6366f1" stroke-width="2" />
+    <polygon points="240,375 236,365 244,365" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Formule 1 - Calcul TJM Moyen -->
+  <g transform="translate(115, 380)">
+    <rect x="0" y="0" width="250" height="120" rx="5" ry="5" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2" />
+    <text x="125" y="30" font-family="Arial" font-size="16" fill="#7c3aed" font-weight="bold" text-anchor="middle">Formule: Calcul TJM Moyen</text>
+    <line x1="20" y1="45" x2="230" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="monospace" font-size="12" fill="#4b5563">tjmMoyen = (tjmJunior * nbJunior +</text>
+    <text x="20" y="80" font-family="monospace" font-size="12" fill="#4b5563">           tjmSenior * nbSenior) /</text>
+    <text x="20" y="95" font-family="monospace" font-size="12" fill="#4b5563">           (nbJunior + nbSenior)</text>
+    <text x="20" y="115" font-family="Arial" font-size="12" fill="#7c3aed">Résultat: 600€</text>
+  </g>
+  
+  <!-- Flèche vers la gauche -->
+  <g>
+    <line x1="240" y1="500" x2="240" y2="520" stroke="#6366f1" stroke-width="2" />
+    <line x1="240" y1="520" x2="130" y2="520" stroke="#6366f1" stroke-width="2" />
+    <line x1="130" y1="520" x2="130" y2="555" stroke="#6366f1" stroke-width="2" />
+    <polygon points="130,555 126,545 134,545" fill="#6366f1" />
+  </g>
+  
+  <!-- Flèche vers la droite -->
+  <g>
+    <line x1="240" y1="500" x2="240" y2="520" stroke="#6366f1" stroke-width="2" />
+    <line x1="240" y1="520" x2="350" y2="520" stroke="#6366f1" stroke-width="2" />
+    <line x1="350" y1="520" x2="350" y2="555" stroke="#6366f1" stroke-width="2" />
+    <polygon points="350,555 346,545 354,545" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Formule 2 - Coûts Annuels -->
+  <g transform="translate(10, 560)">
+    <rect x="0" y="0" width="240" height="120" rx="5" ry="5" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2" />
+    <text x="120" y="30" font-family="Arial" font-size="16" fill="#7c3aed" font-weight="bold" text-anchor="middle">Formule: Coûts Annuels</text>
+    <line x1="20" y1="45" x2="220" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="monospace" font-size="12" fill="#4b5563">coutAnnuel = (cjmJunior * nbJunior +</text>
+    <text x="20" y="80" font-family="monospace" font-size="12" fill="#4b5563">            cjmSenior * nbSenior) *</text>
+    <text x="20" y="95" font-family="monospace" font-size="12" fill="#4b5563">            joursAnnee</text>
+    <text x="20" y="115" font-family="Arial" font-size="12" fill="#7c3aed">Résultat: 4 400 000€</text>
+  </g>
+  
+  <!-- Nœud Formule 3 - Revenus Annuels -->
+  <g transform="translate(260, 560)">
+    <rect x="0" y="0" width="240" height="120" rx="5" ry="5" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2" />
+    <text x="120" y="30" font-family="Arial" font-size="16" fill="#7c3aed" font-weight="bold" text-anchor="middle">Formule: Revenus Annuels</text>
+    <line x1="20" y1="45" x2="220" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="monospace" font-size="12" fill="#4b5563">revenuAnnuel = tjmMoyen * nbConsultants *</text>
+    <text x="20" y="80" font-family="monospace" font-size="12" fill="#4b5563">              joursAnnee * tauxStaffing</text>
+    <text x="20" y="100" font-family="Arial" font-size="12" fill="#4b5563">Taux staffing: 80%</text>
+    <text x="20" y="115" font-family="Arial" font-size="12" fill="#7c3aed">Résultat: 5 280 000€</text>
+  </g>
+  
+  <!-- Flèches convergentes -->
+  <g>
+    <line x1="130" y1="680" x2="130" y2="700" stroke="#6366f1" stroke-width="2" />
+    <line x1="130" y1="700" x2="240" y2="700" stroke="#6366f1" stroke-width="2" />
+    <line x1="240" y1="700" x2="240" y2="735" stroke="#6366f1" stroke-width="2" />
+    <polygon points="240,735 236,725 244,725" fill="#6366f1" />
+  </g>
+  
+  <g>
+    <line x1="350" y1="680" x2="350" y2="700" stroke="#6366f1" stroke-width="2" />
+    <line x1="350" y1="700" x2="240" y2="700" stroke="#6366f1" stroke-width="2" />
+  </g>
+  
+  <!-- Nœud Formule 4 - Profitabilité -->
+  <g transform="translate(115, 740)">
+    <rect x="0" y="0" width="250" height="120" rx="5" ry="5" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2" />
+    <text x="125" y="30" font-family="Arial" font-size="16" fill="#7c3aed" font-weight="bold" text-anchor="middle">Formule: Profitabilité</text>
+    <line x1="20" y1="45" x2="230" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="monospace" font-size="12" fill="#4b5563">marge = revenuAnnuel - coutAnnuel</text>
+    <text x="20" y="80" font-family="monospace" font-size="12" fill="#4b5563">tauxMarge = (marge / revenuAnnuel) * 100</text>
+    <text x="20" y="100" font-family="Arial" font-size="12" fill="#7c3aed">Marge: 880 000€</text>
+    <text x="20" y="115" font-family="Arial" font-size="12" fill="#7c3aed">Taux de marge: 16.7%</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="240" y1="860" x2="240" y2="915" stroke="#6366f1" stroke-width="2" />
+    <polygon points="240,915 236,905 244,905" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Décision - Test Résilience -->
+  <g transform="translate(200, 920)">
+    <rect x="0" y="0" width="200" height="60" rx="5" ry="5" fill="#fff7ed" stroke="#f97316" stroke-width="2" transform="rotate(45, 40, 40)" />
+    <text x="40" y="40" font-family="Arial" font-size="14" fill="#9a3412" text-anchor="middle" transform="rotate(-45, 40, 40)" font-weight="bold">Marge > 15% ?</text>
+  </g>
+  
+  <!-- Flèche Oui -->
+  <g>
+    <line x1="283" y1="960" x2="350" y2="960" stroke="#10b981" stroke-width="2" />
+    <polygon points="350,960 340,956 340,964" fill="#10b981" />
+    <text x="316" y="950" font-family="Arial" font-size="12" fill="#10b981" font-weight="bold">Oui</text>
+  </g>
+  
+  <!-- Nœud Fin - Modèle Résilient -->
+  <g transform="translate(360, 920)">
+    <circle cx="40" cy="40" r="40" fill="#ecfdf5" stroke="#10b981" stroke-width="2" />
+    <text x="40" y="35" font-family="Arial" font-size="12" fill="#064e3b" text-anchor="middle">Modèle</text>
+    <text x="40" y="50" font-family="Arial" font-size="12" fill="#064e3b" text-anchor="middle">Résilient</text>
+  </g>
+  
+  <!-- Flèche Non -->
+  <g>
+    <line x1="240" y1="1003" x2="240" y2="1045" stroke="#ef4444" stroke-width="2" />
+    <polygon points="240,1045 236,1035 244,1035" fill="#ef4444" />
+    <text x="250" y="1025" font-family="Arial" font-size="12" fill="#ef4444" font-weight="bold">Non</text>
+  </g>
+  
+  <!-- Nœud Fin - Modèle Fragile -->
+  <g transform="translate(200, 1050)">
+    <circle cx="40" cy="40" r="40" fill="#fef2f2" stroke="#ef4444" stroke-width="2" />
+    <text x="40" y="35" font-family="Arial" font-size="12" fill="#991b1b" text-anchor="middle">Modèle</text>
+    <text x="40" y="50" font-family="Arial" font-size="12" fill="#991b1b" text-anchor="middle">Fragile</text>
+  </g>
+  
+  <!-- Nœud Formule - Scenario Testing -->
+  <g transform="translate(600, 440)">
+    <rect x="0" y="0" width="280" height="190" rx="5" ry="5" fill="#f5f3ff" stroke="#7c3aed" stroke-width="2" />
+    <text x="140" y="30" font-family="Arial" font-size="16" fill="#7c3aed" font-weight="bold" text-anchor="middle">Scénarios de Stress</text>
+    <line x1="20" y1="45" x2="260" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    
+    <rect x="20" y="55" width="240" height="30" rx="3" ry="3" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="1" />
+    <text x="30" y="75" font-family="Arial" font-size="12" fill="#0369a1">Scénario 1: Baisse TJM de 10%</text>
+    
+    <rect x="20" y="95" width="240" height="30" rx="3" ry="3" fill="#f0fdf4" stroke="#10b981" stroke-width="1" />
+    <text x="30" y="115" font-family="Arial" font-size="12" fill="#047857">Scénario 2: Baisse staffing de 10%</text>
+    
+    <rect x="20" y="135" width="240" height="30" rx="3" ry="3" fill="#fef2f2" stroke="#ef4444" stroke-width="1" />
+    <text x="30" y="155" font-family="Arial" font-size="12" fill="#991b1b">Scénario 3: Hausse CJM de 8%</text>
+  </g>
+  
+  <!-- Flèche de connexion vers Scénarios -->
+  <g>
+    <line x1="365" y1="440" x2="590" y2="510" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="5,5" />
+    <polygon points="590,510 580,505 582,515" fill="#8b5cf6" />
+    <text x="420" y="465" font-family="Arial" font-size="12" fill="#8b5cf6" font-style="italic">Tests de stress</text>
+  </g>
+  
+  <!-- Formule Indicateurs Clés -->
+  <g transform="translate(600, 200)">
+    <rect x="0" y="0" width="280" height="180" rx="5" ry="5" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" />
+    <text x="140" y="30" font-family="Arial" font-size="16" fill="#1e40af" font-weight="bold" text-anchor="middle">Indicateurs Clés de Résilience</text>
+    <line x1="20" y1="45" x2="260" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    
+    <text x="25" y="70" font-family="Arial" font-size="12" fill="#1e40af" font-weight="bold">1. Break-even en taux de staffing</text>
+    <text x="30" y="85" font-family="monospace" font-size="10" fill="#4b5563">breakEvenStaffing = coutAnnuel / </text>
+    <text x="30" y="100" font-family="monospace" font-size="10" fill="#4b5563">(tjmMoyen * nbConsultants * joursAnnee)</text>
+    
+    <text x="25" y="120" font-family="Arial" font-size="12" fill="#1e40af" font-weight="bold">2. Marge de sécurité</text>
+    <text x="30" y="135" font-family="monospace" font-size="10" fill="#4b5563">margeSecurite = tauxStaffing - </text>
+    <text x="30" y="150" font-family="monospace" font-size="10" fill="#4b5563">breakEvenStaffing</text>
+    
+    <text x="30" y="170" font-family="Arial" font-size="12" fill="#3b82f6">Résultat: 16.7%</text>
+  </g>
+  
+  <!-- Flèche de connexion vers Indicateurs -->
+  <g>
+    <line x1="365" y1="440" x2="590" y2="300" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5" />
+    <polygon points="590,300 580,295 582,305" fill="#3b82f6" />
+    <text x="430" y="355" font-family="Arial" font-size="12" fill="#3b82f6" font-style="italic">Analyse</text>
+  </g>
+  
+  <!-- Tableau des Résultats de Simulation -->
+  <g transform="translate(620, 700)">
+    <rect x="0" y="0" width="320" height="180" rx="5" ry="5" fill="#ffffff" stroke="#94a3b8" stroke-width="2" />
+    <text x="160" y="30" font-family="Arial" font-size="16" fill="#475569" font-weight="bold" text-anchor="middle">Résultats de Simulation</text>
+    
+    <!-- En-têtes -->
+    <rect x="20" y="45" width="120" height="25" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="80" y="62" font-family="Arial" font-size="12" fill="#475569" font-weight="bold" text-anchor="middle">Scénario</text>
+    
+    <rect x="140" y="45" width="80" height="25" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="180" y="62" font-family="Arial" font-size="12" fill="#475569" font-weight="bold" text-anchor="middle">Marge</text>
+    
+    <rect x="220" y="45" width="80" height="25" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="260" y="62" font-family="Arial" font-size="12" fill="#475569" font-weight="bold" text-anchor="middle">Résilient</text>
+    
+    <!-- Ligne 1 -->
+    <rect x="20" y="70" width="120" height="25" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="87" font-family="Arial" font-size="12" fill="#475569" text-anchor="left">Baisse TJM 10%</text>
+    
+    <rect x="140" y="70" width="80" height="25" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="180" y="87" font-family="Arial" font-size="12" fill="#475569" text-anchor="middle">7.4%</text>
+    
+    <rect x="220" y="70" width="80" height="25" fill="#fef2f2" stroke="#cbd5e1" stroke-width="1" />
+    <text x="260" y="87" font-family="Arial" font-size="12" fill="#ef4444" text-anchor="middle">Non</text>
+    
+    <!-- Ligne 2 -->
+    <rect x="20" y="95" width="120" height="25" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="112" font-family="Arial" font-size="12" fill="#475569" text-anchor="left">Baisse staffing 10%</text>
+    
+    <rect x="140" y="95" width="80" height="25" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="180" y="112" font-family="Arial" font-size="12" fill="#475569" text-anchor="middle">7.4%</text>
+    
+    <rect x="220" y="95" width="80" height="25" fill="#fef2f2" stroke="#cbd5e1" stroke-width="1" />
+    <text x="260" y="112" font-family="Arial" font-size="12" fill="#ef4444" text-anchor="middle">Non</text>
+    
+    <!-- Ligne 3 -->
+    <rect x="20" y="120" width="120" height="25" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="137" font-family="Arial" font-size="12" fill="#475569" text-anchor="left">Hausse CJM 8%</text>
+    
+    <rect x="140" y="120" width="80" height="25" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="180" y="137" font-family="Arial" font-size="12" fill="#475569" text-anchor="middle">10.0%</text>
+    
+    <rect x="220" y="120" width="80" height="25" fill="#fef2f2" stroke="#cbd5e1" stroke-width="1" />
+    <text x="260" y="137" font-family="Arial" font-size="12" fill="#ef4444" text-anchor="middle">Non</text>
+    
+    <!-- Ligne 4 -->
+    <rect x="20" y="145" width="120" height="25" fill="#f0fdf4" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="162" font-family="Arial" font-size="12" fill="#475569" text-anchor="left">Base Case</text>
+    
+    <rect x="140" y="145" width="80" height="25" fill="#f0fdf4" stroke="#cbd5e1" stroke-width="1" />
+    <text x="180" y="162" font-family="Arial" font-size="12" fill="#475569" text-anchor="middle">16.7%</text>
+    
+    <rect x="220" y="145" width="80" height="25" fill="#f0fdf4" stroke="#cbd5e1" stroke-width="1" />
+    <text x="260" y="162" font-family="Arial" font-size="12" fill="#10b981" text-anchor="middle">Oui</text>
+  </g>
+  
+  <!-- Flèches de connexion vers Tableau -->
+  <g>
+    <line x1="740" y1="635" x2="740" y2="690" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,5" />
+    <polygon points="740,690 736,680 744,680" fill="#94a3b8" />
+  </g>
+  
+  <!-- Ligne d'information -->
+  <text x="600" y="60" font-family="Arial" font-size="20" fill="#334155" font-weight="bold">Test de Résilience: Business Model ESN</text>
+  <text x="600" y="85" font-family="Arial" font-size="14" fill="#64748b">Analyse des métriques clés et scénarios de stress</text>
+</svg>

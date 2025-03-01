@@ -1,0 +1,274 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1300" viewBox="0 0 1200 1300">
+  <!-- Fond -->
+  <rect width="1200" height="1300" fill="#f8fafc" />
+  
+  <!-- Grille -->
+  <g stroke="#e5e7eb" stroke-width="1" opacity="0.3">
+    <line x1="0" y1="100" x2="1200" y2="100" />
+    <line x1="0" y1="200" x2="1200" y2="200" />
+    <line x1="0" y1="300" x2="1200" y2="300" />
+    <line x1="0" y1="400" x2="1200" y2="400" />
+    <line x1="0" y1="500" x2="1200" y2="500" />
+    <line x1="0" y1="600" x2="1200" y2="600" />
+    <line x1="0" y1="700" x2="1200" y2="700" />
+    <line x1="0" y1="800" x2="1200" y2="800" />
+    <line x1="0" y1="900" x2="1200" y2="900" />
+    
+    <line x1="100" y1="0" x2="100" y2="1000" />
+    <line x1="200" y1="0" x2="200" y2="1000" />
+    <line x1="300" y1="0" x2="300" y2="1000" />
+    <line x1="400" y1="0" x2="400" y2="1000" />
+    <line x1="500" y1="0" x2="500" y2="1000" />
+    <line x1="600" y1="0" x2="600" y2="1000" />
+    <line x1="700" y1="0" x2="700" y2="1000" />
+    <line x1="800" y1="0" x2="800" y2="1000" />
+    <line x1="900" y1="0" x2="900" y2="1000" />
+    <line x1="1000" y1="0" x2="1000" y2="1000" />
+    <line x1="1100" y1="0" x2="1100" y2="1000" />
+  </g>
+  
+  <!-- Nœud Début -->
+  <g transform="translate(150, 120)">
+    <circle cx="40" cy="40" r="40" fill="#ecfdf5" stroke="#10b981" stroke-width="2" />
+    <text x="40" y="44" font-family="Arial" font-size="12" fill="#064e3b" text-anchor="middle">Début</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="190" y1="160" x2="190" y2="215" stroke="#6366f1" stroke-width="2" />
+    <polygon points="190,215 186,205 194,205" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Paramètres Réglementaires -->
+  <g transform="translate(65, 220)">
+    <rect x="0" y="0" width="250" height="140" rx="5" ry="5" fill="#f9f9ff" stroke="#c7d2fe" stroke-width="2" />
+    <text x="125" y="30" font-family="Arial" font-size="16" fill="#4338ca" font-weight="bold" text-anchor="middle">Paramètres Réglementaires</text>
+    <line x1="20" y1="45" x2="230" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="Arial" font-size="12" fill="#4b5563">• CA actuel: 500K€</text>
+    <text x="20" y="85" font-family="Arial" font-size="12" fill="#4b5563">• Seuil TVA actuel: 85K€</text>
+    <text x="20" y="105" font-family="Arial" font-size="12" fill="#4b5563">• Taux de TVA applicable: 20%</text>
+    <text x="20" y="125" font-family="Arial" font-size="12" fill="#4b5563">• Marge actuelle (pré-TVA): 30%</text>
+    <text x="20" y="145" font-family="Arial" font-size="12" fill="#4b5563">• Coûts fixes: 200K€/an</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="190" y1="360" x2="190" y2="415" stroke="#6366f1" stroke-width="2" />
+    <polygon points="190,415 186,405 194,405" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Formule 1 - Impact TVA Actuel -->
+  <g transform="translate(65, 420)">
+    <rect x="0" y="0" width="250" height="120" rx="5" ry="5" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2" />
+    <text x="125" y="30" font-family="Arial" font-size="16" fill="#7c3aed" font-weight="bold" text-anchor="middle">Formule: Impact TVA Actuel</text>
+    <line x1="20" y1="45" x2="230" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="monospace" font-size="12" fill="#4b5563">exonerationTVA = CA < seuilTVA</text>
+    <text x="20" y="85" font-family="monospace" font-size="12" fill="#4b5563">impactTVA = exonerationTVA ? 0 : CA * tauxTVA</text>
+    <text x="20" y="105" font-family="Arial" font-size="12" fill="#7c3aed">Résultat: Entreprise soumise à TVA</text>
+    <text x="20" y="120" font-family="Arial" font-size="12" fill="#7c3aed">Impact TVA actuel: 100K€</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="190" y1="540" x2="190" y2="595" stroke="#6366f1" stroke-width="2" />
+    <polygon points="190,595 186,585 194,585" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Changement Réglementaire -->
+  <g transform="translate(65, 600)">
+    <rect x="0" y="0" width="250" height="100" rx="5" ry="5" fill="#fff7ed" stroke="#f97316" stroke-width="2" />
+    <text x="125" y="30" font-family="Arial" font-size="16" fill="#c2410c" font-weight="bold" text-anchor="middle">Changement Réglementaire</text>
+    <line x1="20" y1="45" x2="230" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="monospace" font-size="12" fill="#4b5563">nouveauSeuilTVA = 25000</text>
+    <text x="20" y="85" font-family="Arial" font-size="12" fill="#f97316">Abaissement du seuil à 25K€</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="190" y1="700" x2="190" y2="755" stroke="#6366f1" stroke-width="2" />
+    <polygon points="190,755 186,745 194,745" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Formule 2 - Impact Financier -->
+  <g transform="translate(65, 760)">
+    <rect x="0" y="0" width="250" height="140" rx="5" ry="5" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="2" />
+    <text x="125" y="30" font-family="Arial" font-size="16" fill="#7c3aed" font-weight="bold" text-anchor="middle">Formule: Impact Financier</text>
+    <line x1="20" y1="45" x2="230" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="monospace" font-size="12" fill="#4b5563">margeActuelle = CA * tauxMarge - coutsFixes</text>
+    <text x="20" y="85" font-family="monospace" font-size="12" fill="#4b5563">margeApresTVA = margeActuelle - impactTVA</text>
+    <text x="20" y="105" font-family="monospace" font-size="12" fill="#4b5563">nouveauTauxMarge = margeApresTVA / CA</text>
+    <text x="20" y="125" font-family="Arial" font-size="12" fill="#7c3aed">Marge avant: 150K€ (30%)</text>
+    <text x="20" y="145" font-family="Arial" font-size="12" fill="#ef4444">Marge après: 50K€ (10%)</text>
+  </g>
+  
+  <!-- Flèche -->
+  <g>
+    <line x1="190" y1="900" x2="190" y2="935" stroke="#6366f1" stroke-width="2" />
+    <polygon points="190,935 186,925 194,925" fill="#6366f1" />
+  </g>
+  
+  <!-- Nœud Décision - Niveau d'Impact -->
+  <g transform="translate(150, 940)">
+    <rect x="0" y="0" width="80" height="80" rx="5" ry="5" fill="#fff7ed" stroke="#f97316" stroke-width="2" transform="rotate(45, 40, 40)" />
+    <text x="40" y="30" font-family="Arial" font-size="12" fill="#9a3412" text-anchor="middle" transform="rotate(-45, 40, 40)">Impact</text>
+    <text x="40" y="45" font-family="Arial" font-size="12" fill="#9a3412" text-anchor="middle" transform="rotate(-45, 40, 40)">critique?</text>
+    <text x="40" y="60" font-family="Arial" font-size="12" fill="#9a3412" text-anchor="middle" transform="rotate(-45, 40, 40)">< 15% marge</text>
+  </g>
+  
+  <!-- Flèche Oui -->
+  <g>
+    <line x1="233" y1="980" x2="300" y2="980" stroke="#ef4444" stroke-width="2" />
+    <polygon points="300,980 290,976 290,984" fill="#ef4444" />
+    <text x="266" y="970" font-family="Arial" font-size="12" fill="#ef4444" font-weight="bold">Oui</text>
+  </g>
+  
+  <!-- Nœud Stratégies d'Adaptation Critiques -->
+  <g transform="translate(310, 920)">
+    <rect x="0" y="0" width="240" height="120" rx="5" ry="5" fill="#fef2f2" stroke="#ef4444" stroke-width="2" />
+    <text x="120" y="30" font-family="Arial" font-size="14" fill="#b91c1c" font-weight="bold" text-anchor="middle">Stratégies d'Adaptation Critiques</text>
+    <line x1="20" y1="45" x2="220" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="Arial" font-size="11" fill="#4b5563">1. Refonte du modèle économique</text>
+    <text x="20" y="85" font-family="Arial" font-size="11" fill="#4b5563">2. Réduction d'effectifs (30%)</text>
+    <text x="20" y="105" font-family="Arial" font-size="11" fill="#4b5563">3. Pivot vers un nouveau marché</text>
+  </g>
+  
+  <!-- Flèche Non -->
+  <g>
+    <line x1="148" y1="1022" x2="148" y2="1080" stroke="#10b981" stroke-width="2" />
+    <polygon points="148,1080 144,1070 152,1070" fill="#10b981" />
+    <text x="158" y="1050" font-family="Arial" font-size="12" fill="#10b981" font-weight="bold">Non</text>
+  </g>
+  
+  <!-- Nœud Stratégies d'Adaptation Modérées -->
+  <g transform="translate(28, 1085)">
+    <rect x="0" y="0" width="240" height="120" rx="5" ry="5" fill="#ecfdf5" stroke="#10b981" stroke-width="2" />
+    <text x="120" y="30" font-family="Arial" font-size="14" fill="#047857" font-weight="bold" text-anchor="middle">Stratégies d'Adaptation Modérées</text>
+    <line x1="20" y1="45" x2="220" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    <text x="20" y="65" font-family="Arial" font-size="11" fill="#4b5563">1. Révision des prix (+15%)</text>
+    <text x="20" y="85" font-family="Arial" font-size="11" fill="#4b5563">2. Optimisation des coûts fixes (-10%)</text>
+    <text x="20" y="105" font-family="Arial" font-size="11" fill="#4b5563">3. Diversification des revenus</text>
+  </g>
+  
+  <!-- Nœud Analyses d'Impact sur la Concurrence -->
+  <g transform="translate(600, 200)">
+    <rect x="0" y="0" width="280" height="190" rx="5" ry="5" fill="#f0f9ff" stroke="#0ea5e9" stroke-width="2" />
+    <text x="140" y="30" font-family="Arial" font-size="16" fill="#0369a1" font-weight="bold" text-anchor="middle">Analyse Concurrentielle</text>
+    <line x1="20" y1="45" x2="260" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    
+    <text x="20" y="65" font-family="Arial" font-size="12" fill="#0369a1" font-weight="bold">Impact par segment:</text>
+    
+    <text x="30" y="85" font-family="Arial" font-size="11" fill="#4b5563">• TPE < 25K€: Aucun impact (0%)</text>
+    <text x="30" y="105" font-family="Arial" font-size="11" fill="#4b5563">• TPE 25-85K€: Impact majeur (-66% marge)</text>
+    <text x="30" y="125" font-family="Arial" font-size="11" fill="#4b5563">• PME > 85K€: Pas de changement</text>
+    
+    <text x="20" y="145" font-family="Arial" font-size="12" fill="#0369a1" font-weight="bold">Opportunités:</text>
+    <text x="30" y="165" font-family="Arial" font-size="11" fill="#4b5563">• Consolidation du marché</text>
+    <text x="30" y="185" font-family="Arial" font-size="11" fill="#4b5563">• Acquisition de concurrents fragilisés</text>
+  </g>
+  
+  <!-- Flèche de connexion vers Analyses Concurrence -->
+  <g>
+    <line x1="320" y1="290" x2="590" y2="290" stroke="#0ea5e9" stroke-width="2" stroke-dasharray="5,5" />
+    <polygon points="590,290 580,286 580,294" fill="#0ea5e9" />
+  </g>
+  
+  <!-- Nœud Indicateurs Clés de Risque -->
+  <g transform="translate(600, 440)">
+    <rect x="0" y="0" width="280" height="190" rx="5" ry="5" fill="#eff6ff" stroke="#3b82f6" stroke-width="2" />
+    <text x="140" y="30" font-family="Arial" font-size="16" fill="#1e40af" font-weight="bold" text-anchor="middle">Indicateurs Clés de Risque</text>
+    <line x1="20" y1="45" x2="260" y2="45" stroke="#e5e7eb" stroke-width="1" />
+    
+    <text x="20" y="65" font-family="Arial" font-size="12" fill="#1e40af" font-weight="bold">1. Ratio de dépendance réglementaire</text>
+    <text x="30" y="80" font-family="monospace" font-size="10" fill="#4b5563">RDR = (MargeAvant - MargeAprès) / MargeAvant</text>
+    <text x="30" y="95" font-family="Arial" font-size="11" fill="#ef4444">Résultat: 66% (CRITIQUE)</text>
+    
+    <text x="20" y="115" font-family="Arial" font-size="12" fill="#1e40af" font-weight="bold">2. Délai de mise en conformité</text>
+    <text x="30" y="130" font-family="Arial" font-size="11" fill="#4b5563">90 jours (Date d'application: T1 2026)</text>
+    
+    <text x="20" y="150" font-family="Arial" font-size="12" fill="#1e40af" font-weight="bold">3. Coût de mise en conformité</text>
+    <text x="30" y="165" font-family="Arial" font-size="11" fill="#4b5563">Investissement: 35K€</text>
+    <text x="30" y="180" font-family="Arial" font-size="11" fill="#4b5563">Charges récurrentes: 30K€/an</text>
+  </g>
+  
+  <!-- Flèche de connexion vers Indicateurs -->
+  <g>
+    <line x1="320" y1="535" x2="590" y2="535" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,5" />
+    <polygon points="590,535 580,531 580,539" fill="#3b82f6" />
+  </g>
+  
+  <!-- Tableau des stratégies alternatives -->
+  <g transform="translate(600, 680)">
+    <rect x="0" y="0" width="400" height="220" rx="5" ry="5" fill="#ffffff" stroke="#94a3b8" stroke-width="2" />
+    <text x="200" y="30" font-family="Arial" font-size="16" fill="#475569" font-weight="bold" text-anchor="middle">Stratégies Alternatives</text>
+    
+    <!-- En-têtes -->
+    <rect x="20" y="45" width="160" height="25" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="100" y="62" font-family="Arial" font-size="12" fill="#475569" font-weight="bold" text-anchor="middle">Stratégie</text>
+    
+    <rect x="180" y="45" width="100" height="25" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="62" font-family="Arial" font-size="12" fill="#475569" font-weight="bold" text-anchor="middle">Impact Marge</text>
+    
+    <rect x="280" y="45" width="100" height="25" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="62" font-family="Arial" font-size="12" fill="#475569" font-weight="bold" text-anchor="middle">Faisabilité</text>
+    
+    <!-- Ligne 1 -->
+    <rect x="20" y="70" width="160" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="90" font-family="Arial" font-size="11" fill="#475569" text-anchor="left">Restructuration société</text>
+    
+    <rect x="180" y="70" width="100" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="90" font-family="Arial" font-size="11" fill="#475569" text-anchor="middle">+15%</text>
+    
+    <rect x="280" y="70" width="100" height="30" fill="#fff7ed" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="90" font-family="Arial" font-size="11" fill="#f97316" text-anchor="middle">Moyenne</text>
+    
+    <!-- Ligne 2 -->
+    <rect x="20" y="100" width="160" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="120" font-family="Arial" font-size="11" fill="#475569" text-anchor="left">Création structure < 25K€</text>
+    
+    <rect x="180" y="100" width="100" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="120" font-family="Arial" font-size="11" fill="#475569" text-anchor="middle">+18%</text>
+    
+    <rect x="280" y="100" width="100" height="30" fill="#fef2f2" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="120" font-family="Arial" font-size="11" fill="#ef4444" text-anchor="middle">Difficile</text>
+    
+    <!-- Ligne 3 -->
+    <rect x="20" y="130" width="160" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="150" font-family="Arial" font-size="11" fill="#475569" text-anchor="left">Augmentation prix clients</text>
+    
+    <rect x="180" y="130" width="100" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="150" font-family="Arial" font-size="11" fill="#475569" text-anchor="middle">+17%</text>
+    
+    <rect x="280" y="130" width="100" height="30" fill="#f0fdf4" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="150" font-family="Arial" font-size="11" fill="#10b981" text-anchor="middle">Facile</text>
+    
+    <!-- Ligne 4 -->
+    <rect x="20" y="160" width="160" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="180" font-family="Arial" font-size="11" fill="#475569" text-anchor="left">Réduction frais généraux</text>
+    
+    <rect x="180" y="160" width="100" height="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="180" font-family="Arial" font-size="11" fill="#475569" text-anchor="middle">+8%</text>
+    
+    <rect x="280" y="160" width="100" height="30" fill="#f0fdf4" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="180" font-family="Arial" font-size="11" fill="#10b981" text-anchor="middle">Facile</text>
+    
+    <!-- Ligne 5 -->
+    <rect x="20" y="190" width="160" height="30" fill="#fef2f2" stroke="#cbd5e1" stroke-width="1" />
+    <text x="30" y="210" font-family="Arial" font-size="11" fill="#475569" text-anchor="left">Changement de marché</text>
+    
+    <rect x="180" y="190" width="100" height="30" fill="#fef2f2" stroke="#cbd5e1" stroke-width="1" />
+    <text x="230" y="210" font-family="Arial" font-size="11" fill="#475569" text-anchor="middle">Inconnu</text>
+    
+    <rect x="280" y="190" width="100" height="30" fill="#fef2f2" stroke="#cbd5e1" stroke-width="1" />
+    <text x="330" y="210" font-family="Arial" font-size="11" fill="#ef4444" text-anchor="middle">Très difficile</text>
+  </g>
+  
+  <!-- Flèche de connexion vers Tableau -->
+  <g>
+    <line x1="320" y1="840" x2="590" y2="840" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,5" />
+    <polygon points="590,840 580,836 580,844" fill="#94a3b8" />
+  </g>
+
+    <!-- Ligne d'information -->
+  <text x="600" y="60" font-family="Arial" font-size="20" fill="#334155" font-weight="bold">Test de Résilience: Impact Réglementaire</text>
+  <text x="600" y="85" font-family="Arial" font-size="14" fill="#64748b">Simulation de l'impact d'un changement réglementaire majeur sur votre activité</text>
+</svg>
