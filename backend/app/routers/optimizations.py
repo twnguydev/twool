@@ -1,56 +1,176 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Depends
+from typing import List, Dict, Any, Optional
+from sqlalchemy.orm import Session
+from app.database import get_db
+from app.models.optimization import Optimization, OptimizationStatus
+from app.services.optimization_service import OptimizationService
+from app.services.process_service import ProcessService
+from app.services.simulation_service import SimulationService
 from pydantic import BaseModel
-from typing import List, Dict, Any
 
 router = APIRouter()
 
-# Modèles de données
-class OptimizationRequest(BaseModel):
+# Modèles de données Pydantic pour la validation
+class OptimizationRequestModel(BaseModel):
     process_id: str
     simulation_id: str = None
     parameters: Dict[str, Any] = {}
+    
+    class Config:
+        arbitrary_types_allowed = True
 
-class OptimizationSuggestion(BaseModel):
+class OptimizationSuggestionModel(BaseModel):
     id: str
     type: str
     node_id: str = None
     description: str
     impact: Dict[str, float]
     details: Dict[str, Any] = {}
+    
+    class Config:
+        arbitrary_types_allowed = True
+
+class OptimizationResponseModel(BaseModel):
+    id: str
+    process_id: str
+    simulation_id: str = None
+    status: str
+    parameters: Dict[str, Any] = None
+    suggestions: List[Dict[str, Any]] = None
+    error_message: str = None
+    created_at: str
+    updated_at: str
+    
+    class Config:
+        arbitrary_types_allowed = True
+
+class OptimizationListResponseModel(BaseModel):
+    optimizations: List[OptimizationResponseModel]
+    total: int
+    
+    class Config:
+        arbitrary_types_allowed = True
+
+class OptimizationUpdateModel(BaseModel):
+    status: str = None
+    suggestions: List[Dict[str, Any]] = None
+    error_message: str = None
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 # Endpoints
-@router.post("/")
-async def generate_optimizations(request: OptimizationRequest):
+@router.post("/", response_model=OptimizationResponseModel)
+async def generate_optimizations(request: OptimizationRequestModel, db: Session = Depends(get_db)):
     """Génère des suggestions d'optimisation pour un processus"""
-    # Note: Dans un vrai MVP, ceci utiliserait un algorithme d'optimisation simple
+    # Vérifier si le processus existe
+    process = ProcessService.get_process(db, request.process_id)
+    if not process:
+        raise HTTPException(status_code=404, detail="Processus non trouvé")
+    
+    # Vérifier si la simulation existe, si fournie
+    if request.simulation_id:
+        simulation = SimulationService.get_simulation(db, request.simulation_id)
+        if not simulation:
+            raise HTTPException(status_code=404, detail="Simulation non trouvée")
+    
+    # Créer l'optimisation
+    optimization_data = {
+        "process_id": request.process_id,
+        "simulation_id": request.simulation_id,
+        "parameters": request.parameters,
+        "status": OptimizationStatus.PENDING
+    }
+    
+    db_optimization = OptimizationService.create_optimization(db, optimization_data)
+    
+    # Dans un système de production, l'optimisation serait lancée de manière asynchrone ici
+    # Pour l'exemple, nous allons juste changer son statut en "PROCESSING"
+    OptimizationService.update_optimization_status(db, db_optimization.id, OptimizationStatus.PROCESSING)
+    
+    # Récupérer l'optimisation mise à jour
+    db_optimization = OptimizationService.get_optimization(db, db_optimization.id)
+    
+    return OptimizationService.optimization_to_dict(db_optimization)
+
+@router.get("/{optimization_id}", response_model=OptimizationResponseModel)
+async def get_optimization_results(optimization_id: str, db: Session = Depends(get_db)):
+    """Récupère les résultats d'une optimisation"""
+    optimization = OptimizationService.get_optimization(db, optimization_id)
+    if not optimization:
+        raise HTTPException(status_code=404, detail="Optimisation non trouvée")
+    
+    return OptimizationService.optimization_to_dict(optimization)
+
+@router.get("/by-process/{process_id}", response_model=OptimizationListResponseModel)
+async def get_optimizations_by_process(process_id: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Récupère toutes les optimisations pour un processus donné"""
+    # Vérifier si le processus existe
+    process = ProcessService.get_process(db, process_id)
+    if not process:
+        raise HTTPException(status_code=404, detail="Processus non trouvé")
+    
+    optimizations = OptimizationService.get_optimizations_by_process(db, process_id, skip, limit)
+    total = len(optimizations)  # Dans un système de production, utilisez count() au lieu de len()
+    
     return {
-        "id": "opt-123",
-        "status": "processing",
-        "process_id": request.process_id
+        "optimizations": [OptimizationService.optimization_to_dict(o) for o in optimizations],
+        "total": total
     }
 
-@router.get("/{optimization_id}")
-async def get_optimization_results(optimization_id: str):
-    """Récupère les résultats d'une optimisation"""
-    # Note: Dans un vrai MVP, ceci lirait de la base de données
+@router.get("/by-simulation/{simulation_id}", response_model=OptimizationListResponseModel)
+async def get_optimizations_by_simulation(simulation_id: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Récupère toutes les optimisations pour une simulation donnée"""
+    # Vérifier si la simulation existe
+    simulation = SimulationService.get_simulation(db, simulation_id)
+    if not simulation:
+        raise HTTPException(status_code=404, detail="Simulation non trouvée")
+    
+    optimizations = OptimizationService.get_optimizations_by_simulation(db, simulation_id, skip, limit)
+    total = len(optimizations)  # Dans un système de production, utilisez count() au lieu de len()
+    
     return {
-        "id": optimization_id,
-        "process_id": "test-process",
-        "status": "completed",
-        "suggestions": [
-            {
-                "id": "sug-1",
-                "type": "automation",
-                "node_id": "node-2",
-                "description": "Cette tâche manuelle pourrait être automatisée",
-                "impact": {"time_reduction": 20, "cost_reduction": 100}
-            },
-            {
-                "id": "sug-2",
-                "type": "parallel",
-                "node_id": "node-3",
-                "description": "Ces tâches pourraient être exécutées en parallèle",
-                "impact": {"time_reduction": 30, "cost_reduction": 0}
-            }
-        ]
+        "optimizations": [OptimizationService.optimization_to_dict(o) for o in optimizations],
+        "total": total
     }
+
+@router.put("/{optimization_id}", response_model=OptimizationResponseModel)
+async def update_optimization(optimization_id: str, optimization: OptimizationUpdateModel, db: Session = Depends(get_db)):
+    """Met à jour une optimisation existante (pour les tests principalement)"""
+    # Vérifier si l'optimisation existe
+    db_optimization = OptimizationService.get_optimization(db, optimization_id)
+    if not db_optimization:
+        raise HTTPException(status_code=404, detail="Optimisation non trouvée")
+    
+    # Mettre à jour le statut si fourni
+    if optimization.status:
+        try:
+            status = OptimizationStatus[optimization.status.upper()]
+        except KeyError:
+            raise HTTPException(status_code=400, detail="Statut d'optimisation invalide")
+        
+        db_optimization = OptimizationService.update_optimization_status(
+            db, 
+            optimization_id, 
+            status, 
+            optimization.suggestions, 
+            optimization.error_message
+        )
+    
+    return OptimizationService.optimization_to_dict(db_optimization)
+
+@router.delete("/{optimization_id}")
+async def delete_optimization(optimization_id: str, db: Session = Depends(get_db)):
+    """Supprime une optimisation"""
+    # Vérifier si l'optimisation existe
+    optimization = OptimizationService.get_optimization(db, optimization_id)
+    if not optimization:
+        raise HTTPException(status_code=404, detail="Optimisation non trouvée")
+    
+    # Supprimer l'optimisation
+    result = OptimizationService.delete_optimization(db, optimization_id)
+    
+    if result:
+        return {"status": "success", "message": "Optimisation supprimée avec succès"}
+    else:
+        raise HTTPException(status_code=500, detail="Erreur lors de la suppression de l'optimisation")
