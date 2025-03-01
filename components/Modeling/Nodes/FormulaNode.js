@@ -16,7 +16,7 @@ const FormulaNode = ({ data, isConnectable, selected }) => {
     <div
       className={`px-5 py-3 rounded-lg bg-white border-2 ${
         selected ? 'border-purple-500' : 'border-purple-400'
-      } shadow-lg w-64 h-auto`}
+      } shadow-lg w-72 h-auto`}
     >
       {/* Handles d'entrée sur tous les côtés */}
       <Handle
@@ -55,7 +55,7 @@ const FormulaNode = ({ data, isConnectable, selected }) => {
         </div>
         
         {/* Afficher la formule avec formatage */}
-        <div className="mb-2 text-xs bg-purple-50 p-2 rounded-md font-mono whitespace-pre">
+        <div className="mb-2 text-xs bg-purple-50 p-2 rounded-md font-mono whitespace-pre-wrap">
           {data.formula || "f(x) = x"}
         </div>
         
@@ -63,7 +63,7 @@ const FormulaNode = ({ data, isConnectable, selected }) => {
         {data.variables && data.variables.length > 0 && (
           <div className="flex flex-col space-y-1 mb-2">
             <p className="text-xs font-medium text-gray-700">Variables:</p>
-            <div className="grid grid-cols-2 gap-1">
+            <div className="grid grid-cols-1 gap-1">
               {data.variables.map((variable, index) => (
                 <div key={index} className="text-xs text-gray-600 flex justify-between">
                   <span className="font-mono font-semibold">{variable.name}:</span>

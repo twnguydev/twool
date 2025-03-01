@@ -109,7 +109,7 @@ const Header = () => {
                       <UserRoundCheck size={20} />
                     </div>
                     <span className="ml-2 mr-1 text-sm font-medium text-gray-700 hidden lg:block">
-                      Marie Laurent
+                    Tanguy Gibrat
                     </span>
                     <ChevronDown size={16} className="text-gray-400 hidden lg:block" />
                   </div>

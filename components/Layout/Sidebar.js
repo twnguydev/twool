@@ -95,7 +95,7 @@ const Sidebar = () => {
               </div>
               <div className="flex flex-col ml-2">
                 <span className="ml-2 font-bold text-lg">Twool Labs</span>
-                <span className="ml-2 text-xs">by JLC Consulting</span>
+                {/* <span className="ml-2 text-xs">by JLC Consulting</span> */}
               </div>
             </div>
           </>
@@ -190,7 +190,6 @@ const Sidebar = () => {
               <HelpCircle size={16} className="mr-2" />
               <span>Centre d'aide</span>
             </div>
-            <span className="bg-blue-500 text-xs px-1.5 py-0.5 rounded-full text-white">New</span>
           </div>
         ) : (
           <div className="text-gray-400 hover:text-white cursor-pointer">
