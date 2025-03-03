@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { UserRoundCheck, PlusSquare, Bell, ChevronDown, LogOut, Settings, User, Search, Menu, X } from 'lucide-react';
 
-const Header = () => {
+const Header = ({ title }) => {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -19,12 +20,12 @@ const Header = () => {
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Partie gauche - info contextuelle et titre de page */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <h1 className="text-xl font-semibold text-gray-800">Tableau de bord</h1>
+              <h1 className="text-xl font-semibold text-gray-800">{title}</h1>
               <div className="ml-3 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-md">Production</div>
             </div>
           </div>
@@ -54,10 +55,10 @@ const Header = () => {
             </div>
 
             {/* Bouton de création */}
-            <button className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <Link href="/modeling/workflows/new" className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
               <PlusSquare size={16} className="mr-2" />
               Créer un workflow
-            </button>
+            </Link>
             
             {/* Notifications */}
             <div className="relative">

@@ -3,6 +3,7 @@ fastapi>=0.115.10
 uvicorn>=0.34.0
 starlette>=0.46.0
 pydantic>=2.10.6
+pydantic-settings>=2.8.1
 python-multipart>=0.0.20
 
 # Base de données

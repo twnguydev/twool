@@ -2,19 +2,7 @@ from typing import List, Dict, Any, Optional
 from sqlalchemy.orm import Session
 from app.models.user import User, UserRole
 from app.services.database import DatabaseService
-import bcrypt
-import jwt
-import os
-from datetime import datetime, timedelta
-from dotenv import load_dotenv
-
-# Charger les variables d'environnement
-load_dotenv()
-
-# Configuration JWT
-JWT_SECRET = os.getenv("JWT_SECRET", "default_secret_key_change_in_production")
-JWT_ALGORITHM = "HS256"
-JWT_EXPIRATION = 24  # heures
+from app.services.auth_service import AuthService
 
 class UserService:
     """Service pour gérer les opérations liées aux utilisateurs"""
@@ -31,10 +19,10 @@ class UserService:
         Returns:
             L'utilisateur créé
         """
-        # Hash du mot de passe
+        # Hash du mot de passe (en utilisant AuthService)
         if 'password' in data:
             password = data.pop('password')
-            password_hash = UserService.hash_password(password)
+            password_hash = AuthService.get_password_hash(password)
             data['password_hash'] = password_hash
             
         # Si le rôle n'est pas spécifié, le mettre à SOLO par défaut
@@ -69,7 +57,8 @@ class UserService:
         Returns:
             L'utilisateur trouvé ou None
         """
-        return db.query(User).filter(User.email == email).first()
+        users = DatabaseService.get_all(db, User, filters={"email": email}, limit=1)
+        return users[0] if users else None
     
     @staticmethod
     def update_user(db: Session, user_id: str, data: Dict[str, Any]) -> Optional[User]:
@@ -88,10 +77,10 @@ class UserService:
         if not user:
             return None
             
-        # Hash du mot de passe si fourni
+        # Hash du mot de passe si fourni (en utilisant AuthService)
         if 'password' in data:
             password = data.pop('password')
-            password_hash = UserService.hash_password(password)
+            password_hash = AuthService.get_password_hash(password)
             data['password_hash'] = password_hash
             
         return DatabaseService.update(db, user, data)
@@ -115,91 +104,37 @@ class UserService:
         return DatabaseService.delete(db, user)
     
     @staticmethod
-    def verify_password(plain_password: str, hashed_password: str) -> bool:
+    def get_users(db: Session, 
+                 skip: int = 0, 
+                 limit: int = 100, 
+                 filters: Dict[str, Any] = None) -> List[User]:
         """
-        Vérifie si un mot de passe correspond au hash stocké
-        
-        Args:
-            plain_password: Mot de passe en clair
-            hashed_password: Hash du mot de passe
-        
-        Returns:
-            True si le mot de passe correspond, False sinon
-        """
-        return bcrypt.checkpw(
-            plain_password.encode('utf-8'),
-            hashed_password.encode('utf-8')
-        )
-    
-    @staticmethod
-    def hash_password(password: str) -> str:
-        """
-        Hash un mot de passe avec bcrypt
-        
-        Args:
-            password: Mot de passe à hasher
-        
-        Returns:
-            Hash du mot de passe
-        """
-        salt = bcrypt.gensalt()
-        hashed = bcrypt.hashpw(password.encode('utf-8'), salt)
-        return hashed.decode('utf-8')
-    
-    @staticmethod
-    def create_access_token(user_id: str, expiration: int = JWT_EXPIRATION) -> str:
-        """
-        Crée un token JWT pour l'authentification
-        
-        Args:
-            user_id: ID de l'utilisateur
-            expiration: Durée de validité en heures
-        
-        Returns:
-            Token JWT
-        """
-        payload = {
-            "sub": user_id,
-            "exp": datetime.utcnow() + timedelta(hours=expiration),
-            "iat": datetime.utcnow()
-        }
-        
-        return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
-    
-    @staticmethod
-    def verify_token(token: str) -> Optional[str]:
-        """
-        Vérifie la validité d'un token JWT et extrait l'ID utilisateur
-        
-        Args:
-            token: Token JWT
-        
-        Returns:
-            ID de l'utilisateur si le token est valide, None sinon
-        """
-        try:
-            payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-            return payload.get("sub")
-        except jwt.PyJWTError:
-            return None
-    
-    @staticmethod
-    def get_current_user(db: Session, token: str) -> Optional[User]:
-        """
-        Récupère l'utilisateur actuel à partir d'un token
+        Récupère une liste d'utilisateurs avec pagination et filtres optionnels
         
         Args:
             db: Session SQLAlchemy
-            token: Token JWT
-        
-        Returns:
-            L'utilisateur si le token est valide, None sinon
-        """
-        user_id = UserService.verify_token(token)
-        if not user_id:
-            return None
+            skip: Nombre d'éléments à ignorer (pagination)
+            limit: Nombre maximum d'éléments à récupérer
+            filters: Dictionnaire de filtres {nom_colonne: valeur}
             
-        return UserService.get_user(db, user_id)
+        Returns:
+            Liste des utilisateurs correspondants
+        """
+        return DatabaseService.get_all(db, User, skip=skip, limit=limit, filters=filters)
+    
+    @staticmethod
+    def count_users(db: Session, filters: Dict[str, Any] = None) -> int:
+        """
+        Compte le nombre d'utilisateurs avec filtres optionnels
+        
+        Args:
+            db: Session SQLAlchemy
+            filters: Dictionnaire de filtres {nom_colonne: valeur}
+            
+        Returns:
+            Nombre d'utilisateurs correspondants
+        """
+        return DatabaseService.count(db, User, filters=filters)
     
     @staticmethod
     def user_to_dict(user: User) -> Dict[str, Any]:

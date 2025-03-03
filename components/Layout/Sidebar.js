@@ -45,8 +45,7 @@ const Sidebar = () => {
       icon: <LayoutDashboard size={collapsed ? 20 : 18} /> 
     },
     { 
-      name: 'Modélisation', 
-      path: '/modeling', 
+      name: 'Modélisation',
       icon: <Workflow size={collapsed ? 20 : 18} />,
       isExpandable: true,
       section: 'modeling',

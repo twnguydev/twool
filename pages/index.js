@@ -33,7 +33,7 @@ export default function Home() {
   ];
 
   return (
-    <Layout>
+    <Layout title="Tableau de bord">
       <div className="p-6">
         {/* En-tête avec message de bienvenue et métriques clés */}
         <div className="mb-8">

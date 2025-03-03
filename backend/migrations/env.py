@@ -16,14 +16,14 @@ load_dotenv()
 
 # Importer les modèles pour qu'Alembic puisse les détecter
 from app.models import Base
-from app.database import DATABASE_URL
+from app.config import settings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
 # Remplacer l'URL de la base de données dans le fichier de config
-config.set_main_option('sqlalchemy.url', DATABASE_URL)
+config.set_main_option('sqlalchemy.url', settings.DATABASE_URL)
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

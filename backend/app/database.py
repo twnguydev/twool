@@ -2,22 +2,11 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, scoped_session
-from dotenv import load_dotenv
-
-# Charger les variables d'environnement
-load_dotenv()
-
-# Configuration de la base de données
-DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_USER = os.getenv("DB_USER", "root")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "root")
-DB_NAME = os.getenv("DB_NAME", "twool")
-
-DATABASE_URL = f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:8889/{DB_NAME}"
+from app.config import settings
 
 # Créer un moteur SQLAlchemy
 engine = create_engine(
-    DATABASE_URL,
+    settings.DATABASE_URL,
     pool_pre_ping=True,
     pool_recycle=3600,
     echo=False
@@ -31,7 +20,7 @@ db_session = scoped_session(SessionLocal)
 
 # Pour la compatibilité avec le code existant
 class Database:
-    def __init__(self, host=DB_HOST, database=DB_NAME, user=DB_USER, password=DB_PASSWORD):
+    def __init__(self, host=settings.DB_HOST, database=settings.DB_NAME, user=settings.DB_USER, password=settings.DB_PASSWORD):
         self.host = host
         self.database = database
         self.user = user

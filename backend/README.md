@@ -209,6 +209,12 @@ Cette architecture simplifiée offre plusieurs avantages :
 - Stockage étendu (5 Go)
 - Abonnement mensuel ou annuel
 
+## Les clés de licence admin pour les tests sont:
+- Solo:       UXZ6-7KIR-KUIT-ZWOI-RDJY-ELQ8
+- Business:   4XYR-ZSBL-ORTJ-20WL-EROB-2QJN
+- Enterprise: PBX8-L8F5-OBSM-IRHJ-9F4S-24FP
+- Test:       SW12-P884-Q98Z-D8E8-8OOH-U9H2
+
 ## Format des données de workflow
 
 Le workflow suit un format JSON contenant des nœuds (nodes) et des arêtes (edges) :

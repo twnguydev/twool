@@ -122,6 +122,11 @@ twool-labs/
 │   ├── Layout/                # Mise en page principale
 │   ├── Modeling/              # Composants de modélisation
 │   │   ├── Nodes/             # Types de nœuds
+│   │   |   ├── DecisionNode.js
+│   │   |   ├── EventNode.js
+│   │   |   ├── FormulaNode.js
+│   │   |   ├── ScenarioNode.js
+│   │   |   └── TaskNode.js
 │   │   ├── Canvas.js          # Zone de dessin
 │   │   └── ...
 │   └── ...

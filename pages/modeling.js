@@ -4,7 +4,7 @@ import ProcessCanvas from '../components/Modeling/Canvas';
 
 export default function Modeling() {
   return (
-    <Layout>
+    <Layout title="Workflow builder">
       <div className="h-full flex flex-col">
         <div className="flex-1 overflow-hidden">
           <ProcessCanvas />
