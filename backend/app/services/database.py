@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from typing import TypeVar, Type, List, Dict, Any, Optional, Union
+from typing import TypeVar, Type, List, Dict, Any, Optional
 import uuid
 from datetime import datetime
 

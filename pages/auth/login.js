@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import Image from 'next/image';
+import { useApi } from '../../hooks/useApi';
 
 export default function Login() {
   const router = useRouter();
   const { redirect } = router.query;
+  const { auth } = useApi();
   
   // États pour le formulaire
   const [email, setEmail] = useState('');
@@ -30,20 +31,13 @@ export default function Login() {
     }
     
     try {
-      // Simulation d'un appel API de connexion
-      // Dans une application réelle, appel à l'API d'authentification
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Appel à l'API d'authentification réelle
+      const response = await auth.login(email, password);
       
-      // Simulation de succès - en réalité, stockerait le token JWT dans localStorage ou cookie
+      // Stockage du token et des infos utilisateur dans localStorage
       localStorage.setItem('twool_auth', JSON.stringify({
-        token: 'sample-jwt-token',
-        user: {
-          id: 'usr-123',
-          email,
-          firstName: 'Utilisateur',
-          lastName: 'Test',
-          role: 'solo'
-        }
+        token: response.token,
+        user: response.user
       }));
       
       // Redirection vers la page d'origine ou dashboard

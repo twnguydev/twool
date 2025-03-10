@@ -1,4 +1,4 @@
-from typing import List, Dict, Any, Optional, Union
+from typing import Dict, Any, Optional, Union
 from sqlalchemy.orm import Session
 from app.models.subscription import Subscription, SubscriptionType, SubscriptionTier, SubscriptionStatus
 from app.models.user import User
@@ -6,7 +6,7 @@ from app.models.company import Company
 from app.models.license import License, LicenseStatus
 from app.services.database import DatabaseService
 import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 
 class SubscriptionService:
     """Service pour gérer les opérations liées aux abonnements"""
@@ -42,7 +42,7 @@ class SubscriptionService:
             data['max_users'] = None  # Illimité pour les entreprises
         
         # Calculer la date de fin
-        start_date = datetime.utcnow()
+        start_date = datetime.now(timezone.utc)
         end_date = start_date + timedelta(days=duration_days)
         
         # Préparer les données de l'abonnement
@@ -223,14 +223,14 @@ class SubscriptionService:
             return None
             
         # Vérifier si la licence est expirée
-        if license.expiration_date < datetime.utcnow():
+        if license.expiration_date < datetime.now(timezone.utc):
             license.status = LicenseStatus.EXPIRED
             db.commit()
             return None
             
         # Si c'est la première activation, mettre à jour la date d'activation et l'appareil
         if not license.activation_date:
-            license.activation_date = datetime.utcnow()
+            license.activation_date = datetime.now(timezone.utc)
             
         # Mettre à jour l'ID de l'appareil si fourni
         if device_id:

@@ -4,14 +4,14 @@ from typing import Dict, Any, List, Optional
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app.services.flow_ia_service import FlowIAService
-from app.services.process_service import ProcessService
+from app.services.workflow_service import WorkflowService
 
 router = APIRouter()
 flow_ia_service = FlowIAService()
 
 # Modèles de données Pydantic pour la validation
 class WorkflowAnalysisRequest(BaseModel):
-    process_id: str
+    workflow_id: str
     workflow_data: Dict[str, Any]
     
     class Config:
@@ -69,7 +69,7 @@ async def analyze_workflow(request: WorkflowAnalysisRequest, db: Session = Depen
     en utilisant un modèle d'IA spécialisé.
     """
     # Vérifier si le processus existe
-    process = ProcessService.get_process(db, request.process_id)
+    process = WorkflowService.get_workflow(db, request.workflow_id)
     if not process:
         raise HTTPException(status_code=404, detail="Processus non trouvé")
     
@@ -105,7 +105,7 @@ async def get_analyses_by_process(process_id: str, skip: int = 0, limit: int = 1
     Récupère toutes les analyses associées à un processus donné
     """
     # Vérifier si le processus existe
-    process = ProcessService.get_process(db, process_id)
+    process = WorkflowService.get_workflow(db, process_id)
     if not process:
         raise HTTPException(status_code=404, detail="Processus non trouvé")
     

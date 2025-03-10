@@ -38,20 +38,20 @@ class OptimizationService:
         return DatabaseService.get_by_id(db, Optimization, optimization_id)
     
     @staticmethod
-    def get_optimizations_by_process(db: Session, process_id: str, skip: int = 0, limit: int = 100) -> List[Optimization]:
+    def get_optimizations_by_workflow(db: Session, workflow_id: str, skip: int = 0, limit: int = 100) -> List[Optimization]:
         """
-        Récupère toutes les optimisations pour un processus donné
+        Récupère toutes les optimisations pour un workflow donné
         
         Args:
             db: Session SQLAlchemy
-            process_id: ID du processus
+            workflow_id: ID du workflow
             skip: Nombre d'éléments à ignorer
             limit: Nombre maximum d'éléments à récupérer
         
         Returns:
             Liste des optimisations
         """
-        filters = {'process_id': process_id}
+        filters = {'workflow_id': workflow_id}
         return DatabaseService.get_all(db, Optimization, skip, limit, filters)
     
     @staticmethod

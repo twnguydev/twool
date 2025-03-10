@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useApi } from '../../hooks/useApi';
 
 export default function Signup() {
   const router = useRouter();
+  const { auth } = useApi();
 
   // États pour les étapes d'inscription
   const [step, setStep] = useState(1);
@@ -21,6 +23,11 @@ export default function Signup() {
 
   // État pour l'activation de licence
   const [licenseKey, setLicenseKey] = useState('');
+  const [licenseKeys, setLicenseKeys] = useState(['', '', '', '', '', '']);
+
+  const getLicenseKey = () => {
+    return `${licenseKeys.join('-')}`;
+  };
 
   // Gestion des erreurs
   const [errors, setErrors] = useState({});
@@ -103,14 +110,26 @@ export default function Signup() {
   const validateLicense = () => {
     const newErrors = {};
 
-    if (!licenseKey.trim()) {
+    if (licenseKeys.some(part => part.trim() === '')) {
       newErrors.licenseKey = "La clé de licence est requise";
-    } else if (licenseKey.length !== 24) {
+    } else if (licenseKeys.some(part => part.length !== 4)) {
       newErrors.licenseKey = "Format de clé de licence invalide";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const handleLicenseKeyChange = (index, value) => {
+    const newValue = value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
+    const newLicenseKeys = [...licenseKeys];
+    newLicenseKeys[index] = newValue;
+    setLicenseKeys(newLicenseKeys);
+
+    // Auto-focus sur le champ suivant si celui-ci est rempli
+    if (newValue.length === 4 && index < 5) {
+      document.getElementById(`licenseKey-${index + 1}`).focus();
+    }
   };
 
   // Soumission de l'étape 1 (informations personnelles)
@@ -122,65 +141,56 @@ export default function Signup() {
     }
   };
 
-  // Soumission finale (création de compte + abonnement)
-  const handleCompleteSignup = async () => {
+  const handleSubmitLicensePurchase = (e) => {
+    e.preventDefault();
+
+    handleCompleteSignup();
+  };
+
+  // Soumission finale modifiée
+  const handleCompleteSignup = async (licenseKeyValue = null) => {
     setIsSubmitting(true);
 
     try {
-      // Simulation d'un appel API
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      // Données à envoyer à l'API (selon l'option choisie)
+      // 1. Créer le compte utilisateur (inscription standard)
       const userData = {
-        firstName,
-        lastName,
-        email,
-        password,
-      };
-
-      if (subscriptionChoice) {
-        userData.subscription = {
-          type: subscriptionType,
-          tier: subscriptionChoice,
-        };
-      } else if (licenseKey) {
-        userData.licenseKey = licenseKey;
-      }
-
-      console.log('Données d\'inscription:', userData);
-
-      // En production, il faudrait appeler l'API réelle ici
-      // const response = await fetch('/api/auth/register', {
-      //   method: 'POST',
-      //   headers: {
-      //     'Content-Type': 'application/json',
-      //   },
-      //   body: JSON.stringify(userData),
-      // });
-      //
-      // if (!response.ok) {
-      //   throw new Error('Erreur lors de l\'inscription');
-      // }
-      //
-      // const data = await response.json();
-
-      // Redirection après inscription
-      localStorage.setItem('twool_auth', JSON.stringify({
-        token: 'sample-jwt-token',
-        user: {
-          id: 'usr-123',
           email,
+          password,
           firstName,
           lastName,
-          role: 'solo'
-        }
+      };
+
+      let response;
+
+      if (subscriptionChoice) {
+        // Inscription avec abonnement
+        const subscriptionData = {
+          type: subscriptionType,
+          tier: subscriptionChoice,
+          paymentProvider: 'stripe',
+          paymentId: 'placeholder'
+        };
+
+        response = await auth.registerWithSubscription(userData, subscriptionData);
+      } else if (licenseKeyValue) {
+        userData.license_key = licenseKeyValue;
+        response = await auth.register(userData);
+      } else {
+        // Inscription standard
+        response = await auth.register(userData);
+      }
+
+      // Stocker les informations d'authentification
+      localStorage.setItem('twool_auth', JSON.stringify({
+        token: response.token,
+        user: response.user
       }));
 
       // Redirection vers la page de confirmation ou dashboard
       router.push('/signup-success');
     } catch (error) {
       console.error('Erreur lors de l\'inscription:', error);
-      setErrors({ submit: "Une erreur est survenue lors de l'inscription. Veuillez réessayer." });
+      setErrors({ submit: error.message || "Une erreur est survenue lors de l'inscription. Veuillez réessayer." });
     } finally {
       setIsSubmitting(false);
     }
@@ -197,13 +207,16 @@ export default function Signup() {
     e.preventDefault();
 
     if (validateLicense()) {
-      handleCompleteSignup();
+      const fullLicenseKey = getLicenseKey();
+      handleCompleteSignup(fullLicenseKey);
     }
   };
 
   // Fonction pour revenir à l'étape précédente
   const handleBack = () => {
-    if (step > 1) {
+    if (step >= 3 && step <= 5) {
+      setStep(2);
+    } else if (step > 1) {
       setStep(step - 1);
     }
   };
@@ -334,6 +347,7 @@ export default function Signup() {
   );
 
   // Rendu de la phase 2 : Choix du mode d'accès
+  // Rendu de la phase 2 : Choix du mode d'accès (modifié pour inclure l'achat de licence)
   const renderAccessChoice = () => (
     <div className="space-y-6">
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
@@ -381,6 +395,34 @@ export default function Signup() {
                     <div className="ml-4">
                       <div className="text-sm font-medium text-green-600">J'ai déjà une clé de licence</div>
                       <div className="text-sm text-gray-500">Activez votre licence pour accéder à Twool Labs</div>
+                    </div>
+                  </div>
+                  <div>
+                    <svg className="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </button>
+          </li>
+          {/* Nouvelle option: Acheter une licence */}
+          <li>
+            <button
+              onClick={() => setStep(5)}
+              className="w-full block hover:bg-gray-50 transition-colors"
+            >
+              <div className="px-4 py-4 sm:px-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-blue-100 rounded-md p-2">
+                      <svg className="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                      </svg>
+                    </div>
+                    <div className="ml-4">
+                      <div className="text-sm font-medium text-blue-600">Acheter une licence</div>
+                      <div className="text-sm text-gray-500">Procéder à l'achat d'une licence pour accéder à Twool Labs</div>
                     </div>
                   </div>
                   <div>
@@ -442,8 +484,8 @@ export default function Signup() {
             <div
               key={subscription.id}
               className={`relative rounded-lg border p-4 shadow-sm flex flex-col ${subscriptionChoice === subscription.id
-                  ? 'border-indigo-500 ring-2 ring-indigo-500'
-                  : 'border-gray-300'
+                ? 'border-indigo-500 ring-2 ring-indigo-500'
+                : 'border-gray-300'
                 }`}
             >
               <div className="flex-1">
@@ -473,8 +515,8 @@ export default function Signup() {
                 type="button"
                 onClick={() => setSubscriptionChoice(subscription.id)}
                 className={`mt-6 w-full py-2 px-4 border rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${subscriptionChoice === subscription.id
-                    ? 'border-transparent bg-indigo-600 text-white hover:bg-indigo-700'
-                    : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+                  ? 'border-transparent bg-indigo-600 text-white hover:bg-indigo-700'
+                  : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
                   }`}
               >
                 {subscriptionChoice === subscription.id ? 'Sélectionné' : 'Sélectionner'}
@@ -551,24 +593,30 @@ export default function Signup() {
         </p>
 
         <div>
-          <label htmlFor="licenseKey" className="block text-sm font-medium text-gray-700">
+          <label htmlFor="licenseKey-0" className="block text-sm font-medium text-gray-700">
             Clé de licence
           </label>
-          <div className="mt-1">
-            <input
-              type="text"
-              id="licenseKey"
-              value={licenseKey}
-              onChange={(e) => setLicenseKey(e.target.value.toUpperCase())}
-              placeholder="XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"
-              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.licenseKey ? 'border-red-500' : 'border-gray-300'}`}
-            />
-            {errors.licenseKey && (
-              <p className="mt-1 text-sm text-red-600">{errors.licenseKey}</p>
-            )}
+          <div className="mt-1 flex space-x-2 items-center">
+            <span className="text-gray-500 font-medium">TW-</span>
+            {licenseKeys.map((part, index) => (
+              <React.Fragment key={index}>
+                {index > 0 && <span className="text-gray-400">-</span>}
+                <input
+                  type="text"
+                  id={`licenseKey-${index}`}
+                  value={part}
+                  onChange={(e) => handleLicenseKeyChange(index, e.target.value)}
+                  className={`appearance-none w-16 px-2 py-2 border rounded-md shadow-sm text-center placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.licenseKey ? 'border-red-500' : 'border-gray-300'}`}
+                  maxLength={4}
+                />
+              </React.Fragment>
+            ))}
           </div>
+          {errors.licenseKey && (
+            <p className="mt-1 text-sm text-red-600">{errors.licenseKey}</p>
+          )}
           <p className="mt-2 text-xs text-gray-500">
-            Entrez la clé de licence qui vous a été fournie. La clé de licence est au format XXXX-XXXX-XXXX-XXXX-XXXX-XXXX.
+            Entrez la clé de licence qui vous a été fournie. La clé de licence est au format TW-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX.
           </p>
         </div>
       </div>
@@ -623,6 +671,121 @@ export default function Signup() {
     </form>
   );
 
+  // Rendu de la phase 5: Achat de licence
+  const renderLicensePurchase = () => (
+    <form onSubmit={handleSubmitLicensePurchase} className="space-y-6">
+      <div className="space-y-4">
+        <h3 className="text-lg font-medium leading-6 text-gray-900">Acheter une licence Twool Labs</h3>
+
+        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+          <div className="px-4 py-5 sm:px-6">
+            <h3 className="text-lg leading-6 font-medium text-gray-900">Licence Pro</h3>
+            <p className="mt-1 max-w-2xl text-sm text-gray-500">Accès complet à toutes les fonctionnalités</p>
+          </div>
+          <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
+            <dl className="sm:divide-y sm:divide-gray-200">
+              <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium text-gray-500">Prix</dt>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">199€</dd>
+              </div>
+              <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium text-gray-500">Durée</dt>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">1 an</dd>
+              </div>
+              <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium text-gray-500">Fonctionnalités</dt>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li>Workflows illimités</li>
+                    <li>5 GB de stockage</li>
+                    <li>Toutes les fonctionnalités d'IA</li>
+                    <li>Support prioritaire</li>
+                  </ul>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
+        {/* Ajoutez ici les champs pour les informations de paiement */}
+        <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
+          <div className="sm:col-span-6">
+            <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700">
+              Numéro de carte
+            </label>
+            <div className="mt-1">
+              <input
+                type="text"
+                id="cardNumber"
+                placeholder="1234 5678 9012 3456"
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="sm:col-span-3">
+            <label htmlFor="expiry" className="block text-sm font-medium text-gray-700">
+              Date d'expiration
+            </label>
+            <div className="mt-1">
+              <input
+                type="text"
+                id="expiry"
+                placeholder="MM/AA"
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+          </div>
+
+          <div className="sm:col-span-3">
+            <label htmlFor="cvc" className="block text-sm font-medium text-gray-700">
+              CVC
+            </label>
+            <div className="mt-1">
+              <input
+                type="text"
+                id="cvc"
+                placeholder="123"
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-5">
+        <div className="flex justify-between">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
+            Retour
+          </button>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
+          >
+            {isSubmitting ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Traitement en cours...
+              </>
+            ) : (
+              "Acheter et créer mon compte"
+            )}
+          </button>
+        </div>
+      </div>
+    </form>
+  );
+
   // Rendu principal en fonction de l'étape actuelle
   const renderCurrentStep = () => {
     switch (step) {
@@ -634,6 +797,8 @@ export default function Signup() {
         return renderSubscriptionChoice();
       case 4:
         return renderLicenseActivation();
+      case 5:
+        return renderLicensePurchase();
       default:
         return renderPersonalInfo();
     }

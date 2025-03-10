@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 import uuid
 import jwt
 from passlib.context import CryptContext
@@ -35,9 +35,9 @@ class AuthService:
         to_encode = data.copy()
         
         if expires_delta:
-            expire = datetime.utcnow() + expires_delta
+            expire = datetime.now(timezone.utc) + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+            expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
             
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM)
@@ -112,14 +112,11 @@ class AuthService:
         
         try:
             # Traiter la licence si fournie
-            if license_key:
+            if license_key is not None:
                 AuthService.activate_license(db, user, license_key)
             # Sinon, créer un abonnement si les données sont fournies
-            elif subscription_data:
+            elif subscription_data is not None:
                 AuthService.create_subscription(db, user, subscription_data)
-            else:
-                # Créer un abonnement par défaut (version d'essai)
-                AuthService.create_trial_subscription(db, user)
             
             db.commit()
             return user
@@ -159,19 +156,7 @@ class AuthService:
                 detail="Cette licence n'est plus active"
             )
             
-        if license_obj.user_id:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Cette licence est déjà utilisée"
-            )
-            
-        if license_obj.expiration_date < datetime.utcnow():
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Cette licence a expiré"
-            )
-        
-        # Récupérer l'abonnement lié à la licence avec DatabaseService
+        # Récupérer l'abonnement lié à la licence
         subscription = DatabaseService.get_by_id(db, Subscription, license_obj.subscription_id)
         
         if not subscription:
@@ -180,18 +165,26 @@ class AuthService:
                 detail="Erreur: Abonnement lié à la licence introuvable"
             )
         
-        # Mettre à jour la licence avec DatabaseService
-        license_update_data = {
-            "user_id": user.id,
-            "activation_date": datetime.utcnow()
-        }
-        DatabaseService.update(db, license_obj, license_update_data)
+        # Vérifier si l'abonnement est déjà utilisé
+        if subscription.user_id:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cette licence est déjà utilisée"
+            )
+            
+        if license.expiration_date < datetime.now(timezone.utc):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Cette licence a expiré"
+            )
+
+        DatabaseService.update(db, subscription, { "user_id": user.id })
         
         # Préparer les données de mise à jour de l'utilisateur
         user_update_data = {}
         
         # Mettre à jour l'utilisateur (rôle et entreprise)
-        if license_obj.is_admin:
+        if hasattr(license_obj, "is_admin") and license_obj.is_admin:
             if subscription.tier == SubscriptionTier.BUSINESS:
                 user_update_data["role"] = UserRole.MANAGER
             elif subscription.tier == SubscriptionTier.ENTERPRISE:
@@ -265,8 +258,8 @@ class AuthService:
             "type": sub_type,
             "tier": sub_tier,
             "status": SubscriptionStatus.ACTIVE,
-            "start_date": datetime.utcnow(),
-            "end_date": datetime.utcnow() + duration,
+            "start_date": datetime.now(timezone.utc),
+            "end_date": datetime.now(timezone.utc) + duration,
             "payment_provider": subscription_data.get("payment_provider"),
             "payment_id": subscription_data.get("payment_id"),
             "amount": amount,
@@ -296,8 +289,8 @@ class AuthService:
             "type": SubscriptionType.MONTHLY,
             "tier": SubscriptionTier.SOLO,
             "status": SubscriptionStatus.ACTIVE,
-            "start_date": datetime.utcnow(),
-            "end_date": datetime.utcnow() + timedelta(days=14),
+            "start_date": datetime.now(timezone.utc),
+            "end_date": datetime.now(timezone.utc) + timedelta(days=14),
             "amount": 0.0,  # Gratuit
             "currency": "EUR",
             "max_workflows": 3,

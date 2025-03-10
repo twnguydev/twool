@@ -4,6 +4,12 @@
  */
 const authService = (client) => {
   return {
+    setAuthToken: (token) => {
+      client.setDefaultHeaders({
+        'Authorization': `Bearer ${token}`
+      });
+    },
+
     /**
      * Connexion avec token uniquement
      * @param {string} email - Email de l'utilisateur
@@ -38,15 +44,12 @@ const authService = (client) => {
      * @returns {Promise<Object>} - Les informations de l'utilisateur créé
      */
     register: (userData) => {
-      // Conversion des noms de propriétés camelCase vers snake_case pour l'API
-      const apiData = {
+      return client.post('/auth/register', {
         email: userData.email,
         password: userData.password,
         first_name: userData.firstName,
         last_name: userData.lastName
-      };
-      
-      return client.post('/auth/register', apiData);
+      });
     },
     
     /**
@@ -78,26 +81,11 @@ const authService = (client) => {
     
     /**
      * Inscription avec licence
-     * @param {Object} userData - Données utilisateur
-     * @param {string} licenseKey - Clé de licence
+     * @param {Object} requestData - Données utilisateur et clé de licence
      * @returns {Promise<Object>} - Les informations de l'utilisateur créé
      */
-    registerWithLicense: (userData, licenseKey) => {
-      // Conversion des noms de propriétés camelCase vers snake_case pour l'API
-      const apiUserData = {
-        email: userData.email,
-        password: userData.password,
-        first_name: userData.firstName,
-        last_name: userData.lastName
-      };
-      
-      const apiLicenseData = {
-        license_key: licenseKey
-      };
-      
-      return client.post('/auth/register/license', apiUserData, {
-        params: apiLicenseData
-      });
+    registerWithLicense: (requestData) => {
+      return client.post('/auth/register/license', requestData);
     },
     
     /**
@@ -105,10 +93,11 @@ const authService = (client) => {
      * @param {string} licenseKey - Clé de licence
      * @returns {Promise<Object>} - Les informations de l'utilisateur mises à jour
      */
-    activateLicense: (licenseKey) => 
-      client.post('/auth/activate-license', { 
-        license_key: licenseKey 
-      }),
+    activateLicense: (licenseData) => {
+      return client.post('/auth/activate-license', licenseData, {
+        headers: authToken ? { 'Authorization': `Bearer ${authToken}` } : {}
+      });
+    },
     
     /**
      * Récupérer les informations de l'utilisateur connecté

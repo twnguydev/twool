@@ -1,7 +1,7 @@
-import { useAuth } from '../api/contexts/auth-context';
+import { useAuth } from '../context/auth-context';
 
 // URL de base de l'API
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/v1';
 
 // Détection d'Electron
 const isElectron = () => {
@@ -16,15 +16,15 @@ export const useApi = () => {
   const getDefaultOptions = () => {
     const options = {
       headers: {
-        'Content-Type': 'application/json',
-      }
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
     };
 
-    // Ajouter le token d'authentification si disponible
     if (token) {
       options.headers['Authorization'] = `Bearer ${token}`;
     }
-
+  
     return options;
   };
 
@@ -128,6 +128,10 @@ export const useApi = () => {
     // DELETE
     delete: async (endpoint, options = {}) => {
       return apiRequest(endpoint, 'DELETE', null, options);
+    },
+
+    setDefaultHeaders: (key, value) => {
+      getDefaultOptions().headers[key] = value;
     }
   };
 

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Text, JSON, ForeignKey, Enum
+from sqlalchemy import Column, String, Text, ForeignKey, Enum
 from sqlalchemy.dialects.mysql import JSON as MySQLJSON
 from sqlalchemy.orm import relationship
 from app.models.base import Base, TimeStampMixin

@@ -1,8 +1,8 @@
-from sqlalchemy import Column, String, Text, Boolean, ForeignKey, DateTime, Enum, Float, Integer
+from sqlalchemy import Column, String, ForeignKey, DateTime, Enum, Float, Integer
 from sqlalchemy.orm import relationship
 from app.models.base import Base, TimeStampMixin
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
 
 class SubscriptionType(enum.Enum):
     MONTHLY = "monthly"
@@ -52,11 +52,11 @@ class Subscription(Base, TimeStampMixin):
     @property
     def is_active(self):
         return (self.status == SubscriptionStatus.ACTIVE and 
-                self.end_date > datetime.utcnow())
+                self.end_date > datetime.now(timezone.utc))
                 
     @property
     def days_remaining(self):
         if not self.is_active:
             return 0
-        delta = self.end_date - datetime.utcnow()
+        delta = self.end_date - datetime.now(timezone.utc)
         return max(0, delta.days)

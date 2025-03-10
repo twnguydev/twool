@@ -2,7 +2,6 @@ from sqlalchemy import Column, String, Text, Boolean, ForeignKey, Integer, DateT
 from sqlalchemy.dialects.mysql import JSON as MySQLJSON
 from sqlalchemy.orm import relationship
 from app.models.base import Base, TimeStampMixin
-from datetime import datetime
 
 class Workflow(Base, TimeStampMixin):
     __tablename__ = "workflows"

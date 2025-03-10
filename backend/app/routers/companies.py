@@ -1,8 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, Body
-from typing import List, Dict, Any, Optional
+from typing import List
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models.company import Company
 from app.models.user import User, UserRole
 from app.services.company_service import CompanyService
 from app.services.user_service import UserService

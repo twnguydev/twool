@@ -22,7 +22,10 @@ class Settings(BaseSettings):
   OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
   
   # Configuration CORS
-  BACKEND_CORS_ORIGINS: List[str] = ["*"]
+  BACKEND_CORS_ORIGINS: List[str] = [
+      "http://localhost:3000",
+      "http://127.0.0.1:3000"
+  ]
   
   # Préfixe pour les identifiants
   USER_ID_PREFIX: str = "usr"

@@ -1,9 +1,9 @@
-from fastapi import APIRouter, HTTPException, Depends, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from typing import Dict, Any, Optional
+from fastapi import APIRouter, HTTPException, Depends, status, Body
+from fastapi.security import OAuth2PasswordRequestForm
+from typing import Optional
 from sqlalchemy.orm import Session
 from datetime import timedelta
-from pydantic import BaseModel, EmailStr, Field, Body
+from pydantic import BaseModel, EmailStr, Field
 
 from app.database import get_db
 from app.models.user import User
@@ -19,6 +19,7 @@ class UserCreateModel(BaseModel):
     password: str = Field(..., min_length=8)
     first_name: str
     last_name: str
+    license_key: Optional[str] = None
     
     class Config:
         arbitrary_types_allowed = True
@@ -54,7 +55,7 @@ class SubscriptionRequest(BaseModel):
     payment_id: Optional[str] = None
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "type": "monthly",
                 "tier": "solo",
@@ -67,7 +68,7 @@ class LicenseActivationRequest(BaseModel):
     license_key: str = Field(..., min_length=24)
     
     class Config:
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "license_key": "XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"
             }
@@ -140,7 +141,8 @@ async def register(
             email=user_data.email,
             password=user_data.password,
             first_name=user_data.first_name,
-            last_name=user_data.last_name
+            last_name=user_data.last_name,
+            license_key=user_data.license_key
         )
         
         return UserService.user_to_dict(user)

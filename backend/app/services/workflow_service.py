@@ -4,7 +4,7 @@ from app.models.workflow import Workflow
 from app.models.user import User
 from app.models.subscription import Subscription
 from app.services.database import DatabaseService
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 class WorkflowService:
@@ -53,7 +53,7 @@ class WorkflowService:
             try:
                 client_created_at = datetime.fromisoformat(client_created_at.replace('Z', '+00:00'))
             except ValueError:
-                client_created_at = datetime.utcnow()
+                client_created_at = datetime.now(timezone.utc)
         
         # Préparer les données du workflow
         workflow_data = {

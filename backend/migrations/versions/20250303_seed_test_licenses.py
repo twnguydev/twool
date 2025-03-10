@@ -32,7 +32,7 @@ def generate_license_key():
 
 def upgrade():
     # Date actuelle pour les timestamps
-    now = datetime.utcnow()
+    now = datetime.now(timezone.utc)
     future_date = now + timedelta(days=30)  # Pour l'abonnement mensuel
     annual_future = now + timedelta(days=365)  # Pour les abonnements annuels
     

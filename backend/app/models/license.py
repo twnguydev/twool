@@ -2,7 +2,7 @@ from sqlalchemy import Column, String, Boolean, ForeignKey, DateTime, Enum
 from sqlalchemy.orm import relationship
 from app.models.base import Base, TimeStampMixin
 import enum
-from datetime import datetime
+from datetime import datetime, timezone
 
 class LicenseStatus(enum.Enum):
     ACTIVE = "active"
@@ -33,4 +33,4 @@ class License(Base, TimeStampMixin):
     @property
     def is_active(self):
         return (self.status == LicenseStatus.ACTIVE and 
-                self.expiration_date > datetime.utcnow())
+                self.expiration_date > datetime.now(timezone.utc))

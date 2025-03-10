@@ -1,16 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends, Body
-from typing import List, Dict, Any, Optional
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models.subscription import Subscription, SubscriptionType, SubscriptionTier, SubscriptionStatus
-from app.models.license import License, LicenseStatus
+from app.models.subscription import SubscriptionType, SubscriptionTier
 from app.models.user import User
-from app.models.company import Company
 from app.services.subscription_service import SubscriptionService
 from app.services.user_service import UserService
 from app.services.company_service import CompanyService
 from app.routers.users import get_current_user
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 router = APIRouter()
 

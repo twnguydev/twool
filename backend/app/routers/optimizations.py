@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.optimization import Optimization, OptimizationStatus
 from app.services.optimization_service import OptimizationService
-from app.services.process_service import ProcessService
+from app.services.workflow_service import WorkflowService
 from app.services.simulation_service import SimulationService
 from pydantic import BaseModel
 
@@ -12,7 +12,7 @@ router = APIRouter()
 
 # Modèles de données Pydantic pour la validation
 class OptimizationRequestModel(BaseModel):
-    process_id: str
+    workflow_id: str
     simulation_id: str = None
     parameters: Dict[str, Any] = {}
     
@@ -32,7 +32,7 @@ class OptimizationSuggestionModel(BaseModel):
 
 class OptimizationResponseModel(BaseModel):
     id: str
-    process_id: str
+    workflow_id: str
     simulation_id: str = None
     status: str
     parameters: Dict[str, Any] = None
@@ -62,11 +62,11 @@ class OptimizationUpdateModel(BaseModel):
 # Endpoints
 @router.post("/", response_model=OptimizationResponseModel)
 async def generate_optimizations(request: OptimizationRequestModel, db: Session = Depends(get_db)):
-    """Génère des suggestions d'optimisation pour un processus"""
-    # Vérifier si le processus existe
-    process = ProcessService.get_process(db, request.process_id)
-    if not process:
-        raise HTTPException(status_code=404, detail="Processus non trouvé")
+    """Génère des suggestions d'optimisation pour un workflow"""
+    # Vérifier si le workflow existe
+    workflow = WorkflowService.get_workflow(db, request.workflow_id)
+    if not workflow:
+        raise HTTPException(status_code=404, detail="Workflow non trouvé")
     
     # Vérifier si la simulation existe, si fournie
     if request.simulation_id:
@@ -76,7 +76,7 @@ async def generate_optimizations(request: OptimizationRequestModel, db: Session 
     
     # Créer l'optimisation
     optimization_data = {
-        "process_id": request.process_id,
+        "workflow_id": request.workflow_id,
         "simulation_id": request.simulation_id,
         "parameters": request.parameters,
         "status": OptimizationStatus.PENDING
@@ -102,15 +102,15 @@ async def get_optimization_results(optimization_id: str, db: Session = Depends(g
     
     return OptimizationService.optimization_to_dict(optimization)
 
-@router.get("/by-process/{process_id}", response_model=OptimizationListResponseModel)
-async def get_optimizations_by_process(process_id: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    """Récupère toutes les optimisations pour un processus donné"""
-    # Vérifier si le processus existe
-    process = ProcessService.get_process(db, process_id)
-    if not process:
-        raise HTTPException(status_code=404, detail="Processus non trouvé")
+@router.get("/by-process/{workflow_id}", response_model=OptimizationListResponseModel)
+async def get_optimizations_by_workflow(workflow_id: str, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    """Récupère toutes les optimisations pour un workflow donné"""
+    # Vérifier si le workflow existe
+    workflow = WorkflowService.get_workflow(db, workflow_id)
+    if not workflow:
+        raise HTTPException(status_code=404, detail="Workflow non trouvé")
     
-    optimizations = OptimizationService.get_optimizations_by_process(db, process_id, skip, limit)
+    optimizations = OptimizationService.get_optimizations_by_workflow(db, workflow_id, skip, limit)
     total = len(optimizations)  # Dans un système de production, utilisez count() au lieu de len()
     
     return {
