@@ -57,7 +57,7 @@ export default function Login() {
           <div className="h-16 w-16 relative">
             {/* Logo comme un placeholder - à remplacer par votre vrai logo */}
             <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-xl font-bold">TL</span>
+              <span className="text-white text-xl font-bold">Twool</span>
             </div>
           </div>
         </div>

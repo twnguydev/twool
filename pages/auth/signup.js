@@ -365,7 +365,7 @@ export default function Signup() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                       </svg>
                     </div>
-                    <div className="ml-4">
+                    <div className="ml-4 text-left">
                       <div className="text-sm font-medium text-indigo-600">Souscrire à un abonnement</div>
                       <div className="text-sm text-gray-500">Choisissez un abonnement mensuel ou annuel</div>
                     </div>
@@ -392,7 +392,7 @@ export default function Signup() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                       </svg>
                     </div>
-                    <div className="ml-4">
+                    <div className="ml-4 text-left">
                       <div className="text-sm font-medium text-green-600">J'ai déjà une clé de licence</div>
                       <div className="text-sm text-gray-500">Activez votre licence pour accéder à Twool Labs</div>
                     </div>
@@ -420,7 +420,7 @@ export default function Signup() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                       </svg>
                     </div>
-                    <div className="ml-4">
+                    <div className="ml-4 text-left">
                       <div className="text-sm font-medium text-blue-600">Acheter une licence</div>
                       <div className="text-sm text-gray-500">Procéder à l'achat d'une licence pour accéder à Twool Labs</div>
                     </div>
@@ -589,6 +589,14 @@ export default function Signup() {
             className="ml-1 text-indigo-600 hover:text-indigo-500 focus:outline-none"
           >
             souscrire à un abonnement
+          </button>{' '}
+          ou
+          <button
+            type="button"
+            onClick={() => setStep(5)}
+            className="ml-1 text-indigo-600 hover:text-indigo-500 focus:outline-none"
+          >
+            acheter une licence
           </button>.
         </p>
 
@@ -616,7 +624,7 @@ export default function Signup() {
             <p className="mt-1 text-sm text-red-600">{errors.licenseKey}</p>
           )}
           <p className="mt-2 text-xs text-gray-500">
-            Entrez la clé de licence qui vous a été fournie. La clé de licence est au format TW-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX.
+            Entrez la clé de licence qui vous a été fournie.<br />La clé de licence est au format TW-XXXX-XXXX-XXXX-XXXX-XXXX-XXXX.
           </p>
         </div>
       </div>
@@ -807,12 +815,20 @@ export default function Signup() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="flex justify-center">
+          <div className="h-16 w-16 relative">
+            {/* Logo comme un placeholder - à remplacer par votre vrai logo */}
+            <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center">
+              <span className="text-white text-xl font-bold">Twool</span>
+            </div>
+          </div>
+        </div>
         <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Créer un compte
+          Créer un compte Twool Labs
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Ou{' '}
-          <Link href="/auth/login">
+          <Link href="/auth/signup">
             <span className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
               connectez-vous à votre compte existant
             </span>
@@ -820,7 +836,7 @@ export default function Signup() {
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl md:max-w-2xl">
+      <div className={`mt-8 sm:mx-auto sm:w-full sm:max-w-xl ${step === 3 ? 'md:max-w-3xl' : 'md:max-w-2xl'}`}>
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           {/* Indicateur d'étape */}
           <div className="mb-8">

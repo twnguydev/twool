@@ -183,7 +183,7 @@ La simulation d'un processus:
 
 ## 🌐 API
 
-L'API REST de Twool Labs est accessible en développement à l'adresse `http://localhost:8000/api`.
+L'API REST de Twool Labs est accessible en développement à l'adresse `http://127.0.0.1:8000/api`.
 
 ### Points d'entrée principaux
 
@@ -191,26 +191,10 @@ L'API REST de Twool Labs est accessible en développement à l'adresse `http://l
 - `/api/simulations` - Exécution et récupération des simulations
 - `/api/optimizations` - Suggestions d'optimisation IA
 
-Consultez la documentation Swagger UI complète à l'adresse `http://localhost:8000/docs` en mode développement.
-
-## 🤝 Contribuer
-
-Les contributions sont les bienvenues! Voici comment contribuer au projet:
-
-1. Forker le dépôt
-2. Créer une branche pour votre fonctionnalité (`git checkout -b feature/amazing-feature`)
-3. Committer vos changements (`git commit -m 'feat: add amazing feature'`)
-4. Pousser la branche (`git push origin feature/amazing-feature`)
-5. Ouvrir une Pull Request
-
-Merci de suivre nos directives de contribution et notre code de conduite.
-
-## 📝 Licence
-
-Ce projet est sous licence [MIT](LICENSE).
+Consultez la documentation Swagger UI complète à l'adresse `http://127.0.0.1:8000/docs` en mode développement.
 
 ---
 
-Développé avec ❤️ par [Votre Équipe]
+Développé avec ❤️ par Tanguy Gibrat
 
-Pour toute question ou suggestion, contactez-nous à [contact@twool-labs.com](mailto:contact@twool-labs.com)
+Pour toute question ou suggestion, contactez-nous à [hello@tanguygibrat.fr](mailto:hello@tanguygibrat.fr)

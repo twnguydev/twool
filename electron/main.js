@@ -23,7 +23,7 @@ async function createWindow() {
   mainWindow.setTitle('Twool Labs by JLC Consulting');
 
   const url = isDev
-    ? 'http://localhost:3000' // Serveur de développement Next.js
+    ? 'http://localhost:3001' // Serveur de développement Next.js
     : `file://${path.join(__dirname, '../out/index.html')}`; // Chemin vers le build exporté
   
   mainWindow.loadURL(url);
