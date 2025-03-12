@@ -71,7 +71,7 @@ const DecisionNode = ({ data, isConnectable, selected }) => {
         {/* Label OUI avec positionnement ajusté */}
         <div className="pointer-events-none absolute" 
              style={{ bottom: '-35px', left: '50%', transform: 'translateX(-50%)' }}>
-          <div className="text-xs font-semibold bg-green-100 text-green-700 px-2 py-1 rounded-full shadow-sm">
+          <div className="text-xs font-semibold bg-green-100 text-green-700 px-2 py-1 rounded-full shadow-xs">
             Oui
           </div>
         </div>
@@ -87,7 +87,7 @@ const DecisionNode = ({ data, isConnectable, selected }) => {
         {/* Label NON avec positionnement ajusté */}
         <div className="pointer-events-none absolute" 
              style={{ right: '-50px', top: '50%', transform: 'translateY(-50%)' }}>
-          <div className="text-xs font-semibold bg-red-100 text-red-700 px-2 py-1 rounded-full shadow-sm">
+          <div className="text-xs font-semibold bg-red-100 text-red-700 px-2 py-1 rounded-full shadow-xs">
             Non
           </div>
         </div>
@@ -103,7 +103,7 @@ const DecisionNode = ({ data, isConnectable, selected }) => {
         {/* Label AUTRE avec positionnement ajusté */}
         <div className="pointer-events-none absolute" 
              style={{ top: '-35px', left: '50%', transform: 'translateX(-50%)' }}>
-          <div className="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded-full shadow-sm">
+          <div className="text-xs font-semibold bg-blue-100 text-blue-700 px-2 py-1 rounded-full shadow-xs">
             Autre
           </div>
         </div>
@@ -119,7 +119,7 @@ const DecisionNode = ({ data, isConnectable, selected }) => {
         {/* Handle RETOUR avec positionnement ajusté */}
         <div className="pointer-events-none absolute" 
              style={{ left: '-30px', top: '50%', transform: 'translateY(-50%)' }}>
-          <div className="text-xs font-semibold bg-purple-100 text-purple-700 px-2 py-1 rounded-full shadow-sm opacity-0">
+          <div className="text-xs font-semibold bg-purple-100 text-purple-700 px-2 py-1 rounded-full shadow-xs opacity-0">
             Retour
           </div>
         </div>

@@ -122,7 +122,7 @@ const PropertyPanel = ({ element, onUpdateProperties }) => {
                   name="label"
                   value={properties.label || ''}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </>
@@ -140,7 +140,7 @@ const PropertyPanel = ({ element, onUpdateProperties }) => {
                   name="duration"
                   value={properties.duration || 0}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
@@ -154,7 +154,7 @@ const PropertyPanel = ({ element, onUpdateProperties }) => {
                   name="cost"
                   value={properties.cost || 0}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
@@ -167,7 +167,7 @@ const PropertyPanel = ({ element, onUpdateProperties }) => {
                   name="assignedTo"
                   value={properties.assignedTo || ''}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
             </>
@@ -240,7 +240,7 @@ const PropertyPanel = ({ element, onUpdateProperties }) => {
                   rows="4"
                   placeholder="ex: profit = revenue - cost
 tauxMarge = (profit / revenue) * 100"
-                  className="w-full px-3 py-2 font-mono text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  className="w-full px-3 py-2 font-mono text-sm border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-purple-500 focus:border-purple-500"
                 />
                 <p className="mt-1 text-xs text-gray-500">
                   Entrez plusieurs formules en les séparant par des sauts de ligne.
@@ -335,7 +335,7 @@ tauxMarge = (profit / revenue) * 100"
                   name="triggerType"
                   value={properties.triggerType || 'manual'}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-purple-500 focus:border-purple-500"
                 >
                   <option value="manual">Manuel</option>
                   <option value="onChange">À chaque changement de variable</option>
@@ -355,7 +355,7 @@ tauxMarge = (profit / revenue) * 100"
                     value={properties.frequency || 5}
                     onChange={handleChange}
                     min="1"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-purple-500 focus:border-purple-500"
                   />
                 </div>
               )}
@@ -400,7 +400,7 @@ tauxMarge = (profit / revenue) * 100"
                   name="label"
                   value={properties.label || ''}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                 />
               </div>
 
@@ -411,7 +411,7 @@ tauxMarge = (profit / revenue) * 100"
                   name="animated"
                   checked={properties.animated || false}
                   onChange={handleChange}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-sm"
                 />
                 <label htmlFor="animated" className="ml-2 block text-sm text-gray-700">
                   Animation du flux
@@ -426,7 +426,7 @@ tauxMarge = (profit / revenue) * 100"
                   name="style.strokeWidth"
                   value={properties.style?.strokeWidth || 2}
                   onChange={handleChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value={1}>Fin</option>
                   <option value={2}>Normal</option>
@@ -510,7 +510,7 @@ tauxMarge = (profit / revenue) * 100"
                   min="0"
                   max="100"
                   step="0.1"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                 />
                 <p className="mt-1 text-xs text-gray-500">
                   Valeur minimale de la marge pour considérer le modèle comme résilient.
@@ -603,7 +603,7 @@ tauxMarge = (profit / revenue) * 100"
                             newScenarios[scIndex].active = e.target.checked;
                             setProperties(prev => ({ ...prev, scenarios: newScenarios }));
                           }}
-                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                          className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded-sm"
                         />
                         <label htmlFor={`scenario-active-${scIndex}`} className="ml-2 block text-sm text-gray-700">
                           Actif
@@ -725,7 +725,7 @@ tauxMarge = (profit / revenue) * 100"
                   value={properties.referenceVariable || 'tauxMarge'}
                   onChange={handleChange}
                   placeholder="ex: tauxMarge"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
                 />
                 <p className="mt-1 text-xs text-gray-500">
                   Nom de la variable utilisée pour évaluer la résilience.
@@ -754,7 +754,7 @@ tauxMarge = (profit / revenue) * 100"
               value={properties.description || ''}
               onChange={handleChange}
               rows="3"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
 
@@ -769,7 +769,7 @@ tauxMarge = (profit / revenue) * 100"
 
           <button
             type="submit"
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full py-2 px-4 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
           >
             Appliquer les modifications
           </button>

@@ -280,7 +280,7 @@ export default function Signup() {
               id="firstName"
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
-              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.firstName ? 'border-red-500' : 'border-gray-300'}`}
+              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-xs placeholder-gray-400 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.firstName ? 'border-red-500' : 'border-gray-300'}`}
             />
             {errors.firstName && (
               <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
@@ -298,7 +298,7 @@ export default function Signup() {
               id="lastName"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
-              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.lastName ? 'border-red-500' : 'border-gray-300'}`}
+              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-xs placeholder-gray-400 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.lastName ? 'border-red-500' : 'border-gray-300'}`}
             />
             {errors.lastName && (
               <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
@@ -316,7 +316,7 @@ export default function Signup() {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
+              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-xs placeholder-gray-400 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
             />
             {errors.email && (
               <p className="mt-1 text-sm text-red-600">{errors.email}</p>
@@ -334,7 +334,7 @@ export default function Signup() {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
+              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-xs placeholder-gray-400 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
             />
             {errors.password && (
               <p className="mt-1 text-sm text-red-600">{errors.password}</p>
@@ -352,7 +352,7 @@ export default function Signup() {
               id="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
+              className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-xs placeholder-gray-400 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'}`}
             />
             {errors.confirmPassword && (
               <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
@@ -366,14 +366,14 @@ export default function Signup() {
           <Link href="/auth/login">
             <button
               type="button"
-              className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Annuler
             </button>
           </Link>
           <button
             type="submit"
-            className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Continuer
           </button>
@@ -386,7 +386,7 @@ export default function Signup() {
   // Rendu de la phase 2 : Choix du mode d'accès (modifié pour inclure l'achat de licence)
   const renderAccessChoice = () => (
     <div className="space-y-6">
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+      <div className="bg-white shadow-sm overflow-hidden sm:rounded-md">
         <ul role="list" className="divide-y divide-gray-200">
           <li>
             <button
@@ -396,7 +396,7 @@ export default function Signup() {
               <div className="px-4 py-4 sm:px-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-indigo-100 rounded-md p-2">
+                    <div className="shrink-0 bg-indigo-100 rounded-md p-2">
                       <svg className="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
                       </svg>
@@ -423,7 +423,7 @@ export default function Signup() {
               <div className="px-4 py-4 sm:px-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-green-100 rounded-md p-2">
+                    <div className="shrink-0 bg-green-100 rounded-md p-2">
                       <svg className="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                       </svg>
@@ -451,7 +451,7 @@ export default function Signup() {
               <div className="px-4 py-4 sm:px-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-blue-100 rounded-md p-2">
+                    <div className="shrink-0 bg-blue-100 rounded-md p-2">
                       <svg className="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
                       </svg>
@@ -478,7 +478,7 @@ export default function Signup() {
           <button
             type="button"
             onClick={handleBack}
-            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Retour
           </button>
@@ -500,12 +500,12 @@ export default function Signup() {
             </span>
             <button
               type="button"
-              className={`relative inline-flex flex-shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${subscriptionType === 'annual' ? 'bg-indigo-600' : 'bg-gray-200'
+              className={`relative inline-flex shrink-0 h-6 w-11 border-2 border-transparent rounded-full cursor-pointer transition-colors ease-in-out duration-200 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${subscriptionType === 'annual' ? 'bg-indigo-600' : 'bg-gray-200'
                 }`}
               onClick={() => setSubscriptionType(subscriptionType === 'monthly' ? 'annual' : 'monthly')}
             >
               <span
-                className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition ease-in-out duration-200 ${subscriptionType === 'annual' ? 'translate-x-5' : 'translate-x-0'
+                className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow-sm transform ring-0 transition ease-in-out duration-200 ${subscriptionType === 'annual' ? 'translate-x-5' : 'translate-x-0'
                   }`}
               />
             </button>
@@ -538,7 +538,7 @@ export default function Signup() {
                 <ul className="mt-6 space-y-3">
                   {subscription.features.map((feature) => (
                     <li key={feature} className="flex">
-                      <svg className="flex-shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                      <svg className="shrink-0 h-5 w-5 text-green-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                       <span className="ml-2 text-sm text-gray-500">{feature}</span>
@@ -550,7 +550,7 @@ export default function Signup() {
               <button
                 type="button"
                 onClick={() => setSubscriptionChoice(subscription.id)}
-                className={`mt-6 w-full py-2 px-4 border rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${subscriptionChoice === subscription.id
+                className={`mt-6 w-full py-2 px-4 border rounded-md shadow-sm text-sm font-medium focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${subscriptionChoice === subscription.id
                   ? 'border-transparent bg-indigo-600 text-white hover:bg-indigo-700'
                   : 'border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
                   }`}
@@ -565,7 +565,7 @@ export default function Signup() {
       {errors.submit && (
         <div className="rounded-md bg-red-50 p-4">
           <div className="flex">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
@@ -584,7 +584,7 @@ export default function Signup() {
           <button
             type="button"
             onClick={handleBack}
-            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Retour
           </button>
@@ -592,7 +592,7 @@ export default function Signup() {
           <button
             type="submit"
             disabled={!subscriptionChoice || isSubmitting}
-            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${(!subscriptionChoice || isSubmitting) ? 'opacity-50 cursor-not-allowed' : ''
+            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${(!subscriptionChoice || isSubmitting) ? 'opacity-50 cursor-not-allowed' : ''
               }`}
           >
             {isSubmitting ? (
@@ -622,7 +622,7 @@ export default function Signup() {
           <button
             type="button"
             onClick={() => setStep(3)}
-            className="ml-1 text-indigo-600 hover:text-indigo-500 focus:outline-none"
+            className="ml-1 text-indigo-600 hover:text-indigo-500 focus:outline-hidden"
           >
             souscrire à un abonnement
           </button>{' '}
@@ -630,7 +630,7 @@ export default function Signup() {
           <button
             type="button"
             onClick={() => setStep(5)}
-            className="ml-1 text-indigo-600 hover:text-indigo-500 focus:outline-none"
+            className="ml-1 text-indigo-600 hover:text-indigo-500 focus:outline-hidden"
           >
             acheter une licence
           </button>.
@@ -650,7 +650,7 @@ export default function Signup() {
                   id={`licenseKey-${index}`}
                   value={part}
                   onChange={(e) => handleLicenseKeyChange(index, e.target.value)}
-                  className={`appearance-none w-16 px-2 py-2 border rounded-md shadow-sm text-center placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.licenseKey ? 'border-red-500' : 'border-gray-300'}`}
+                  className={`appearance-none w-16 px-2 py-2 border rounded-md shadow-xs text-center placeholder-gray-400 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.licenseKey ? 'border-red-500' : 'border-gray-300'}`}
                 />
               </React.Fragment>
             ))}
@@ -667,7 +667,7 @@ export default function Signup() {
       {errors.submit && (
         <div className="rounded-md bg-red-50 p-4">
           <div className="flex">
-            <div className="flex-shrink-0">
+            <div className="shrink-0">
               <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
               </svg>
@@ -686,7 +686,7 @@ export default function Signup() {
           <button
             type="button"
             onClick={handleBack}
-            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Retour
           </button>
@@ -694,7 +694,7 @@ export default function Signup() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
               }`}
           >
             {isSubmitting ? (
@@ -720,7 +720,7 @@ export default function Signup() {
       <div className="space-y-4">
         <h3 className="text-lg font-medium leading-6 text-gray-900">Acheter une licence Twool Labs</h3>
 
-        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div className="bg-white shadow-sm overflow-hidden sm:rounded-lg">
           <div className="px-4 py-5 sm:px-6">
             <h3 className="text-lg leading-6 font-medium text-gray-900">Licence Pro</h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">Accès complet à toutes les fonctionnalités</p>
@@ -761,7 +761,7 @@ export default function Signup() {
                 type="text"
                 id="cardNumber"
                 placeholder="1234 5678 9012 3456"
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs placeholder-gray-400 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
           </div>
@@ -775,7 +775,7 @@ export default function Signup() {
                 type="text"
                 id="expiry"
                 placeholder="MM/AA"
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs placeholder-gray-400 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
           </div>
@@ -789,7 +789,7 @@ export default function Signup() {
                 type="text"
                 id="cvc"
                 placeholder="123"
-                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-xs placeholder-gray-400 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
             </div>
           </div>
@@ -801,7 +801,7 @@ export default function Signup() {
           <button
             type="button"
             onClick={handleBack}
-            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Retour
           </button>
@@ -809,7 +809,7 @@ export default function Signup() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+            className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
               }`}
           >
             {isSubmitting ? (
@@ -872,7 +872,7 @@ export default function Signup() {
       </div>
 
       <div className={`mt-8 sm:mx-auto sm:w-full sm:max-w-xl ${step === 3 ? 'md:max-w-3xl' : 'md:max-w-2xl'}`}>
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+        <div className="bg-white py-8 px-4 shadow-sm sm:rounded-lg sm:px-10">
           {/* Indicateur d'étape */}
           <div className="mb-8">
             <div className="flex items-center justify-between">

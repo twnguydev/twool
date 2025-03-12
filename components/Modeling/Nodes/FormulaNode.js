@@ -100,7 +100,7 @@ const FormulaNode = ({ data, isConnectable, selected }) => {
         
         {/* Afficher l'erreur s'il y en a une */}
         {data.error && (
-          <div className="mt-2 p-2 bg-red-50 border border-red-100 rounded text-xs text-red-600">
+          <div className="mt-2 p-2 bg-red-50 border border-red-100 rounded-sm text-xs text-red-600">
             Erreur: {data.error}
           </div>
         )}

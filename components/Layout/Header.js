@@ -19,12 +19,12 @@ const Header = ({ title }) => {
   ];
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-100">
+    <header className="bg-white shadow-xs border-b border-gray-100">
       <div className="mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Partie gauche - info contextuelle et titre de page */}
           <div className="flex items-center">
-            <div className="flex-shrink-0 flex items-center">
+            <div className="shrink-0 flex items-center">
               <h1 className="text-xl font-semibold text-gray-800">{title}</h1>
               <div className="ml-3 px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-md">Production</div>
             </div>
@@ -34,7 +34,7 @@ const Header = ({ title }) => {
           <div className="flex items-center md:hidden">
             <button
               onClick={toggleMobileMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-blue-600 hover:bg-gray-100 focus:outline-none"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-blue-600 hover:bg-gray-100 focus:outline-hidden"
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -48,14 +48,14 @@ const Header = ({ title }) => {
                 <Search size={16} className="text-gray-400" />
               </div>
               <input
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-hidden focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 type="text"
                 placeholder="Rechercher..."
               />
             </div>
 
             {/* Bouton de création */}
-            <Link href="/modeling/workflows/new" className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <Link href="/modeling/workflows/new" className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-xs text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
               <PlusSquare size={16} className="mr-2" />
               Créer un workflow
             </Link>
@@ -64,7 +64,7 @@ const Header = ({ title }) => {
             <div className="relative">
               <button 
                 onClick={toggleNotifications}
-                className="relative p-1 rounded-full text-gray-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="relative p-1 rounded-full text-gray-500 hover:text-blue-600 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >
                 <Bell size={20} />
                 {notifications.filter(n => n.isNew).length > 0 && (
@@ -90,9 +90,9 @@ const Header = ({ title }) => {
                     ))}
                   </div>
                   <div className="py-2 px-3 border-t border-gray-100 text-center">
-                    <a href="#" className="text-xs font-medium text-blue-600 hover:text-blue-800">
+                    <Link href="#" className="text-xs font-medium text-blue-600 hover:text-blue-800">
                       Voir toutes les notifications
-                    </a>
+                    </Link>
                   </div>
                 </div>
               )}
@@ -103,10 +103,10 @@ const Header = ({ title }) => {
               <div>
                 <button 
                   onClick={toggleUserMenu}
-                  className="flex items-center max-w-xs text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                  className="flex items-center max-w-xs text-sm rounded-full focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   <div className="flex items-center">
-                    <div className="h-9 w-9 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white shadow-sm">
+                    <div className="h-9 w-9 bg-linear-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white shadow-xs">
                       <UserRoundCheck size={20} />
                     </div>
                     <span className="ml-2 mr-1 text-sm font-medium text-gray-700 hidden lg:block">
@@ -121,27 +121,27 @@ const Header = ({ title }) => {
               {userMenuOpen && (
                 <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
                   <div className="py-1">
-                    <a
+                    <Link
                       href="#"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <User size={16} className="mr-3 text-gray-500" />
                       Mon profil
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       href="#"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <Settings size={16} className="mr-3 text-gray-500" />
                       Paramètres
-                    </a>
-                    <a
+                    </Link>
+                    <Link
                       href="#"
                       className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                     >
                       <LogOut size={16} className="mr-3 text-gray-500" />
                       Déconnexion
-                    </a>
+                    </Link>
                   </div>
                 </div>
               )}
@@ -155,8 +155,8 @@ const Header = ({ title }) => {
         <div className="md:hidden">
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center px-4">
-              <div className="flex-shrink-0">
-                <div className="h-10 w-10 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white">
+              <div className="shrink-0">
+                <div className="h-10 w-10 bg-linear-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white">
                   <UserRoundCheck size={20} />
                 </div>
               </div>
@@ -165,7 +165,7 @@ const Header = ({ title }) => {
                 <div className="text-sm font-medium text-gray-500">marie@example.com</div>
               </div>
               <button 
-                className="ml-auto p-1 rounded-full text-gray-500 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="ml-auto p-1 rounded-full text-gray-500 hover:text-blue-600 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 onClick={toggleNotifications}
               >
                 <Bell size={20} />
@@ -175,29 +175,29 @@ const Header = ({ title }) => {
               </button>
             </div>
             <div className="mt-3 px-2 space-y-1">
-              <a
+              <Link
                 href="#"
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
               >
                 Mon profil
-              </a>
-              <a
+              </Link>
+              <Link
                 href="#"
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
               >
                 Paramètres
-              </a>
+              </Link>
               <button
                 className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
               >
                 Créer un workflow
               </button>
-              <a
+              <Link
                 href="#"
                 className="block px-3 py-2 rounded-md text-base font-medium text-gray-500 hover:bg-gray-50 hover:text-gray-900"
               >
                 Déconnexion
-              </a>
+              </Link>
             </div>
           </div>
         </div>

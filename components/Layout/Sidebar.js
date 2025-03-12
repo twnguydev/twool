@@ -106,7 +106,7 @@ const Sidebar = () => {
         )}
         <button 
           onClick={toggleSidebar} 
-          className={`${collapsed ? 'hidden' : 'flex'} p-1 rounded-full hover:bg-gray-700 text-gray-400 hover:text-white focus:outline-none`}
+          className={`${collapsed ? 'hidden' : 'flex'} p-1 rounded-full hover:bg-gray-700 text-gray-400 hover:text-white focus:outline-hidden`}
         >
           <PanelLeft size={16} />
         </button>
@@ -116,14 +116,14 @@ const Sidebar = () => {
       {collapsed && (
         <button 
           onClick={toggleSidebar}
-          className="absolute -right-3 top-20 bg-gray-800 rounded-full p-1 text-gray-400 hover:text-white shadow-md focus:outline-none"
+          className="absolute -right-3 top-20 bg-gray-800 rounded-full p-1 text-gray-400 hover:text-white shadow-md focus:outline-hidden"
         >
           <PanelRight size={16} />
         </button>
       )}
       
       {/* Navigation */}
-      <nav className="flex-grow overflow-y-auto pt-2">
+      <nav className="grow overflow-y-auto pt-2">
         <div className="px-2">
           {menuItems.map((item) => (
             <div key={item.name} className="mb-1">

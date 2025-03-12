@@ -15,7 +15,7 @@ const Toolbar = ({ onSave, onSimulate, onOptimize, onAddNode, executeFormulas, r
   const toggleActionsDropdown = () => setActionsDropdownOpen(!actionsDropdownOpen);
 
   return (
-    <div className="flex flex-wrap items-center p-2 bg-white border-b border-gray-200 shadow-sm">
+    <div className="flex flex-wrap items-center p-2 bg-white border-b border-gray-200 shadow-xs">
       {/* Section Nœuds */}
       <div className="relative mr-4">
         <button 

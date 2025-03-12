@@ -185,7 +185,7 @@ export default function Simulations() {
         <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-end">
           <div className="mt-4 md:mt-0 flex space-x-3">
             <Link href="/modeling">
-              <div className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 cursor-pointer">
+              <div className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 cursor-pointer">
                 <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -193,7 +193,7 @@ export default function Simulations() {
               </div>
             </Link>
             <Link href="/workflows">
-              <div className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">
+              <div className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">
                 <svg className="mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
@@ -213,7 +213,7 @@ export default function Simulations() {
             </div>
             <input
               type="text"
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               placeholder="Rechercher..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -221,7 +221,7 @@ export default function Simulations() {
           </div>
           <div className="flex space-x-2">
             <select
-              className="border border-gray-300 rounded-md px-3 py-2 bg-white text-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              className="border border-gray-300 rounded-md px-3 py-2 bg-white text-sm focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
               value={selectedWorkflow || ''}
               onChange={(e) => setSelectedWorkflow(e.target.value || null)}
             >
@@ -236,7 +236,7 @@ export default function Simulations() {
         {/* Affichage des clusters de simulation */}
         <div className="space-y-8">
           {filteredClusters.map(cluster => (
-            <div key={cluster.id} className="bg-white shadow overflow-hidden rounded-lg">
+            <div key={cluster.id} className="bg-white shadow-sm overflow-hidden rounded-lg">
               {/* En-tête du cluster */}
               <div className="px-4 py-5 sm:px-6 bg-blue-50 border-b border-blue-100">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between">
@@ -262,7 +262,7 @@ export default function Simulations() {
                     )}
                     <div className="mt-2">
                       <Link href={`/simulations/cluster/${cluster.id}`}>
-                        <div className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded text-blue-700 bg-blue-100 hover:bg-blue-200 cursor-pointer">
+                        <div className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-sm text-blue-700 bg-blue-100 hover:bg-blue-200 cursor-pointer">
                           Voir les détails
                         </div>
                       </Link>
@@ -283,7 +283,7 @@ export default function Simulations() {
                       {cluster.simulations.map((simulation, index) => (
                         <div key={simulation.id} className="flex flex-col items-center">
                           <div
-                            className={`flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center ${simulation.status === 'completed' ? 'bg-green-500' :
+                            className={`shrink-0 h-8 w-8 rounded-full flex items-center justify-center ${simulation.status === 'completed' ? 'bg-green-500' :
                                 simulation.status === 'running' ? 'bg-blue-500' :
                                   'bg-gray-300'
                               } border-2 border-white`}
@@ -364,10 +364,10 @@ export default function Simulations() {
                 {/* Métriques (si disponibles) */}
                 {cluster.metrics && (
                   <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                    <div className="bg-white overflow-hidden shadow rounded-lg">
+                    <div className="bg-white overflow-hidden shadow-sm rounded-lg">
                       <div className="px-4 py-5 sm:p-6">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 bg-purple-100 rounded-md p-3">
+                          <div className="shrink-0 bg-purple-100 rounded-md p-3">
                             <svg className="h-6 w-6 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -388,10 +388,10 @@ export default function Simulations() {
                       </div>
                     </div>
 
-                    <div className="bg-white overflow-hidden shadow rounded-lg">
+                    <div className="bg-white overflow-hidden shadow-sm rounded-lg">
                       <div className="px-4 py-5 sm:p-6">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 bg-yellow-100 rounded-md p-3">
+                          <div className="shrink-0 bg-yellow-100 rounded-md p-3">
                             <svg className="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -412,10 +412,10 @@ export default function Simulations() {
                       </div>
                     </div>
 
-                    <div className="bg-white overflow-hidden shadow rounded-lg">
+                    <div className="bg-white overflow-hidden shadow-sm rounded-lg">
                       <div className="px-4 py-5 sm:p-6">
                         <div className="flex items-center">
-                          <div className="flex-shrink-0 bg-green-100 rounded-md p-3">
+                          <div className="shrink-0 bg-green-100 rounded-md p-3">
                             <svg className="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
@@ -443,7 +443,7 @@ export default function Simulations() {
 
           {/* Message si aucun cluster trouvé */}
           {filteredClusters.length === 0 && (
-            <div className="bg-white shadow overflow-hidden rounded-lg py-10 px-6 text-center">
+            <div className="bg-white shadow-sm overflow-hidden rounded-lg py-10 px-6 text-center">
               <svg className="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
@@ -453,7 +453,7 @@ export default function Simulations() {
               </p>
               <div className="mt-6">
                 <Link href="/modeling">
-                  <button type="button" className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  <button type="button" className="inline-flex items-center px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>

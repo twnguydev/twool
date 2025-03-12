@@ -197,7 +197,7 @@ export default function Workflows() {
         {/* En-tête avec titre et boutons d'action */}
         <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-end">
           <div className="mt-4 md:mt-0 flex space-x-3">
-            <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+            <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
               <svg className="mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
               </svg>
@@ -216,7 +216,7 @@ export default function Workflows() {
             </div>
             <input
               type="text"
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Rechercher..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -224,7 +224,7 @@ export default function Workflows() {
           </div>
           <div className="flex space-x-2">
             <select
-              className="border border-gray-300 rounded-md px-3 py-2 bg-white text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="border border-gray-300 rounded-md px-3 py-2 bg-white text-sm focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
             >
@@ -235,7 +235,7 @@ export default function Workflows() {
               <option value="simulations">Simulations</option>
             </select>
             <button
-              className="flex items-center px-3 py-2 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="flex items-center px-3 py-2 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-indigo-500"
               onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
             >
               {sortOrder === 'asc' ? (
@@ -252,7 +252,7 @@ export default function Workflows() {
         </div>
 
         {/* Liste des workflows */}
-        <div className="bg-white shadow overflow-hidden rounded-lg">
+        <div className="bg-white shadow-sm overflow-hidden rounded-lg">
           {/* En-tête du tableau */}
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -345,7 +345,7 @@ export default function Workflows() {
                 <tr key={workflow.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10 flex items-center justify-center bg-indigo-100 rounded-lg">
+                      <div className="shrink-0 h-10 w-10 flex items-center justify-center bg-indigo-100 rounded-lg">
                         <svg className="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
                         </svg>
@@ -422,7 +422,7 @@ export default function Workflows() {
               </p>
               <div className="mt-6">
                 <Link href="/modeling">
-                  <button type="button" className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                  <button type="button" className="inline-flex items-center px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                     </svg>
@@ -441,7 +441,7 @@ export default function Workflows() {
               Affichage de <span className="font-medium">{sortedWorkflows.length}</span> workflows sur <span className="font-medium">{workflowsData.length}</span> au total
             </div>
             <div className="flex-1 flex justify-end">
-              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+              <nav className="relative z-0 inline-flex rounded-md shadow-xs -space-x-px" aria-label="Pagination">
                 <button className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                   <span className="sr-only">Précédent</span>
                   <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

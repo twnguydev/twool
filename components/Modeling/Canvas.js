@@ -532,7 +532,7 @@ const ProcessCanvas = () => {
               
               {/* Métriques du processus */}
               {metrics && (
-                <Panel position="top-right" className="bg-white p-2 rounded shadow-md text-xs">
+                <Panel position="top-right" className="bg-white p-2 rounded-sm shadow-md text-xs">
                   <div className="font-semibold mb-1">Métriques du processus</div>
                   <div>Tâches: {metrics.totalTasks}</div>
                   <div>Décisions: {metrics.totalDecisions}</div>
@@ -547,7 +547,7 @@ const ProcessCanvas = () => {
           </ReactFlowProvider>
         </div>
         {selectedElement && (
-          <div className="h-full overflow-hidden flex-shrink-0">
+          <div className="h-full overflow-hidden shrink-0">
             <PropertyPanel
               element={selectedElement}
               onUpdateProperties={(id, properties) => 

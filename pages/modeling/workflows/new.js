@@ -121,7 +121,7 @@ export default function CreateWorkflow() {
         <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-end">
           <div className="mt-4 md:mt-0">
             <Link href="/workflows">
-              <div className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">
+              <div className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">
                 <svg className="mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -134,7 +134,7 @@ export default function CreateWorkflow() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Formulaire principal */}
           <div className="md:col-span-2">
-            <div className="bg-white shadow overflow-hidden rounded-lg">
+            <div className="bg-white shadow-sm overflow-hidden rounded-lg">
               <div className="px-4 py-5 sm:px-6 bg-indigo-50 border-b border-indigo-100">
                 <h3 className="text-lg font-medium text-indigo-800">Informations générales</h3>
                 <p className="mt-1 text-sm text-indigo-600">
@@ -155,7 +155,7 @@ export default function CreateWorkflow() {
                         name="workflowName"
                         value={workflowName}
                         onChange={(e) => setWorkflowName(e.target.value)}
-                        className={`block w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                        className={`block w-full border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-xs py-2 px-3 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                         placeholder="Ex: Processus d'Onboarding Client"
                       />
                       {errors.name && (
@@ -176,7 +176,7 @@ export default function CreateWorkflow() {
                         rows="4"
                         value={workflowDescription}
                         onChange={(e) => setWorkflowDescription(e.target.value)}
-                        className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="block w-full border border-gray-300 rounded-md shadow-xs py-2 px-3 focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                         placeholder="Décrivez l'objectif et les particularités de ce workflow..."
                       ></textarea>
                     </div>
@@ -192,7 +192,7 @@ export default function CreateWorkflow() {
                           type="checkbox"
                           checked={isShared}
                           onChange={(e) => setIsShared(e.target.checked)}
-                          className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                          className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded-sm"
                         />
                       </div>
                       <div className="ml-3 text-sm">
@@ -206,7 +206,7 @@ export default function CreateWorkflow() {
                   {errors.submit && (
                     <div className="mb-6 rounded-md bg-red-50 p-4">
                       <div className="flex">
-                        <div className="flex-shrink-0">
+                        <div className="shrink-0">
                           <svg className="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                             <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                           </svg>
@@ -224,14 +224,14 @@ export default function CreateWorkflow() {
                   {/* Boutons d'action */}
                   <div className="pt-5 flex justify-end">
                     <Link href="/workflows">
-                      <div className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer">
+                      <div className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer">
                         Annuler
                       </div>
                     </Link>
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className={`ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''}`}
+                      className={`ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${isSubmitting ? 'opacity-75 cursor-not-allowed' : ''}`}
                     >
                       {isSubmitting ? (
                         <>
@@ -253,7 +253,7 @@ export default function CreateWorkflow() {
           
           {/* Sélection de template */}
           <div className="md:col-span-1">
-            <div className="bg-white shadow overflow-hidden rounded-lg">
+            <div className="bg-white shadow-sm overflow-hidden rounded-lg">
               <div className="px-4 py-5 sm:px-6 bg-indigo-50 border-b border-indigo-100">
                 <h3 className="text-lg font-medium text-indigo-800">Templates disponibles</h3>
                 <p className="mt-1 text-sm text-indigo-600">
@@ -269,7 +269,7 @@ export default function CreateWorkflow() {
                       onClick={() => setSelectedTemplate(template.id === selectedTemplate ? null : template.id)}
                     >
                       <div className="flex items-start">
-                        <div className="flex-shrink-0 h-12 w-12 bg-indigo-100 rounded-md flex items-center justify-center">
+                        <div className="shrink-0 h-12 w-12 bg-indigo-100 rounded-md flex items-center justify-center">
                           {template.category === 'blank' ? (
                             <svg className="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -314,7 +314,7 @@ export default function CreateWorkflow() {
         </div>
         
         {/* Message d'aide */}
-        <div className="mt-8 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg overflow-hidden">
+        <div className="mt-8 bg-linear-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg overflow-hidden">
           <div className="px-6 py-8 md:flex md:items-center md:justify-between">
             <div className="max-w-xl md:max-w-2xl">
               <h2 className="text-xl font-bold text-white">Conseils pour un workflow efficace</h2>
