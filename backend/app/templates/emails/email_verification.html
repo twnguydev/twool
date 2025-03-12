@@ -1,0 +1,24 @@
+{% extends "email_layout.html" %}
+
+{% block title %}Confirmez votre adresse email - Twool Labs{% endblock %}
+
+{% block content %}
+<h2>Bonjour {{ first_name }},</h2>
+
+<p>Merci de vous être inscrit(e) à Twool Labs ! Pour finaliser votre inscription, veuillez confirmer votre adresse email en cliquant sur le bouton ci-dessous.</p>
+
+<div style="text-align: center;">
+    <a href="{{ verification_url }}" class="button">Confirmer mon email</a>
+</div>
+
+<p>Ce lien expirera dans {{ expiration_hours }} heures. Si vous n'avez pas demandé à créer un compte sur Twool Labs, veuillez ignorer cet email.</p>
+
+<p>Si le bouton ci-dessus ne fonctionne pas, vous pouvez également copier et coller l'URL suivante dans votre navigateur :</p>
+
+<p style="word-break: break-all; font-size: 12px; color: #666;">{{ verification_url }}</p>
+
+<p>Nous sommes ravis de vous compter parmi nos utilisateurs !</p>
+
+<p>Cordialement,<br>
+L'équipe Twool Labs</p>
+{% endblock %}

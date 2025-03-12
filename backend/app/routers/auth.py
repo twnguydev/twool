@@ -9,6 +9,8 @@ from app.database import get_db
 from app.models.user import User
 from app.services.auth_service import AuthService, get_current_user
 from app.services.user_service import UserService
+from app.services.email_service import EmailService
+from app.services.database import DatabaseService
 from app.config import settings
 
 router = APIRouter()
@@ -19,7 +21,6 @@ class UserCreateModel(BaseModel):
     password: str = Field(..., min_length=8)
     first_name: str
     last_name: str
-    license_key: Optional[str] = None
     
     class Config:
         arbitrary_types_allowed = True
@@ -73,17 +74,24 @@ class LicenseActivationRequest(BaseModel):
                 "license_key": "XXXX-XXXX-XXXX-XXXX-XXXX-XXXX"
             }
         }
+        
+class LoginRequest(BaseModel):
+    username: str
+    password: str
+    
+class EmailRequest(BaseModel):
+    email: str
 
 # Endpoints
 @router.post("/token", response_model=Token)
 async def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    login_data: LoginRequest,
     db: Session = Depends(get_db)
 ):
     """
     Obtenir un token JWT pour l'authentification
     """
-    user = AuthService.authenticate_user(db, form_data.username, form_data.password)
+    user = AuthService.authenticate_user(db, login_data.username, login_data.password)
     
     if not user:
         raise HTTPException(
@@ -101,31 +109,34 @@ async def login_for_access_token(
 
 @router.post("/login", response_model=TokenResponse)
 async def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    login_data: LoginRequest,
     db: Session = Depends(get_db)
 ):
     """
     Route de connexion retournant le token et les infos utilisateur
     """
-    user = AuthService.authenticate_user(db, form_data.username, form_data.password)
-    
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Email ou mot de passe incorrect",
-            headers={"WWW-Authenticate": "Bearer"},
+    try:
+        user = AuthService.authenticate_user(db, login_data.username, login_data.password)
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Email ou mot de passe incorrect",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+            
+        access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = AuthService.create_access_token(
+            data={"sub": user.id}, expires_delta=access_token_expires
         )
         
-    access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = AuthService.create_access_token(
-        data={"sub": user.id}, expires_delta=access_token_expires
-    )
-    
-    return {
-        "access_token": access_token, 
-        "token_type": "bearer",
-        "user": UserService.user_to_dict(user)
-    }
+        return {
+            "access_token": access_token, 
+            "token_type": "bearer",
+            "user": UserService.user_to_dict(user)
+        }
+    except HTTPException as e:
+        raise e
 
 @router.post("/register", response_model=UserResponseModel)
 async def register(
@@ -141,8 +152,7 @@ async def register(
             email=user_data.email,
             password=user_data.password,
             first_name=user_data.first_name,
-            last_name=user_data.last_name,
-            license_key=user_data.license_key
+            last_name=user_data.last_name
         )
         
         return UserService.user_to_dict(user)
@@ -209,6 +219,58 @@ async def register_with_license(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Erreur lors de l'inscription avec licence: {str(e)}"
         )
+
+@router.get("/verify-email", response_model=UserResponseModel)
+async def verify_email(token: str, db: Session = Depends(get_db)):
+    """
+    Vérifie l'adresse email d'un utilisateur à partir d'un token
+    """
+    token_data = EmailService.verify_email_token(token)
+    
+    if not token_data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Token de vérification invalide ou expiré"
+        )
+
+    user = DatabaseService.get_by_id(db, User, token_data["user_id"])
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Utilisateur non trouvé"
+        )
+
+    if user.email != token_data["email"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email invalide"
+        )
+
+    DatabaseService.update(db, user, {"is_email_verified": True})
+    db.commit()
+    
+    return UserService.user_to_dict(user)
+
+@router.post("/resend-verification-email")
+async def resend_verification_email(
+    request: EmailRequest,
+    db: Session = Depends(get_db)
+):
+    """
+    Renvoie l'email de vérification à un utilisateur
+    """
+    user = DatabaseService.get_by(db, User, filters={"email": request.email})
+    
+    if not user:
+        return {"message": "Si l'adresse email existe, un email de vérification a été envoyé"}
+    
+    if user.is_email_verified:
+        return {"message": "Votre adresse email est déjà vérifiée"}
+
+    EmailService.send_verification_email(user)
+    
+    return {"message": "Un nouvel email de vérification a été envoyé"}
 
 @router.post("/activate-license", response_model=UserResponseModel)
 async def activate_license(

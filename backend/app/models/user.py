@@ -20,6 +20,7 @@ class User(Base, TimeStampMixin):
     role = Column(Enum(UserRole), default=UserRole.SOLO, nullable=False)
     company_id = Column(String(50), ForeignKey("companies.id"), nullable=True)
     is_active = Column(Boolean, default=True, nullable=False)
+    is_email_verified = Column(Boolean, default=False, nullable=False)
     storage_used = Column(Integer, default=0, nullable=False)  # En KB
     
     # Relations

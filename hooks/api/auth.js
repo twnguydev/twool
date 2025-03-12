@@ -18,7 +18,7 @@ const authService = (client) => {
      */
     getToken: (email, password) => 
       client.post('/auth/token', { 
-        username: email, // API attend username pour les credentials OAuth2
+        username: email,
         password 
       }),
     
@@ -30,7 +30,7 @@ const authService = (client) => {
      */
     login: (email, password) => 
       client.post('/auth/login', { 
-        username: email, // API attend username pour les credentials OAuth2
+        username: email,
         password 
       }),
     
@@ -86,6 +86,14 @@ const authService = (client) => {
      */
     registerWithLicense: (requestData) => {
       return client.post('/auth/register/license', requestData);
+    },
+
+    verifyEmail: (token) => {
+      return client.get(`/auth/verify-email?token=${token}`);
+    },
+
+    resendVerificationEmail: (email) => {
+      return client.post('/auth/resend-verification-email', { email });
     },
     
     /**

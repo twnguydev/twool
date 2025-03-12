@@ -24,19 +24,26 @@ export const useApi = () => {
     if (token) {
       options.headers['Authorization'] = `Bearer ${token}`;
     }
-  
+
     return options;
   };
 
   // Fonction pour gérer les erreurs d'API
   const handleApiError = async (response) => {
-    // Si status est 401 Unauthorized, déconnecter l'utilisateur
     if (response && response.status === 401) {
-      logout();
-      throw new Error('Session expirée, veuillez vous reconnecter');
+      const data = await response.json();
+
+      const error = new Error(data.detail || 'Une erreur est survenue');
+      error.status = response.status;
+      error.headers = Object.fromEntries(response.headers.entries());
+
+      if (!error.headers['x-email-verification-required']) {
+        logout();
+      }
+
+      throw error;
     }
 
-    // Récupérer le message d'erreur
     let errorMessage;
     try {
       if (response) {
@@ -56,7 +63,7 @@ export const useApi = () => {
   const apiRequest = async (endpoint, method = 'GET', data = null, customOptions = {}) => {
     try {
       let response;
-      
+
       // Si nous sommes dans Electron, utiliser l'API exposée par preload.js
       if (isElectron()) {
         // Ajouter le token au data pour Electron
@@ -64,42 +71,42 @@ export const useApi = () => {
         if (token) {
           requestData.token = token;
         }
-        
+
         try {
           response = await window.electron.apiRequest(requestData);
-          
+
           // Vérifier si la réponse contient une erreur 401
           if (response && response.status === 401) {
             logout();
             throw new Error('Session expirée, veuillez vous reconnecter');
           }
-          
+
           return response;
         } catch (err) {
           throw err;
         }
-      } 
+      }
       // Sinon, utiliser fetch standard
       else {
         const url = `${API_URL}${endpoint}`;
         const defaultOptions = getDefaultOptions();
-        
+
         const options = {
           method,
           ...defaultOptions,
           ...customOptions
         };
-        
+
         if (data && (method !== 'GET')) {
           options.body = JSON.stringify(data);
         }
-        
+
         const fetchResponse = await fetch(url, options);
-        
+
         if (!fetchResponse.ok) {
           return handleApiError(fetchResponse);
         }
-        
+
         response = await fetchResponse.json();
         return response;
       }

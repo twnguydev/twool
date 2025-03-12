@@ -5,13 +5,17 @@ from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+import logging
 
 from app.models.user import User, UserRole
 from app.models.subscription import Subscription, SubscriptionTier, SubscriptionType, SubscriptionStatus
 from app.models.license import License, LicenseStatus
 from app.services.database import DatabaseService
+from app.services.email_service import EmailService
 from app.config import settings
 from app.database import get_db
+
+logger = logging.getLogger(__name__)
 
 # Configuration de la sécurité
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -46,21 +50,32 @@ class AuthService:
     
     @staticmethod
     def authenticate_user(db: Session, email: str, password: str):
-        """Authentifier un utilisateur avec email et mot de passe"""
-        # Utiliser les filtres du DatabaseService
-        users = DatabaseService.get_all(db, User, filters={"email": email}, limit=1)
+        """
+        Vérifie les identifiants d'un utilisateur
         
-        if not users:
+        Args:
+            db: Session de base de données
+            email: Email de l'utilisateur
+            password: Mot de passe en clair
+            
+        Returns:
+            L'utilisateur si les identifiants sont valides, None sinon
+        """
+        user = DatabaseService.get_by(db, User, filters={"email": email})
+        
+        if not user:
             return None
-        
-        user = users[0]
         
         if not AuthService.verify_password(password, user.password_hash):
             return None
-            
-        if not user.is_active:
-            return None
-            
+
+        if hasattr(user, 'is_email_verified') and not user.is_email_verified:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Veuillez vérifier votre adresse email avant de vous connecter. Un email de vérification a été envoyé lors de votre inscription.",
+                headers={"WWW-Authenticate": "Bearer", "X-Email-Verification-Required": "true"},
+            )
+        
         return user
     
     @staticmethod
@@ -96,6 +111,67 @@ class AuthService:
                 detail="Un utilisateur avec cet email existe déjà"
             )
         
+        if license_key is not None:
+            clean_key = license_key.replace("-", "").replace(" ", "").upper()
+            formatted_key = "-".join([clean_key[i:i+4] for i in range(0, len(clean_key), 4)])
+            logger.debug(f"Formatted license key: {formatted_key}")
+
+            licenses = DatabaseService.get_all(db, License, filters={"key": formatted_key}, limit=1)
+            logger.debug(f"Found licenses: {licenses}")
+            if not licenses:
+                # Essayer avec la clé brute
+                licenses = DatabaseService.get_all(db, License, filters={"key": license_key}, limit=1)
+
+            if not licenses:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Licence non trouvée"
+                )
+                
+            license_obj = licenses[0]
+            
+            if license_obj.status != LicenseStatus.ACTIVE:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Cette licence n'est plus active"
+                )
+            
+            if license_obj.expiration_date.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Cette licence a expiré"
+                )
+            
+            # Vérifier l'abonnement associé
+            subscription = DatabaseService.get_by_id(db, Subscription, license_obj.subscription_id)
+            
+            if not subscription:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Erreur: Abonnement lié à la licence introuvable"
+                )
+            
+            if subscription.user_id:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Cette licence est déjà utilisée par un autre utilisateur"
+                )
+                
+            if hasattr(subscription, "company_id") and subscription.company_id and subscription.max_users is not None:
+                # Vérifier le nombre d'utilisateurs dans l'entreprise
+                users_in_company = DatabaseService.count(db, User, filters={"company_id": subscription.company_id})
+                if users_in_company >= subscription.max_users:
+                    raise HTTPException(
+                        status_code=status.HTTP_400_BAD_REQUEST,
+                        detail="Limite d'utilisateurs atteinte pour cette entreprise"
+                    )
+                
+            if hasattr(subscription, "expiration_date") and subscription.expiration_date < datetime.now(timezone.utc):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Cet abonnement a expiré"
+                )
+        
         # Préparer les données utilisateur
         user_data = {
             "id": f"usr-{uuid.uuid4().hex[:8]}",
@@ -104,19 +180,19 @@ class AuthService:
             "first_name": first_name,
             "last_name": last_name,
             "role": UserRole.SOLO,
-            "is_active": True
+            "is_active": True,
+            "is_email_verified": False
         }
         
-        # Créer l'utilisateur avec DatabaseService
-        user = DatabaseService.create(db, User, user_data)
-        
         try:
-            # Traiter la licence si fournie
+            user = DatabaseService.create(db, User, user_data)
+
             if license_key is not None:
                 AuthService.activate_license(db, user, license_key)
-            # Sinon, créer un abonnement si les données sont fournies
             elif subscription_data is not None:
                 AuthService.create_subscription(db, user, subscription_data)
+                
+            EmailService.send_verification_email(user)
             
             db.commit()
             return user
@@ -141,6 +217,10 @@ class AuthService:
         
         # Chercher la licence avec DatabaseService
         licenses = DatabaseService.get_all(db, License, filters={"key": formatted_key}, limit=1)
+        
+        if not licenses:
+            # Essayer avec la clé brute
+            licenses = DatabaseService.get_all(db, License, filters={"key": license_key}, limit=1)
         
         if not licenses:
             raise HTTPException(
@@ -172,12 +252,13 @@ class AuthService:
                 detail="Cette licence est déjà utilisée"
             )
             
-        if license.expiration_date < datetime.now(timezone.utc):
+        if license_obj.expiration_date.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Cette licence a expiré"
             )
 
+        # Mettre à jour l'abonnement pour l'associer à l'utilisateur
         DatabaseService.update(db, subscription, { "user_id": user.id })
         
         # Préparer les données de mise à jour de l'utilisateur

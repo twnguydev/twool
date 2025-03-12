@@ -1,29 +1,30 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useApi } from '../../hooks/useApi';
+import { useAuth } from '/context/auth-context';
+import { useApi } from '/hooks/useApi';
 
 export default function Login() {
   const router = useRouter();
   const { redirect } = router.query;
   const { auth } = useApi();
-  
-  // États pour le formulaire
+  const { login } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-  
-  // Gestion des erreurs
+
   const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
-  // Fonction de connexion
+  const [showResendButton, setShowResendButton] = useState(false);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
+    setMessage('');
     setIsSubmitting(true);
-    
-    // Validation basique
+
     if (!email || !password) {
       setError('Veuillez remplir tous les champs.');
       setIsSubmitting(false);
@@ -31,22 +32,36 @@ export default function Login() {
     }
     
     try {
-      // Appel à l'API d'authentification réelle
       const response = await auth.login(email, password);
-      
-      // Stockage du token et des infos utilisateur dans localStorage
+
       localStorage.setItem('twool_auth', JSON.stringify({
-        token: response.token,
+        access_token: response.access_token,
         user: response.user
       }));
       
-      // Redirection vers la page d'origine ou dashboard
+      login(response.user, response.access_token);
       router.push(redirect || '/');
     } catch (err) {
       console.error('Erreur de connexion:', err);
-      setError('Identifiants incorrects. Veuillez réessayer.');
+
+      setError(err.message);
+
+      if (err.message.includes('vérifier votre adresse email')) {
+        setShowResendButton(true);
+      }
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleResendVerificationEmail = async () => {
+    try {
+      await auth.resendVerificationEmail(email);
+      setError('');
+      setMessage('Un nouvel email de vérification a été envoyé à votre adresse.');
+    } catch (err) {
+      console.error('Erreur lors du renvoi:', err);
+      setError('Impossible de renvoyer l\'email. Veuillez réessayer plus tard.');
     }
   };
   
@@ -55,7 +70,6 @@ export default function Login() {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <div className="h-16 w-16 relative">
-            {/* Logo comme un placeholder - à remplacer par votre vrai logo */}
             <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center">
               <span className="text-white text-xl font-bold">Twool</span>
             </div>
@@ -95,6 +109,39 @@ export default function Login() {
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Message de succès */}
+            {message && (
+              <div className="rounded-md bg-green-50 p-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-green-800">
+                      Succès
+                    </h3>
+                    <div className="mt-2 text-sm text-green-700">
+                      <p>{message}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {showResendButton && (
+              <div className="mt-3">
+                <button
+                  type="button"
+                  onClick={handleResendVerificationEmail}
+                  className="text-indigo-600 hover:text-indigo-500 font-medium"
+                >
+                  Renvoyer l'email de vérification
+                </button>
               </div>
             )}
             

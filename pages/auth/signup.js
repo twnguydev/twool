@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useApi } from '../../hooks/useApi';
+import { useApi } from '/hooks/useApi';
 
 export default function Signup() {
   const router = useRouter();
@@ -121,14 +121,43 @@ export default function Signup() {
   };
 
   const handleLicenseKeyChange = (index, value) => {
-    const newValue = value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
-    const newLicenseKeys = [...licenseKeys];
-    newLicenseKeys[index] = newValue;
-    setLicenseKeys(newLicenseKeys);
+    if (index === 0 && (value.includes('-') || value.length > 4)) {
+      let cleanKey = value.replace(/^TW-/i, '');
 
-    // Auto-focus sur le champ suivant si celui-ci est rempli
-    if (newValue.length === 4 && index < 5) {
-      document.getElementById(`licenseKey-${index + 1}`).focus();
+      let parts;
+      if (cleanKey.includes('-')) {
+        parts = cleanKey.split('-');
+      } else {
+        parts = [];
+        for (let i = 0; i < Math.min(cleanKey.length, 24); i += 4) {
+          parts.push(cleanKey.substr(i, 4));
+        }
+      }
+
+      const newLicenseKeys = parts.map(part => 
+        part.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4)
+      );
+
+      while (newLicenseKeys.length < 6) {
+        newLicenseKeys.push('');
+      }
+
+      setLicenseKeys(newLicenseKeys.slice(0, 6));
+
+      const lastNonEmptyIndex = newLicenseKeys.findIndex(part => !part) - 1;
+      const focusIndex = lastNonEmptyIndex >= 0 ? lastNonEmptyIndex : 5;
+      if (focusIndex < 6) {
+        document.getElementById(`licenseKey-${focusIndex}`).focus();
+      }
+    } else {
+      const newValue = value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
+      const newLicenseKeys = [...licenseKeys];
+      newLicenseKeys[index] = newValue;
+      setLicenseKeys(newLicenseKeys);
+
+      if (newValue.length === 4 && index < 5) {
+        document.getElementById(`licenseKey-${index + 1}`).focus();
+      }
     }
   };
 
@@ -173,10 +202,18 @@ export default function Signup() {
 
         response = await auth.registerWithSubscription(userData, subscriptionData);
       } else if (licenseKeyValue) {
-        userData.license_key = licenseKeyValue;
-        response = await auth.register(userData);
+        response = await auth.registerWithLicense({
+          user_data: {
+            email: userData.email,
+            password: userData.password,
+            first_name: userData.firstName,
+            last_name: userData.lastName
+          },
+          license_data: {
+            license_key: licenseKeyValue
+          }
+        });
       } else {
-        // Inscription standard
         response = await auth.register(userData);
       }
 
@@ -186,8 +223,7 @@ export default function Signup() {
         user: response.user
       }));
 
-      // Redirection vers la page de confirmation ou dashboard
-      router.push('/signup-success');
+      router.push('/auth/signup/confirm');
     } catch (error) {
       console.error('Erreur lors de l\'inscription:', error);
       setErrors({ submit: error.message || "Une erreur est survenue lors de l'inscription. Veuillez réessayer." });
@@ -615,7 +651,6 @@ export default function Signup() {
                   value={part}
                   onChange={(e) => handleLicenseKeyChange(index, e.target.value)}
                   className={`appearance-none w-16 px-2 py-2 border rounded-md shadow-sm text-center placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${errors.licenseKey ? 'border-red-500' : 'border-gray-300'}`}
-                  maxLength={4}
                 />
               </React.Fragment>
             ))}
@@ -828,7 +863,7 @@ export default function Signup() {
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
           Ou{' '}
-          <Link href="/auth/signup">
+          <Link href="/auth/login">
             <span className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
               connectez-vous à votre compte existant
             </span>

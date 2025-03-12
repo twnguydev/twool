@@ -15,20 +15,16 @@ class License(Base, TimeStampMixin):
     id = Column(String(50), primary_key=True)
     key = Column(String(100), unique=True, nullable=False, index=True)
     subscription_id = Column(String(50), ForeignKey("subscriptions.id"), nullable=False)
-    user_id = Column(String(50), ForeignKey("users.id"), nullable=True)
     status = Column(Enum(LicenseStatus), default=LicenseStatus.ACTIVE, nullable=False)
     
     # Dates
-    activation_date = Column(DateTime, nullable=True)
     expiration_date = Column(DateTime, nullable=False)
     
     # Attributs
     is_admin = Column(Boolean, default=False, nullable=False)
-    device_id = Column(String(255), nullable=True)
     
     # Relations
     subscription = relationship("Subscription", back_populates="licenses")
-    user = relationship("User")
     
     @property
     def is_active(self):

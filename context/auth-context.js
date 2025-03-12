@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 const AuthContext = createContext({
   isAuthenticated: false,
   user: null,
-  token: null,
+  access_token: null,
   login: () => {},
   logout: () => {},
   loading: true
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
     
     // Stocker les données d'authentification
     localStorage.setItem('twool_auth', JSON.stringify({
-      token: tokenValue,
+      access_token: tokenValue,
       user: userData
     }));
   };
@@ -74,7 +74,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
     setToken(null);
     localStorage.removeItem('twool_auth');
-    router.push('/login');
+    router.push('/auth/login');
   };
 
   return (

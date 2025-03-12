@@ -14,17 +14,26 @@ class Settings(BaseSettings):
   JWT_SECRET: str = os.getenv("JWT_SECRET", "secret")
   JWT_ALGORITHM: str = "HS256"
   JWT_EXPIRATION: int = 60 * 24  # 24 heures
+  SECRET_KEY: str = os.getenv("SECRET_KEY", "secret")
   DB_HOST: str = os.getenv("DB_HOST", "localhost")
   DB_USER: str = os.getenv("DB_USER", "twool")
   DB_PASSWORD: str = os.getenv("DB_PASSWORD", "twool")
   DB_NAME: str = os.getenv("DB_NAME", "twool")
+  SMTP_HOST: str = os.getenv("SMTP_HOST", "localhost")
+  SMTP_PORT: int = os.getenv("SMTP_PORT", 1025)
+  SMTP_USER: str = os.getenv("SMTP_USER", "")
+  SMTP_PASSWORD: str = os.getenv("SMTP_PASSWORD", "")
+  SMTP_FROM: str = os.getenv("SMTP_FROM", "")
   DATABASE_URL: str = f"mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:8889/{DB_NAME}"
+  FRONTEND_URL: str = os.getenv("FRONTEND_URL", "http://localhost:3000")
   OPENAI_API_KEY: str = os.getenv("OPENAI_API_KEY", "")
   
   # Configuration CORS
   BACKEND_CORS_ORIGINS: List[str] = [
       "http://localhost:3000",
-      "http://127.0.0.1:3000"
+      "http://localhost:3001",
+      "http://127.0.0.1:3000",
+      "http://127.0.0.1:3001",
   ]
   
   # Préfixe pour les identifiants

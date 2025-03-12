@@ -55,6 +55,27 @@ class DatabaseService:
         return db.query(model_class).filter(model_class.id == id).first()
     
     @staticmethod
+    def get_by(db: Session, model_class: Type[T], filters: Dict[str, Any]) -> Optional[T]:
+        """
+        Récupère une instance par des filtres
+        
+        Args:
+            db: Session SQLAlchemy
+            model_class: Classe du modèle à récupérer
+            filters: Dictionnaire de filtres {nom_colonne: valeur}
+            
+        Returns:
+            L'instance trouvée ou None si non trouvée
+        """
+        query = db.query(model_class)
+
+        for key, value in filters.items():
+            if hasattr(model_class, key):
+                query = query.filter(getattr(model_class, key) == value)
+        
+        return query.first()
+    
+    @staticmethod
     def get_all(db: Session, model_class: Type[T], 
                 skip: int = 0, limit: int = 100, 
                 filters: Dict[str, Any] = None) -> List[T]:
