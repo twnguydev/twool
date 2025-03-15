@@ -1,58 +1,86 @@
 const { contextBridge, ipcRenderer } = require('electron');
-const { net } = require('electron');
 
 // Expose une API sécurisée aux processus de rendu
 contextBridge.exposeInMainWorld('electron', {
   // API pour communiquer avec le backend FastAPI
   apiRequest: async (options) => {
-    const { endpoint, method, data } = options;
-    
-    // Utilisation du module net d'Electron pour les requêtes HTTP
-    // C'est une alternative à ipcRenderer.invoke qui permet de communiquer directement
-    // avec FastAPI depuis le processus de rendu
-    const baseURL = 'http://localhost:8000/api';
-    const url = `${baseURL}${endpoint}`;
-    
-    return new Promise((resolve, reject) => {
-      const request = net.request({
-        method,
-        url,
-        protocol: 'http:',
-      });
+    try {
+      const { endpoint, method, data } = options;
       
-      // Ajouter les headers
-      request.setHeader('Content-Type', 'application/json');
-      
-      request.on('response', (response) => {
-        let responseData = '';
-        
-        response.on('data', (chunk) => {
-          responseData += chunk.toString();
-        });
-        
-        response.on('end', () => {
-          try {
-            const parsedData = JSON.parse(responseData);
-            resolve(parsedData);
-          } catch (error) {
-            resolve(responseData);
-          }
-        });
-      });
-      
-      request.on('error', (error) => {
-        reject(error);
-      });
-      
-      // Envoyer les données si nécessaire
-      if (data && (method === 'POST' || method === 'PUT')) {
-        request.write(JSON.stringify(data));
-      }
-      
-      request.end();
-    });
+      // Utiliser le canal IPC pour faire des requêtes API via le processus principal
+      return await ipcRenderer.invoke('api-request', { endpoint, method, data });
+    } catch (error) {
+      console.error('Erreur lors de la requête API:', error);
+      throw error;
+    }
   },
   
   // Version de l'application
-  appVersion: process.env.npm_package_version
+  appVersion: process.env.npm_package_version,
+  
+  // API pour les mises à jour
+  updates: {
+    // Vérifier les mises à jour disponibles
+    checkForUpdates: async () => {
+      try {
+        return await ipcRenderer.invoke('check-for-updates');
+      } catch (error) {
+        console.error('Erreur lors de la vérification des mises à jour:', error);
+        throw error;
+      }
+    },
+    
+    // Télécharger la mise à jour
+    downloadUpdate: async () => {
+      try {
+        return await ipcRenderer.invoke('download-update');
+      } catch (error) {
+        console.error('Erreur lors du téléchargement de la mise à jour:', error);
+        throw error;
+      }
+    },
+    
+    // Écouter les événements de mise à jour
+    onUpdateChecking: (callback) => {
+      const eventHandler = () => callback();
+      ipcRenderer.on('update-checking', eventHandler);
+      return () => ipcRenderer.removeListener('update-checking', eventHandler);
+    },
+    
+    onUpdateAvailable: (callback) => {
+      const eventHandler = (_, info) => callback(info);
+      ipcRenderer.on('update-available', eventHandler);
+      return () => ipcRenderer.removeListener('update-available', eventHandler);
+    },
+    
+    onUpdateNotAvailable: (callback) => {
+      const eventHandler = (_, info) => callback(info);
+      ipcRenderer.on('update-not-available', eventHandler);
+      return () => ipcRenderer.removeListener('update-not-available', eventHandler);
+    },
+    
+    onUpdateDownloading: (callback) => {
+      const eventHandler = () => callback();
+      ipcRenderer.on('update-downloading', eventHandler);
+      return () => ipcRenderer.removeListener('update-downloading', eventHandler);
+    },
+    
+    onUpdateDownloadProgress: (callback) => {
+      const eventHandler = (_, progressObj) => callback(progressObj);
+      ipcRenderer.on('update-download-progress', eventHandler);
+      return () => ipcRenderer.removeListener('update-download-progress', eventHandler);
+    },
+    
+    onUpdateDownloaded: (callback) => {
+      const eventHandler = (_, info) => callback(info);
+      ipcRenderer.on('update-downloaded', eventHandler);
+      return () => ipcRenderer.removeListener('update-downloaded', eventHandler);
+    },
+    
+    onUpdateError: (callback) => {
+      const eventHandler = (_, error) => callback(error);
+      ipcRenderer.on('update-error', eventHandler);
+      return () => ipcRenderer.removeListener('update-error', eventHandler);
+    }
+  }
 });

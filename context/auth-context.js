@@ -5,14 +5,15 @@ import { useRouter } from 'next/router';
 const AuthContext = createContext({
   isAuthenticated: false,
   user: null,
-  access_token: null,
+  token: null,
   login: () => {},
   logout: () => {},
-  loading: true
+  loading: true,
+  isAdmin: false
 });
 
 // Hook personnalisé pour utiliser le contexte d'authentification
-export const useAuth = () => useContext(AuthContext);
+export const useAuthContext = () => useContext(AuthContext);
 
 // Provider du contexte d'authentification
 export const AuthProvider = ({ children }) => {
@@ -28,21 +29,16 @@ export const AuthProvider = ({ children }) => {
         const authData = localStorage.getItem('twool_auth');
         
         if (authData) {
-          const { token, user } = JSON.parse(authData);
-          setUser(user);
-          setToken(token);
+          const parsedData = JSON.parse(authData);
+          // Supporter à la fois les anciens formats et les nouveaux
+          const userObj = parsedData.user || parsedData;
+          const tokenValue = parsedData.access_token || parsedData.token;
           
-          // Vérifier la validité du token (en production)
-          // Exemple : appeler une API pour valider le token
-          // const response = await fetch('/api/auth/validate', {
-          //   headers: {
-          //     'Authorization': `Bearer ${token}`
-          //   }
-          // });
-          //
-          // if (!response.ok) {
-          //   throw new Error('Token invalide');
-          // }
+          setUser(userObj);
+          setToken(tokenValue);
+          
+          // Vérifier la validité du token en production
+          // Cette étape peut être ajoutée ultérieurement
         }
       } catch (error) {
         console.error('Erreur d\'authentification:', error);
@@ -77,6 +73,9 @@ export const AuthProvider = ({ children }) => {
     router.push('/auth/login');
   };
 
+  // Vérifier si l'utilisateur est administrateur
+  const isAdmin = user?.role === 'SUPER_ADMIN'
+
   return (
     <AuthContext.Provider
       value={{
@@ -85,7 +84,8 @@ export const AuthProvider = ({ children }) => {
         token,
         login,
         logout,
-        loading
+        loading,
+        isAdmin
       }}
     >
       {children}
@@ -96,12 +96,12 @@ export const AuthProvider = ({ children }) => {
 // HOC pour les routes protégées
 export const withAuth = (Component) => {
   const AuthenticatedComponent = (props) => {
-    const { isAuthenticated, loading } = useAuth();
+    const { isAuthenticated, loading } = useAuthContext();
     const router = useRouter();
 
     useEffect(() => {
       if (!loading && !isAuthenticated) {
-        router.replace('/login');
+        router.replace('/auth/login');
       }
     }, [isAuthenticated, loading, router]);
 
@@ -117,4 +117,34 @@ export const withAuth = (Component) => {
   };
 
   return AuthenticatedComponent;
+};
+
+// HOC pour les routes réservées aux administrateurs
+export const withAdmin = (Component) => {
+  const AdminComponent = (props) => {
+    const { isAuthenticated, isAdmin, loading } = useAuthContext();
+    const router = useRouter();
+
+    useEffect(() => {
+      if (!loading) {
+        if (!isAuthenticated) {
+          router.replace('/auth/login');
+        } else if (!isAdmin) {
+          router.replace('/dashboard');
+        }
+      }
+    }, [isAuthenticated, isAdmin, loading, router]);
+
+    if (loading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+        </div>
+      );
+    }
+
+    return (isAuthenticated && isAdmin) ? <Component {...props} /> : null;
+  };
+
+  return AdminComponent;
 };

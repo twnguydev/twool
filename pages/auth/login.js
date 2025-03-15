@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { useAuth } from '/context/auth-context';
+import { useAuthContext } from '/context/auth-context';
 import { useApi } from '/hooks/useApi';
+import { isElectron } from '/utils/platform';
 
 export default function Login() {
   const router = useRouter();
   const { redirect } = router.query;
   const { auth } = useApi();
-  const { login } = useAuth();
+  const { login } = useAuthContext();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -33,14 +34,13 @@ export default function Login() {
     
     try {
       const response = await auth.login(email, password);
-
-      localStorage.setItem('twool_auth', JSON.stringify({
-        access_token: response.access_token,
-        user: response.user
-      }));
-      
       login(response.user, response.access_token);
-      router.push(redirect || '/');
+
+      if (response.should_register_company === true) {
+        router.push('/dashboard/company-setup');
+      } else {
+        router.push(redirect || '/dashboard');
+      }
     } catch (err) {
       console.error('Erreur de connexion:', err);
 
@@ -68,6 +68,14 @@ export default function Login() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        {isElectron ?? (
+          <Link href="/" className="flex items-center text-gray-600 hover:text-gray-800 mb-15">
+            <svg className="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Retour à l'accueil
+          </Link>
+        )}
         <div className="flex justify-center">
           <div className="h-16 w-16 relative">
             <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center">

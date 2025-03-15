@@ -1,4 +1,4 @@
-import { useAuth } from '../context/auth-context';
+import { useAuthContext } from '../context/auth-context';
 
 // URL de base de l'API
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api/v1';
@@ -10,7 +10,7 @@ const isElectron = () => {
 
 // Client API avec hooks React
 export const useApi = () => {
-  const { token, logout } = useAuth();
+  const { token, logout } = useAuthContext();
 
   // Options par défaut pour fetch
   const getDefaultOptions = () => {

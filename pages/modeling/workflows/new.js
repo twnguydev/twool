@@ -1,53 +1,53 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../../../components/Layout/Layout';
+import Layout from '../../../components/layout/layout';
 import Link from 'next/link';
 
 export default function CreateWorkflow() {
   const router = useRouter();
-  
+
   // États pour le formulaire
   const [workflowName, setWorkflowName] = useState('');
   const [workflowDescription, setWorkflowDescription] = useState('');
   const [isShared, setIsShared] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
-  
+
   // Gestion des erreurs
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   // Données de démonstration pour les templates
   const templates = [
-    { 
-      id: 't1', 
-      name: 'Processus client', 
+    {
+      id: 't1',
+      name: 'Processus client',
       description: 'Template pour modéliser un parcours client type',
       nodes: 8,
       complexity: 'Moyenne',
       category: 'client',
       image: '/templates/customer-journey.png'
     },
-    { 
-      id: 't2', 
-      name: 'Chaîne logistique', 
+    {
+      id: 't2',
+      name: 'Chaîne logistique',
       description: 'Modèle de supply chain avec gestion des stocks',
       nodes: 12,
       complexity: 'Avancée',
       category: 'supply',
       image: '/templates/supply-chain.png'
     },
-    { 
-      id: 't3', 
-      name: 'Processus de recrutement', 
+    {
+      id: 't3',
+      name: 'Processus de recrutement',
       description: 'Workflow complet pour le recrutement de nouveaux employés',
       nodes: 10,
       complexity: 'Standard',
       category: 'hr',
       image: '/templates/recruitment.png'
     },
-    { 
-      id: 't4', 
-      name: 'Workflow vide', 
+    {
+      id: 't4',
+      name: 'Workflow vide',
       description: 'Commencez avec une page blanche',
       nodes: 0,
       complexity: 'Personnalisée',
@@ -55,31 +55,31 @@ export default function CreateWorkflow() {
       image: '/templates/blank.png'
     }
   ];
-  
+
   // Validation du formulaire
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!workflowName.trim()) {
       newErrors.name = "Le nom du workflow est requis";
     } else if (workflowName.length < 3) {
       newErrors.name = "Le nom doit contenir au moins 3 caractères";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-  
+
   // Soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
-    
+
     setIsSubmitting(true);
-    
+
     try {
       // Dans une vraie application, ceci enverrait les données à l'API
       const workflowData = {
@@ -91,18 +91,18 @@ export default function CreateWorkflow() {
         // Ces valeurs seraient définies côté serveur:
         // owner_id: userId,
         // company_id: companyId,
-        
+
         // Pour un nouveau workflow basé sur un template, on copierait les nodes et edges
         // Si c'est un workflow vide, ces valeurs seraient des tableaux vides
         nodes: [],
         edges: []
       };
-      
+
       console.log('Création du workflow:', workflowData);
-      
+
       // Simulation d'un délai API
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Redirection vers l'éditeur de workflow
       // Dans une vraie application, on récupérerait l'ID du workflow créé
       router.push('/modeling?new=true');
@@ -113,7 +113,7 @@ export default function CreateWorkflow() {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <Layout title="Créer un workflow">
       <div className="p-6">
@@ -130,7 +130,7 @@ export default function CreateWorkflow() {
             </Link>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Formulaire principal */}
           <div className="md:col-span-2">
@@ -163,7 +163,7 @@ export default function CreateWorkflow() {
                       )}
                     </div>
                   </div>
-                  
+
                   {/* Champ Description */}
                   <div className="mb-6">
                     <label htmlFor="workflowDescription" className="block text-sm font-medium text-gray-700">
@@ -181,7 +181,7 @@ export default function CreateWorkflow() {
                       ></textarea>
                     </div>
                   </div>
-                  
+
                   {/* Option de partage */}
                   <div className="mb-6">
                     <div className="flex items-start">
@@ -201,7 +201,7 @@ export default function CreateWorkflow() {
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Message d'erreur général */}
                   {errors.submit && (
                     <div className="mb-6 rounded-md bg-red-50 p-4">
@@ -220,7 +220,7 @@ export default function CreateWorkflow() {
                       </div>
                     </div>
                   )}
-                  
+
                   {/* Boutons d'action */}
                   <div className="pt-5 flex justify-end">
                     <Link href="/workflows">
@@ -250,7 +250,7 @@ export default function CreateWorkflow() {
               </div>
             </div>
           </div>
-          
+
           {/* Sélection de template */}
           <div className="md:col-span-1">
             <div className="bg-white shadow-sm overflow-hidden rounded-lg">
@@ -263,7 +263,7 @@ export default function CreateWorkflow() {
               <div className="px-4 py-5 sm:p-6">
                 <div className="space-y-4">
                   {templates.map((template) => (
-                    <div 
+                    <div
                       key={template.id}
                       className={`p-4 border rounded-lg cursor-pointer transition ${selectedTemplate === template.id ? 'border-indigo-500 bg-indigo-50' : 'border-gray-200 hover:border-indigo-300'}`}
                       onClick={() => setSelectedTemplate(template.id === selectedTemplate ? null : template.id)}
@@ -312,14 +312,14 @@ export default function CreateWorkflow() {
             </div>
           </div>
         </div>
-        
+
         {/* Message d'aide */}
         <div className="mt-8 bg-linear-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg overflow-hidden">
           <div className="px-6 py-8 md:flex md:items-center md:justify-between">
             <div className="max-w-xl md:max-w-2xl">
               <h2 className="text-xl font-bold text-white">Conseils pour un workflow efficace</h2>
               <p className="mt-2 text-indigo-100">
-                Un bon workflow est structuré avec des étapes claires et des connexions logiques. 
+                Un bon workflow est structuré avec des étapes claires et des connexions logiques.
                 Commencez par identifier vos points de départ et d'arrivée, puis détaillez les étapes intermédiaires.
               </p>
               <ul className="mt-4 text-indigo-100 list-disc list-inside space-y-1">

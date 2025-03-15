@@ -94,7 +94,7 @@ Twool Labs est construit avec les technologies suivantes :
   - TailwindCSS pour le design
 
 - **Application desktop**
-  - Electron pour transformer l'application web en application de bureau
+  - Electron pour transformer l'application web en application de bureau avec système de mises à jour automatiques
 
 - **Backend**
   - FastAPI (Python) pour l'API
@@ -164,7 +164,16 @@ twool-labs/
 
 3. **Événement (`EventNode`)**
    - Représente un début, une fin ou un événement intermédiaire
-   - Types: Début, Intermédiaire, Fin
+   - Types: Début, Intermédiaire, Début autre workflow, Fin
+
+4. **Formule (`FormulaNode`)**
+   - Permet d'établir des paramètres ou d'effectuer n'importe quel calcul
+   - Le calcul est disponible dans une variable dans tout le workflow
+   - Tout type de calculs et fonctions pour effectuer des moyennes, tendances, arrondis, etc.
+
+5. **Scénario (`ScenarioNode`)**
+   - Représente un ensemble de paramètres de scénario
+   - Sera utilisé lors de la simulation du workflow
 
 ### Connexions
 
@@ -180,6 +189,14 @@ La simulation d'un processus:
 2. Calcule la durée et le coût estimés
 3. Identifie les goulots d'étranglement
 4. Génère des métriques pour l'analyse
+
+### Optimisations
+
+L'optimisation pour chaque workflow est généré par l'agent IA développé par nos soins :
+1. Récupère la ou les simulations
+2. Identifie les éléments à corriger du workflow
+3. Lance une simulation avec la correction
+5. Génère des métriques pour l'analyse
 
 ## 🌐 API
 

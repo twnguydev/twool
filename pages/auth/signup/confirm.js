@@ -5,22 +5,25 @@ import Link from 'next/link';
 export default function SignupSuccess() {
   const router = useRouter();
   const [userData, setUserData] = useState(null);
+  const [isEnterprise, setIsEnterprise] = useState(false);
+  const [isAdminEnterprise, setIsAdminEnterprise] = useState(false);
   
   useEffect(() => {
-    // Récupérer les données de l'utilisateur du localStorage
     const authData = localStorage.getItem('twool_auth');
     if (!authData) {
-      // Rediriger vers la page d'inscription si aucune donnée n'est trouvée
-      router.push('/auth/signup');
+      router.push('/auth/login');
       return;
     }
     
     try {
       const parsedData = JSON.parse(authData);
       setUserData(parsedData.user);
+
+      setIsEnterprise(parsedData.is_enterprise === true);
+      setIsAdminEnterprise(parsedData.is_admin_enterprise === true);
     } catch (error) {
       console.error('Erreur lors de la récupération des données utilisateur:', error);
-      router.push('/auth/signup');
+      router.push('/auth/login');
     }
   }, [router]);
   
@@ -68,7 +71,7 @@ export default function SignupSuccess() {
           <h3 className="text-lg font-medium text-gray-900 mb-2">Votre compte</h3>
           <div className="space-y-1">
             <p className="text-sm text-gray-500">
-              <span className="font-medium">Nom:</span> {userData.firstName} {userData.lastName}
+              <span className="font-medium">Nom:</span> {userData.first_name} {userData.last_name}
             </p>
             <p className="text-sm text-gray-500">
               <span className="font-medium">Email:</span> {userData.email}
@@ -76,27 +79,44 @@ export default function SignupSuccess() {
             <p className="text-sm text-gray-500">
               <span className="font-medium">Type de compte:</span> {userData.role.charAt(0).toUpperCase() + userData.role.slice(1)}
             </p>
+            
+            {isEnterprise && (
+              <p className="text-sm text-green-600 font-semibold mt-2">
+                Vous disposez d'une licence entreprise
+              </p>
+            )}
           </div>
         </div>
         
         <div className="flex flex-col space-y-4">
-          <Link href="/dashboard">
-            <button
-              type="button"
-              className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-            >
-              Accéder à mon tableau de bord
-            </button>
-          </Link>
+          {isEnterprise && isAdminEnterprise ? (
+            <Link href="/auth/signup/company-setup">
+              <button
+                type="button"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Me connecter et configurer mon entreprise
+              </button>
+            </Link>
+          ) : (
+            <Link href="/dashboard">
+              <button
+                type="button"
+                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              >
+                Me connecter à mon compte
+              </button>
+            </Link>
+          )}
           
-          <Link href="/onboarding">
+          {/* <Link href="/onboarding">
             <button
               type="button"
               className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               Commencer le tutoriel
             </button>
-          </Link>
+          </Link> */}
         </div>
       </div>
     </div>

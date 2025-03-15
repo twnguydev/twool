@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useApi } from '/hooks/useApi';
+import { isElectron } from '/utils/platform';
 
 export default function Signup() {
   const router = useRouter();
@@ -219,8 +220,10 @@ export default function Signup() {
 
       // Stocker les informations d'authentification
       localStorage.setItem('twool_auth', JSON.stringify({
-        token: response.token,
-        user: response.user
+        access_token: response.access_token,
+        user: response.user,
+        is_enterprise: response.is_enterprise,
+        is_admin_enterprise: response.is_admin_enterprise
       }));
 
       router.push('/auth/signup/confirm');
@@ -849,6 +852,16 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      {isElectron ?? (
+        <div className={`sm:mx-auto sm:w-full sm:max-w-xl ${step === 3 ? 'md:max-w-3xl' : 'md:max-w-2xl'}`}>
+          <Link href="/" className="flex items-center text-gray-600 hover:text-gray-800 mb-15">
+            <svg className="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Retour à l'accueil
+          </Link>
+        </div>
+      )}
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
           <div className="h-16 w-16 relative">
