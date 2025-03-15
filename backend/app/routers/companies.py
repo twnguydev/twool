@@ -1,4 +1,5 @@
-from fastapi import APIRouter, HTTPException, Depends, Body
+from fastapi import APIRouter, HTTPException, Depends
+from typing import List, Optional
 from typing import List
 from sqlalchemy.orm import Session
 from app.database import get_db
@@ -16,7 +17,7 @@ class CompanyCreateModel(BaseModel):
     description: str = None
     address: str = None
     phone: str = None
-    website: str = None
+    website: Optional[str] = None
     
     class Config:
         arbitrary_types_allowed = True
@@ -26,7 +27,7 @@ class CompanyUpdateModel(BaseModel):
     description: str = None
     address: str = None
     phone: str = None
-    website: str = None
+    website: Optional[str] = None
     
     class Config:
         arbitrary_types_allowed = True
@@ -37,7 +38,7 @@ class CompanyResponseModel(BaseModel):
     description: str = None
     address: str = None
     phone: str = None
-    website: str = None
+    website: Optional[str] = None
     is_active: bool
     created_at: str
     updated_at: str
@@ -47,7 +48,7 @@ class CompanyResponseModel(BaseModel):
 
 class CompanyUserModel(BaseModel):
     user_id: str
-    role: str = "consultant"  # Par défaut consultant
+    role: str = "consultant"
     
     class Config:
         arbitrary_types_allowed = True
@@ -82,7 +83,6 @@ async def create_company(
     db: Session = Depends(get_db)
 ):
     """Crée une nouvelle entreprise et définit l'utilisateur actuel comme admin"""
-    # Vérifier que l'utilisateur n'est pas déjà dans une entreprise
     if current_user.company_id:
         raise HTTPException(
             status_code=400,

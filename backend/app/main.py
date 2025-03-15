@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.routers import workflows, simulations, optimizations, flow_ia, users, companies, subscriptions, auth
+from app.routers import workflows, simulations, optimizations, flow_ia, users, companies, subscriptions, auth, updates, updates_upload
 from app.logger import setup_logger
+from fastapi.staticfiles import StaticFiles
+import os
 
 logger = setup_logger()
 
@@ -35,7 +37,16 @@ app.include_router(auth.router, prefix="/api/v1/auth", tags=["auth"])
 app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
 app.include_router(companies.router, prefix="/api/v1/companies", tags=["companies"])
 app.include_router(subscriptions.router, prefix="/api/v1/subscriptions", tags=["subscriptions"])
+
+app.include_router(updates.router, prefix="/api/v1/updates", tags=["updates"])
+app.include_router(updates_upload.router, prefix="/api/v1/updates/upload", tags=["updates_upload"])
 logger.info("Tous les routeurs ont été configurés")
+
+# Créer le dossier static s'il n'existe pas
+os.makedirs(settings.static_files_dir, exist_ok=True)
+
+# Monter le répertoire statique pour servir les fichiers de mise à jour
+app.mount("/static", StaticFiles(directory=settings.static_files_dir), name="static")
 
 @app.get("/")
 async def root():

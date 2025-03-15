@@ -3,6 +3,7 @@ from typing import List
 import os
 from functools import lru_cache
 from dotenv import load_dotenv
+from pathlib import Path
 
 load_dotenv()
 
@@ -42,6 +43,12 @@ class Settings(BaseSettings):
   SUBSCRIPTION_ID_PREFIX: str = "sub"
   LICENSE_ID_PREFIX: str = "lic"
   WORKFLOW_ID_PREFIX: str = "wfl"
+  
+  static_files_dir: str = os.path.join(
+    Path(__file__).resolve().parent.parent.parent, "static"
+  )
+  
+  max_upload_size: int = 1024 * 1024 * 1024
   
   class Config:
       case_sensitive = True

@@ -6,7 +6,9 @@ from datetime import timedelta
 from pydantic import BaseModel, EmailStr, Field
 
 from app.database import get_db
-from app.models.user import User
+from app.models.user import User, UserRole
+from app.models.license import License
+from app.models.subscription import Subscription, SubscriptionTier
 from app.services.auth_service import AuthService, get_current_user
 from app.services.user_service import UserService
 from app.services.email_service import EmailService
@@ -24,7 +26,7 @@ class UserCreateModel(BaseModel):
     
     class Config:
         arbitrary_types_allowed = True
-
+        
 class UserResponseModel(BaseModel):
     id: str
     email: str
@@ -36,11 +38,22 @@ class UserResponseModel(BaseModel):
     
     class Config:
         arbitrary_types_allowed = True
+        
+class RegistrationResponseModel(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: UserResponseModel
+    is_enterprise: Optional[bool] = False
+    is_admin_enterprise: Optional[bool] = False
+    
+    class Config:
+        arbitrary_types_allowed = True
 
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
     user: UserResponseModel
+    should_register_company: bool = False
     
     class Config:
         arbitrary_types_allowed = True
@@ -133,12 +146,13 @@ async def login(
         return {
             "access_token": access_token, 
             "token_type": "bearer",
-            "user": UserService.user_to_dict(user)
+            "user": UserService.user_to_dict(user),
+            "should_register_company": user.company_id is None and user.role == UserRole.ADMIN
         }
     except HTTPException as e:
         raise e
 
-@router.post("/register", response_model=UserResponseModel)
+@router.post("/register", response_model=RegistrationResponseModel)
 async def register(
     user_data: UserCreateModel,
     db: Session = Depends(get_db)
@@ -155,7 +169,11 @@ async def register(
             last_name=user_data.last_name
         )
         
-        return UserService.user_to_dict(user)
+        return {
+            "access_token": "",
+            "token_type": "bearer",
+            "user": UserService.user_to_dict(user)
+        }
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -164,7 +182,7 @@ async def register(
             detail=f"Erreur lors de l'inscription: {str(e)}"
         )
 
-@router.post("/register/subscription", response_model=UserResponseModel)
+@router.post("/register/subscription", response_model=RegistrationResponseModel)
 async def register_with_subscription(
     user_data: UserCreateModel,
     subscription_data: SubscriptionRequest,
@@ -183,7 +201,11 @@ async def register_with_subscription(
             subscription_data=subscription_data.dict()
         )
         
-        return UserService.user_to_dict(user)
+        return {
+            "access_token": "",
+            "token_type": "bearer",
+            "user": UserService.user_to_dict(user)
+        }
     except HTTPException as e:
         raise e
     except Exception as e:
@@ -192,7 +214,7 @@ async def register_with_subscription(
             detail=f"Erreur lors de l'inscription avec abonnement: {str(e)}"
         )
 
-@router.post("/register/license", response_model=UserResponseModel)
+@router.post("/register/license", response_model=RegistrationResponseModel)
 async def register_with_license(
     user_data: UserCreateModel,
     license_data: LicenseActivationRequest,
@@ -211,7 +233,11 @@ async def register_with_license(
             license_key=license_data.license_key
         )
         
-        return UserService.user_to_dict(user)
+        return {
+            "access_token": "",
+            "token_type": "bearer",
+            "user": UserService.user_to_dict(user)
+        }
     except HTTPException as e:
         raise e
     except Exception as e:

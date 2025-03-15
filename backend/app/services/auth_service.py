@@ -266,10 +266,10 @@ class AuthService:
         
         # Mettre à jour l'utilisateur (rôle et entreprise)
         if hasattr(license_obj, "is_admin") and license_obj.is_admin:
-            if subscription.tier == SubscriptionTier.BUSINESS:
-                user_update_data["role"] = UserRole.MANAGER
-            elif subscription.tier == SubscriptionTier.ENTERPRISE:
+            if subscription.tier == SubscriptionTier.BUSINESS or subscription.tier == SubscriptionTier.ENTERPRISE:
                 user_update_data["role"] = UserRole.ADMIN
+            elif subscription.tier == SubscriptionTier.SOLO:
+                user_update_data["role"] = UserRole.SOLO
         else:
             user_update_data["role"] = UserRole.CONSULTANT
         

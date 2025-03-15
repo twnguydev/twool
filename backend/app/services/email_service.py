@@ -1,6 +1,8 @@
 import os
 import logging
 import smtplib
+import uuid  # Pour générer un Message-ID unique
+import email.utils  # Pour le formatage de date
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from jinja2 import Environment, FileSystemLoader
@@ -47,9 +49,32 @@ class EmailService:
             message["From"] = settings.SMTP_FROM
             message["To"] = to_email
             
-            # Ajout du contenu HTML
-            part = MIMEText(html_content, "html")
-            message.attach(part)
+            # Ajout d'en-têtes supplémentaires pour améliorer la délivrabilité
+            message["Message-ID"] = f"<{uuid.uuid4()}@{settings.SMTP_FROM.split('@')[1]}>"
+            message["Date"] = email.utils.formatdate(localtime=True)
+            message["Content-Language"] = "fr"
+            
+            # Création d'une version texte du contenu HTML
+            # Version simple pour les tests
+            text_content = f"""
+Bonjour {context.get('first_name', '')},
+
+Merci de vous être inscrit à Twool Labs ! Pour finaliser votre inscription, veuillez confirmer votre adresse email en cliquant sur le lien ci-dessous :
+
+{context.get('verification_url', '')}
+
+Ce lien expirera dans {context.get('expiration_hours', 24)} heures.
+
+Cordialement,
+L'équipe Twool Labs
+"""
+            # Ajout de la version texte en premier (important pour la compatibilité)
+            text_part = MIMEText(text_content, "plain", "utf-8")
+            message.attach(text_part)
+            
+            # Ajout du contenu HTML (après la version texte)
+            html_part = MIMEText(html_content, "html", "utf-8")
+            message.attach(html_part)
             
             # Envoi de l'email
             with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
@@ -64,9 +89,9 @@ class EmailService:
             return True
             
         except Exception as e:
-          logger.error(f"Échec de l'envoi d'email à {to_email}", exc_info=True)
-          logger.error(f"Erreur détaillée: {str(e)}")
-          return False
+            logger.error(f"Échec de l'envoi d'email à {to_email}", exc_info=True)
+            logger.error(f"Erreur détaillée: {str(e)}")
+            return False
     
     @staticmethod
     def send_verification_email(user):
@@ -92,7 +117,7 @@ class EmailService:
             algorithm="HS256"
         )
         
-        # URL de vérification
+        # URL de vérification (utiliser une URL publique si possible)
         verification_url = f"{settings.FRONTEND_URL}/auth/verify-email?token={verification_token}"
         
         # Contexte pour le template
@@ -101,7 +126,8 @@ class EmailService:
             "verification_url": verification_url,
             "company_name": "Twool Labs",
             "support_email": settings.SMTP_FROM,
-            "expiration_hours": 24
+            "expiration_hours": 24,
+            "current_year": datetime.now().year
         }
         
         # Envoi de l'email
@@ -132,3 +158,21 @@ class EmailService:
         except jwt.InvalidTokenError:
             logger.warning("Token de vérification d'email invalide")
             return None
+    
+    @staticmethod
+    def test_direct_smtp():
+        import smtplib
+        from email.mime.text import MIMEText
+        
+        # Message simple
+        msg = MIMEText("Ceci est un test d'envoi direct")
+        msg["Subject"] = "Test SMTP direct"
+        msg["From"] = settings.SMTP_FROM
+        msg["To"] = "gibratanguy@icloud.com"
+        
+        # Connexion sans framework
+        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+            server.set_debuglevel(2)  # Debug plus verbeux
+            server.starttls()
+            server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+            server.sendmail(settings.SMTP_FROM, "gibratanguy@icloud.com", msg.as_string())
