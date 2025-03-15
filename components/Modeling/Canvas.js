@@ -13,22 +13,24 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
-import TaskNode from './Nodes/TaskNode';
-import DecisionNode from './Nodes/DecisionNode';
-import EventNode from './Nodes/EventNode';
-import FormulaNode from './Nodes/FormulaNode';
-import ScenarioNode from './Nodes/ScenarioNode';
-import ScenarioSimulator from './utils/scenarioSimulator';
-import PropertyPanel from './PropertyPanel';
-import Toolbar from './Toolbar';
-import FormulaCalculator from './utils/formulaCalculator';
-import { 
-  getConnectionLineStyle, 
-  getEdgeStyle, 
-  getConnectionParams, 
-  generateNodeId, 
+// Importer les nouveaux composants de nœuds redessinés
+import TaskNode from './nodes/task-node';
+import DecisionNode from './nodes/decision-node';
+import EventNode from './nodes/event-node';
+import FormulaNode from './nodes/formula-node';
+import ScenarioNode from './nodes/scenario-node';
+
+import ScenarioSimulator from './utils/scenario-simulator';
+import PropertyPanel from './property-panel/index';
+import Toolbar from './toolbar';
+import FormulaCalculator from './utils/formula-calculator';
+import {
+  getConnectionLineStyle,
+  getEdgeStyle,
+  getConnectionParams,
+  generateNodeId,
   getDefaultNodeLabel,
-  getProcessMetrics 
+  getProcessMetrics
 } from './utils/flow';
 
 // Définition des types de nœuds personnalisés
@@ -126,7 +128,7 @@ const ProcessCanvas = () => {
           }
         },
       };
-      
+
       setEdges((eds) => addEdge(newEdge, eds));
     },
     [setEdges]
@@ -157,7 +159,7 @@ const ProcessCanvas = () => {
 
       // Générer un ID unique pour le nœud
       const nodeId = generateNodeId(type);
-      
+
       let newNode = {
         id: nodeId,
         type,
@@ -235,7 +237,7 @@ const ProcessCanvas = () => {
               ...properties,
             },
           };
-          
+
           // Si c'est une formule, recalculer le résultat
           if (node.type === 'formula' && (properties.formula || properties.variables)) {
             const processContext = {
@@ -245,21 +247,21 @@ const ProcessCanvas = () => {
                 data: n.data
               }))
             };
-            
+
             return FormulaCalculator.executeFormulaNode(updatedNode, processContext);
           }
-          
+
           return updatedNode;
         }
         return node;
       });
-      
+
       // Si une propriété a été mise à jour et qu'il existe des formules
       // qui se déclenchent sur les changements, les recalculer
       const automaticFormulas = updatedNodes.filter(
         node => node.type === 'formula' && node.data.triggerType === 'onChange'
       );
-      
+
       if (automaticFormulas.length > 0) {
         const processContext = {
           nodes: updatedNodes.map(node => ({
@@ -268,7 +270,7 @@ const ProcessCanvas = () => {
             data: node.data
           }))
         };
-        
+
         // Recalculer ces formules
         automaticFormulas.forEach(formulaNode => {
           const updatedFormula = FormulaCalculator.executeFormulaNode(formulaNode, processContext);
@@ -278,7 +280,7 @@ const ProcessCanvas = () => {
           }
         });
       }
-      
+
       return updatedNodes;
     });
   }, []);
@@ -326,7 +328,7 @@ const ProcessCanvas = () => {
 
     // Générer un ID unique pour le nœud
     const nodeId = generateNodeId(type);
-    
+
     let newNode = {
       id: nodeId,
       type,
@@ -382,23 +384,23 @@ const ProcessCanvas = () => {
         data: node.data
       }))
     };
-    
+
     // Identifier tous les nœuds de formule
     const formulaNodes = nodes.filter(node => node.type === 'formula');
-    
+
     // Exécuter chaque formule et mettre à jour les nœuds correspondants
     const updatedNodes = [...nodes];
-    
+
     formulaNodes.forEach(formulaNode => {
       const updatedNode = FormulaCalculator.executeFormulaNode(formulaNode, processContext);
-      
+
       // Mettre à jour le nœud dans la liste
       const nodeIndex = updatedNodes.findIndex(node => node.id === formulaNode.id);
       if (nodeIndex !== -1) {
         updatedNodes[nodeIndex] = updatedNode;
       }
     });
-    
+
     // Mettre à jour tous les nœuds
     setNodes(updatedNodes);
   }, [nodes, setNodes]);
@@ -423,7 +425,7 @@ const ProcessCanvas = () => {
   const runSimulation = useCallback(() => {
     // Avant de simuler, exécutons d'abord toutes les formules
     executeFormulas();
-    
+
     const processData = {
       nodes,
       edges
@@ -439,39 +441,39 @@ const ProcessCanvas = () => {
   const runScenarioSimulations = useCallback(() => {
     // Identifier tous les nœuds de scénario
     const scenarioNodes = nodes.filter(node => node.type === 'scenario');
-    
+
     if (scenarioNodes.length === 0) {
       alert('Aucun nœud de scénario trouvé dans le processus.');
       return;
     }
-    
+
     // Exécuter d'abord toutes les formules pour avoir des valeurs à jour
     executeFormulas();
-    
+
     // Ensuite, exécuter les simulations pour chaque nœud de scénario
     const updatedNodes = [...nodes];
-    
+
     scenarioNodes.forEach(scenarioNode => {
       const updatedScenarioNode = ScenarioSimulator.runSimulation(
-        scenarioNode, 
-        nodes, 
-        edges, 
+        scenarioNode,
+        nodes,
+        edges,
         {
           threshold: scenarioNode.data.threshold || 15,
           referenceVariable: scenarioNode.data.referenceVariable || 'tauxMarge'
         }
       );
-      
+
       // Mettre à jour le nœud dans la liste
       const nodeIndex = updatedNodes.findIndex(node => node.id === scenarioNode.id);
       if (nodeIndex !== -1) {
         updatedNodes[nodeIndex] = updatedScenarioNode;
       }
     });
-    
+
     // Mettre à jour tous les nœuds
     setNodes(updatedNodes);
-    
+
     alert(`Simulation terminée pour ${scenarioNodes.length} scénario(s).`);
   }, [nodes, edges, executeFormulas, setNodes]);
 
@@ -479,7 +481,7 @@ const ProcessCanvas = () => {
   const getOptimizations = useCallback(() => {
     // Avant d'optimiser, exécutons d'abord toutes les formules
     executeFormulas();
-    
+
     const processData = {
       nodes,
       edges
@@ -529,7 +531,7 @@ const ProcessCanvas = () => {
               <Controls />
               {/* <MiniMap /> */}
               <Background gap={16} size={1} />
-              
+
               {/* Métriques du processus */}
               {metrics && (
                 <Panel position="top-right" className="bg-white p-2 rounded-sm shadow-md text-xs">
@@ -550,7 +552,7 @@ const ProcessCanvas = () => {
           <div className="h-full overflow-hidden shrink-0">
             <PropertyPanel
               element={selectedElement}
-              onUpdateProperties={(id, properties) => 
+              onUpdateProperties={(id, properties) =>
                 updateElementProperties(id, properties, selectedElement.type)
               }
             />

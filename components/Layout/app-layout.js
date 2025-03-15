@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 const Layout = ({ children, 
-  title = 'Titre par défaut', 
+  title = 'Twool Labs', 
   description = 'Description par défaut de la page',
   keywords = 'mot-clé1, mot-clé2, mot-clé3',
   ogImage = '/images/og-default.jpg',

@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { UserRoundCheck, PlusSquare, Bell, ChevronDown, LogOut, Settings, User, Search, Menu, X } from 'lucide-react';
+import { useAuthContext } from '/context/auth-context';
 
 const Header = ({ title }) => {
+  const { user } = useAuthContext();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -110,7 +112,7 @@ const Header = ({ title }) => {
                       <UserRoundCheck size={20} />
                     </div>
                     <span className="ml-2 mr-1 text-sm font-medium text-gray-700 hidden lg:block">
-                    Tanguy Gibrat
+                      {user?.first_name} {user?.last_name}
                     </span>
                     <ChevronDown size={16} className="text-gray-400 hidden lg:block" />
                   </div>

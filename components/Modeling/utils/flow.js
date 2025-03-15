@@ -1,166 +1,124 @@
-// components/Modeling/utils/flowUtils.js
-import { MarkerType } from 'reactflow';
+// Générer un ID unique pour les nœuds
+export const generateNodeId = (nodeType) => {
+  return `${nodeType}-${Date.now()}`;
+};
 
-// Configuration des connexions intelligentes
+// Obtenir le label par défaut pour un nouveau nœud
+export const getDefaultNodeLabel = (type, counter) => {
+  const labels = {
+    task: `Tâche ${counter}`,
+    decision: `Décision ${counter}`,
+    event: `Événement ${counter}`,
+    formula: `Formule ${counter}`,
+    scenario: `Scénario ${counter}`
+  };
+  
+  return labels[type] || `Nœud ${counter}`;
+};
+
+// Obtenir le style de ligne de connexion
 export const getConnectionLineStyle = () => {
   return {
     strokeWidth: 2,
-    stroke: '#b1b1b7',
-    strokeDasharray: '5 5',
+    stroke: '#9ca3af', // gray-400 pour une esthétique plus sobre
   };
 };
 
-// Configuration des arêtes en fonction de leur source et de leurs propriétés
+// Obtenir le style d'une arête en fonction de ses données
 export const getEdgeStyle = (data) => {
-  // Valeurs par défaut
-  const style = {
+  // Style par défaut
+  const defaultStyle = {
     strokeWidth: data?.style?.strokeWidth || 2,
+    stroke: data?.style?.stroke || '#9ca3af', // gray-400 par défaut
   };
 
-  // Si l'arête est liée à un handle spécifique, on adapte le style
-  if (data?.sourceHandle) {
-    // Connexions depuis un nœud de décision
-    if (data.sourceHandle === 'yes') {
-      style.stroke = '#10b981'; // Vert
-      style.markerEnd = {
-        type: MarkerType.ArrowClosed,
-        color: '#10b981'
-      };
-    } else if (data.sourceHandle === 'no') {
-      style.stroke = '#ef4444'; // Rouge
-      style.markerEnd = {
-        type: MarkerType.ArrowClosed,
-        color: '#ef4444'
-      };
-    } else if (data.sourceHandle === 'alt') {
-      style.stroke = '#3b82f6'; // Bleu
-      style.markerEnd = {
-        type: MarkerType.ArrowClosed,
-        color: '#3b82f6'
-      };
-    } else if (data.sourceHandle === 'back') {
-      style.stroke = '#8b5cf6'; // Violet
-      style.markerEnd = {
-        type: MarkerType.ArrowClosed,
-        color: '#8b5cf6'
-      };
-    } else if (data.sourceHandle.startsWith('source-')) {
-      style.stroke = '#6366f1'; // Indigo
-      style.markerEnd = {
-        type: MarkerType.ArrowClosed,
-        color: '#6366f1'
-      };
-    }
-  } else {
-    // Style par défaut pour les autres connexions
-    style.stroke = '#6366f1'; // Indigo
-    style.markerEnd = {
-      type: MarkerType.ArrowClosed,
-      color: '#6366f1'
-    };
-  }
-
-  // Appliquer l'animation si elle est définie
+  // Si l'arête est animée, ajouter la propriété d'animation
   if (data?.animated) {
-    style.animated = true;
+    defaultStyle.animationDuration = '5s';
   }
 
-  // Appliquer l'épaisseur de ligne personnalisée si définie
-  if (data?.style?.strokeWidth) {
-    style.strokeWidth = data.style.strokeWidth;
-  }
-
-  // Appliquer la couleur personnalisée si définie
-  if (data?.style?.stroke) {
-    style.stroke = data.style.stroke;
-    if (style.markerEnd) {
-      style.markerEnd.color = data.style.stroke;
+  // Si l'arête a une source spécifique (yes, no, alt), définir sa couleur
+  if (data?.sourceHandle) {
+    switch (data.sourceHandle) {
+      case 'yes':
+        defaultStyle.stroke = data?.style?.stroke || '#10b981'; // green-500
+        break;
+      case 'no':
+        defaultStyle.stroke = data?.style?.stroke || '#ef4444'; // red-500
+        break;
+      case 'alt':
+        defaultStyle.stroke = data?.style?.stroke || '#3b82f6'; // blue-500
+        break;
+      case 'back':
+        defaultStyle.stroke = data?.style?.stroke || '#8b5cf6'; // purple-500
+        break;
+      default:
+        // Utiliser la couleur personnalisée si elle existe, sinon la couleur par défaut
+        defaultStyle.stroke = data?.style?.stroke || defaultStyle.stroke;
     }
   }
 
-  return style;
+  return defaultStyle;
 };
 
-// Configuration par défaut des paramètres des connexions
-export const getConnectionParams = () => {
-  return {
-    type: 'smoothstep',    // Type de courbe de connexion
-    animated: false,        // Animation par défaut
+// Obtenir les paramètres de connexion pour un type de nœud
+export const getConnectionParams = (nodeType, sourceHandle) => {
+  // Paramètres par défaut
+  const defaultParams = {
+    type: 'smoothstep',
     style: {
       strokeWidth: 2,
-      stroke: '#6366f1',
+      stroke: '#9ca3af', // gray-400
     },
-    markerEnd: {
-      type: MarkerType.ArrowClosed,
-      color: '#6366f1'
-    }
   };
-};
 
-// Génère un ID unique pour les nœuds
-export const generateNodeId = (type) => {
-  const timestamp = new Date().getTime();
-  const random = Math.floor(Math.random() * 1000);
-  return `${type}-${timestamp}-${random}`;
-};
-
-// Génère une étiquette par défaut pour un nouveau nœud
-export const getDefaultNodeLabel = (type, count) => {
-  switch (type) {
-    case 'task':
-      return `Tâche ${count}`;
-    case 'decision':
-      return `Décision ${count}`;
-    case 'event':
-      return `Événement ${count}`;
-    case 'formula':
-      return `Formule ${count}`;
-    default:
-      return `Nœud ${count}`;
+  // Personnaliser les paramètres selon le type de nœud et la poignée source
+  if (nodeType === 'decision' && sourceHandle) {
+    switch (sourceHandle) {
+      case 'yes':
+        defaultParams.style.stroke = '#10b981'; // green-500
+        break;
+      case 'no':
+        defaultParams.style.stroke = '#ef4444'; // red-500
+        break;
+      case 'alt':
+        defaultParams.style.stroke = '#3b82f6'; // blue-500
+        break;
+    }
   }
+
+  return defaultParams;
 };
 
-
+// Calculer les métriques d'un processus
 export const getProcessMetrics = (nodes, edges) => {
-  const metrics = {
-    totalTasks: 0,
-    totalDecisions: 0, 
-    totalEvents: 0,
-    totalFormulas: 0,
-    estimatedDuration: 0,
-    estimatedCost: 0,
-    totalConnections: edges.length,
-    formulaResults: {},
-    criticalPath: [],
+  // Comptage des différents types de nœuds
+  const totalTasks = nodes.filter(node => node.type === 'task').length;
+  const totalDecisions = nodes.filter(node => node.type === 'decision').length;
+  const totalEvents = nodes.filter(node => node.type === 'event').length;
+  const totalFormulas = nodes.filter(node => node.type === 'formula').length;
+  const totalScenarios = nodes.filter(node => node.type === 'scenario').length;
+  const totalConnections = edges.length;
+
+  // Calcul de la durée estimée (somme des durées des tâches)
+  const estimatedDuration = nodes
+    .filter(node => node.type === 'task')
+    .reduce((sum, node) => sum + (node.data.duration || 0), 0);
+
+  // Calcul du coût estimé (somme des coûts des tâches)
+  const estimatedCost = nodes
+    .filter(node => node.type === 'task')
+    .reduce((sum, node) => sum + (node.data.cost || 0), 0);
+
+  return {
+    totalNodes: nodes.length,
+    totalTasks,
+    totalDecisions,
+    totalEvents,
+    totalFormulas,
+    totalScenarios,
+    totalConnections,
+    estimatedDuration,
+    estimatedCost
   };
-  
-  // Calcul des métriques de base
-  nodes.forEach(node => {
-    switch (node.type) {
-      case 'task':
-        metrics.totalTasks++;
-        metrics.estimatedDuration += parseInt(node.data.duration || 0);
-        metrics.estimatedCost += parseFloat(node.data.cost || 0);
-        break;
-      case 'decision':
-        metrics.totalDecisions++;
-        break;
-      case 'event':
-        metrics.totalEvents++;
-        break;
-      case 'formula':
-        metrics.totalFormulas++;
-        // Stocker le résultat de la formule si disponible
-        if (node.data.result !== undefined) {
-          metrics.formulaResults[node.id] = {
-            label: node.data.label,
-            formula: node.data.formula,
-            result: node.data.result
-          };
-        }
-        break;
-    }
-  });
-  
-  return metrics;
 };
