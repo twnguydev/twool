@@ -3,6 +3,7 @@ import { evaluate } from 'mathjs';
 
 /**
  * Service qui permet d'évaluer des formules mathématiques dans le contexte d'un processus
+ * avec gestion robuste des termes composés comme "Postes à pourvoir"
  */
 export class FormulaCalculator {
   /**
@@ -28,38 +29,111 @@ export class FormulaCalculator {
         results: [],
         assignedVariables: [],
         allVariables: { ...scope },
-        error: null
+        error: null,
+        // Mapping global des variables pour traduire entre les noms avec et sans espaces
+        variableMapping: {},
+        // Valeurs courantes de toutes les variables pour le débogage
+        currentValues: {}
       };
+      
+      // Identifier d'abord tous les termes composés dans l'ensemble des formules
+      const composedTerms = this.identifyComposedTerms(formulas);
       
       // Évaluer chaque formule séquentiellement
       for (const formula of formulas) {
         const trimmedFormula = formula.trim();
         
-        // Détecter si la formule est une assignation ou simplement une expression
-        const isAssignment = trimmedFormula.includes('=');
-        
-        if (isAssignment) {
-          // Si c'est une assignation, évaluer et capturer la variable assignée
-          const assignedVariable = trimmedFormula.split('=')[0].trim();
-          const result = evaluate(trimmedFormula, results.allVariables);
+        try {
+          // Préprocesser la formule avec les termes composés identifiés
+          const { processedFormula, variableMap } = this.preprocessFormula(
+            trimmedFormula,
+            results.variableMapping,
+            composedTerms
+          );
           
-          // Stocker le résultat dans l'environnement pour les formules suivantes
-          results.allVariables[assignedVariable] = result;
+          console.log(`Prétraitement: "${trimmedFormula}" -> "${processedFormula}"`);
           
-          // Ajouter aux résultats
-          results.results.push(result);
-          results.assignedVariables.push({
-            name: assignedVariable,
-            value: result
+          // Fusionner les mappings de variables
+          results.variableMapping = { ...results.variableMapping, ...variableMap };
+          
+          // Préparer le scope pour mathjs
+          const evaluationScope = { ...results.allVariables };
+          
+          // Vérifier les variables sanitizées et les ajouter à l'environnement
+          Object.entries(results.variableMapping).forEach(([original, sanitized]) => {
+            if (evaluationScope[original] !== undefined) {
+              evaluationScope[sanitized] = evaluationScope[original];
+            } else if (evaluationScope[sanitized] !== undefined) {
+              evaluationScope[original] = evaluationScope[sanitized];
+            }
           });
-        } else {
-          // Sinon, évaluer simplement l'expression
-          const result = evaluate(trimmedFormula, results.allVariables);
-          results.results.push(result);
+          
+          // Pour débogage
+          results.currentValues = { ...evaluationScope };
+          
+          // Détecter si la formule est une assignation
+          const isAssignment = processedFormula.includes('=');
+          
+          if (isAssignment) {
+            // Extraire la variable assignée et l'expression
+            const [sanitizedVariable, expression] = processedFormula.split('=').map(part => part.trim());
+            
+            try {
+              // Évaluer l'expression avec mathjs
+              const result = evaluate(processedFormula, evaluationScope);
+              
+              // Déterminer le nom de variable original
+              const originalVariable = this.getOriginalVariableName(
+                sanitizedVariable,
+                results.variableMapping
+              ) || sanitizedVariable;
+              
+              // Stocker les résultats dans l'environnement pour les formules suivantes
+              results.allVariables[originalVariable] = result;
+              results.allVariables[sanitizedVariable] = result;
+              
+              // Ajouter aux résultats
+              results.results.push(result);
+              results.assignedVariables.push({
+                name: originalVariable,
+                value: result
+              });
+              
+            } catch (evalError) {
+              // Essayer de déterminer quelle variable est indéfinie
+              const undefinedMatch = evalError.message.match(/Undefined symbol (.+)/);
+              if (undefinedMatch) {
+                const undefinedVar = undefinedMatch[1];
+                const mappedVars = Object.entries(results.variableMapping).map(([k, v]) => ({ original: k, sanitized: v }));
+                
+                console.error(`Variable non définie: ${undefinedVar}`);
+                console.error(`Variables disponibles:`, Object.keys(evaluationScope));
+                console.error(`Mapping de variables:`, mappedVars);
+                
+                // Essayer de trouver le problème
+                const potentialMatches = mappedVars.filter(v => 
+                  v.sanitized.includes(undefinedVar) || 
+                  v.original.includes(undefinedVar)
+                );
+                
+                if (potentialMatches.length > 0) {
+                  console.error(`Correspondances potentielles pour ${undefinedVar}:`, potentialMatches);
+                }
+              }
+              throw evalError;
+            }
+          } else {
+            // Pour une simple expression sans assignation
+            const result = evaluate(processedFormula, evaluationScope);
+            results.results.push(result);
+          }
+        } catch (error) {
+          console.error(`Erreur sur la formule "${trimmedFormula}":`, error);
+          throw new Error(`Erreur sur la formule "${trimmedFormula}": ${error.message}`);
         }
       }
       
-      // Pour garantir la compatibilité avec le code existant, on retourne également le premier résultat
+      // Pour garantir la compatibilité avec le code existant
       results.result = results.results[0];
       
       return results;
@@ -72,6 +146,160 @@ export class FormulaCalculator {
         assignedVariables: []
       };
     }
+  }
+  
+  /**
+   * Identifie les termes composés (avec espaces) dans un ensemble de formules
+   * @param {Array<string>} formulas - Tableau de formules à analyser
+   * @returns {Array<string>} - Tableau de termes composés identifiés, triés par longueur décroissante
+   */
+  static identifyComposedTerms(formulas) {
+    // Regex qui détecte les termes composés comme "Postes à pourvoir"
+    const composedTermRegex = /\b([a-zA-Z][a-zA-Z0-9]*(?:\s+(?:à|de|des|en|du|pour|par|avec|et|sur|dans|sans|entre)\s+[a-zA-Z][a-zA-Z0-9]*)+)\b/gi;
+    
+    const composedTerms = new Set();
+    
+    // Parcourir chaque formule
+    formulas.forEach(formula => {
+      let match;
+      // Réinitialiser le regex pour chaque formule
+      const regex = new RegExp(composedTermRegex);
+      
+      // Collecter tous les termes composés
+      while ((match = regex.exec(formula)) !== null) {
+        composedTerms.add(match[0]);
+      }
+    });
+    
+    // Convertir en tableau et trier par longueur décroissante
+    return Array.from(composedTerms).sort((a, b) => b.length - a.length);
+  }
+  
+  /**
+   * Préprocesse une formule pour gérer les espaces dans les noms de variables
+   * @param {string} formula - Texte de la formule à préprocesser
+   * @param {Object} existingVars - Mapping existant des variables
+   * @param {Array<string>} composedTerms - Termes composés identifiés
+   * @returns {Object} Formule préprocessée et mapping des variables
+   */
+  static preprocessFormula(formula, existingVars = {}, composedTerms = []) {
+    if (!formula || typeof formula !== 'string') {
+      return { processedFormula: '', variableMap: {} };
+    }
+    
+    // Étape 1: Détecter si c'est une assignation
+    const assignmentIndex = formula.indexOf('=');
+    if (assignmentIndex === -1) {
+      return { processedFormula: formula.trim(), variableMap: {} };
+    }
+    
+    // Étape 2: Extraire les parties gauche et droite
+    const leftSide = formula.substring(0, assignmentIndex).trim();
+    const rightSide = formula.substring(assignmentIndex + 1).trim();
+    
+    // Étape 3: Créer un dictionnaire de mappage pour les variables avec espaces
+    const variableMap = { ...existingVars };
+    
+    // Fonction pour sanitizer les noms de variables (remplacer espaces par underscores)
+    function sanitizeVariableName(name) {
+      return name.replace(/\s+/g, '_');
+    }
+    
+    // D'abord traiter les termes composés identifiés
+    composedTerms.forEach(term => {
+      if (!variableMap[term]) {
+        variableMap[term] = sanitizeVariableName(term);
+      }
+    });
+    
+    // Ensuite traiter les variables simples avec espaces
+    function extractSimpleVariables(text) {
+      // Extraire les variables simples (mots séparés par des espaces)
+      const simpleVarRegex = /\b([a-zA-Z][a-zA-Z0-9]*(?:\s+[a-zA-Z][a-zA-Z0-9]*)*)\b/g;
+      
+      let match;
+      while ((match = simpleVarRegex.exec(text)) !== null) {
+        const term = match[0].trim();
+        // Ne pas traiter les termes déjà identifiés comme composés
+        if (term.includes(' ') && !composedTerms.includes(term) && !variableMap[term]) {
+          variableMap[term] = sanitizeVariableName(term);
+        }
+      }
+    }
+    
+    // Extraire les variables simples de chaque côté
+    extractSimpleVariables(leftSide);
+    extractSimpleVariables(rightSide);
+    
+    // Étape 4: Remplacer les variables avec espaces par leur version sanitizée
+    let processedLeftSide = leftSide;
+    let processedRightSide = rightSide;
+    
+    // Remplacer dans l'ordre de longueur décroissante pour éviter les remplacements partiels
+    const sortedVarNames = Object.keys(variableMap).sort((a, b) => b.length - a.length);
+    
+    for (const original of sortedVarNames) {
+      const sanitized = variableMap[original];
+      
+      // Utiliser une regex pour remplacer uniquement les mots entiers
+      const regex = new RegExp(`\\b${FormulaCalculator.escapeRegExp(original)}\\b`, 'g');
+      
+      processedLeftSide = processedLeftSide.replace(regex, sanitized);
+      processedRightSide = processedRightSide.replace(regex, sanitized);
+    }
+    
+    // Traitement spécial pour "Postes à pourvoir" qui peut être mal détecté
+    if (rightSide.includes("Postes à pourvoir") && processedRightSide.includes("Postes à pourvoir")) {
+      // Si le terme n'a pas été correctement remplacé, forcer un remplacement direct
+      processedRightSide = processedRightSide.replace(/Postes à pourvoir/g, "Postes_à_pourvoir");
+      variableMap["Postes à pourvoir"] = "Postes_à_pourvoir";
+    }
+    
+    // Étape 5: Normaliser les opérateurs dans la partie droite
+    const operators = ['+', '-', '*', '/', '^', '%'];
+    
+    operators.forEach(op => {
+      // Créer une regex qui trouve l'opérateur sans espaces
+      const regex = new RegExp(`([a-zA-Z0-9_\\.\\)\\]])\\${op}([a-zA-Z0-9_\\.\\(\\[])`);
+      
+      // Tant qu'il y a des correspondances, les remplacer
+      while (regex.test(processedRightSide)) {
+        processedRightSide = processedRightSide.replace(regex, `$1 ${op} $2`);
+      }
+    });
+    
+    // Assembler la formule finale
+    const processedFormula = `${processedLeftSide} = ${processedRightSide}`;
+    
+    return {
+      processedFormula,
+      variableMap
+    };
+  }
+  
+  /**
+   * Échapper les caractères spéciaux pour une utilisation dans des regex
+   * @param {string} string - Chaîne à échapper
+   * @returns {string} - Chaîne échappée
+   */
+  static escapeRegExp(string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+  
+  /**
+   * Récupère le nom de variable original à partir du nom sanitizé
+   * @param {string} sanitizedName - Nom de variable sanitizé
+   * @param {Object} variableMap - Mapping des variables
+   * @returns {string} Nom de variable original ou null si non trouvé
+   */
+  static getOriginalVariableName(sanitizedName, variableMap) {
+    // Créer un mapping inverse (sanitized -> original)
+    for (const [original, sanitized] of Object.entries(variableMap)) {
+      if (sanitized === sanitizedName) {
+        return original;
+      }
+    }
+    return null;
   }
   
   /**
@@ -102,6 +330,9 @@ export class FormulaCalculator {
   static extractContextVariables(context) {
     const result = {};
     
+    // Mapping pour garder une trace des variables avec espaces
+    const variableMapping = {};
+    
     // Extraire les variables des nœuds précédents
     if (context.nodes) {
       context.nodes.forEach(node => {
@@ -115,6 +346,13 @@ export class FormulaCalculator {
             node.data.variables.forEach(variable => {
               const numValue = Number(variable.value);
               result[variable.name] = isNaN(numValue) ? variable.value : numValue;
+              
+              // Si le nom contient des espaces, ajouter aussi une version sans espaces
+              if (variable.name.includes(' ')) {
+                const sanitizedName = variable.name.replace(/\s+/g, '_');
+                result[sanitizedName] = result[variable.name];
+                variableMapping[variable.name] = sanitizedName;
+              }
             });
           }
         } else if (node.type === 'formula') {
@@ -128,15 +366,34 @@ export class FormulaCalculator {
             node.data.variables.forEach(variable => {
               const numValue = Number(variable.value);
               result[variable.name] = isNaN(numValue) ? variable.value : numValue;
+              
+              // Si le nom contient des espaces, ajouter aussi une version sans espaces
+              if (variable.name.includes(' ')) {
+                const sanitizedName = variable.name.replace(/\s+/g, '_');
+                result[sanitizedName] = result[variable.name];
+                variableMapping[variable.name] = sanitizedName;
+              }
             });
           }
           
-          // AMÉLIORATION: Extraire aussi les variables assignées pour les rendre disponibles
+          // Extraire aussi les variables assignées pour les rendre disponibles
           if (node.data.assignedVariables) {
             node.data.assignedVariables.forEach(variable => {
               const numValue = Number(variable.value);
               result[variable.name] = isNaN(numValue) ? variable.value : numValue;
+              
+              // Si le nom contient des espaces, ajouter aussi une version sans espaces
+              if (variable.name.includes(' ')) {
+                const sanitizedName = variable.name.replace(/\s+/g, '_');
+                result[sanitizedName] = result[variable.name];
+                variableMapping[variable.name] = sanitizedName;
+              }
             });
+          }
+          
+          // Si le nœud a un mapping de variables, l'incorporer
+          if (node.data.variableMapping) {
+            Object.assign(variableMapping, node.data.variableMapping);
           }
         }
       });
@@ -159,6 +416,9 @@ export class FormulaCalculator {
       );
     };
     
+    // Ajouter le mapping de variables au résultat
+    result.__variableMapping = variableMapping;
+    
     return result;
   }
   
@@ -172,11 +432,16 @@ export class FormulaCalculator {
     const formula = formulaNode.data.formula;
     const variables = formulaNode.data.variables || [];
     
-    // Évaluer la formule
+    // Récupérer le mapping de variables du contexte s'il existe
+    const contextVariables = this.extractContextVariables(processContext);
+    const existingMapping = contextVariables.__variableMapping || {};
+    delete contextVariables.__variableMapping;
+    
+    // Évaluer la formule avec le mapping existant
     const result = this.evaluateFormula(formula, variables, processContext);
     
     if (result.success) {
-      // AMÉLIORATION: Extraire automatiquement les variables assignées 
+      // Extraire automatiquement les variables assignées 
       // et les ajouter aux variables du nœud
       const existingVariableNames = new Set(variables.map(v => v.name));
       const newVariables = [...variables];
@@ -204,6 +469,7 @@ export class FormulaCalculator {
           results: result.results,   // Tous les résultats sont stockés dans un tableau
           variables: newVariables,   // Liste mise à jour des variables incluant celles assignées
           assignedVariables: result.assignedVariables, // Variables assignées par la formule
+          variableMapping: result.variableMapping, // Mapping des variables avec espaces
           error: null,
           lastCalculation: new Date().toISOString()
         }

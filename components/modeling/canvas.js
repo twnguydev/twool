@@ -19,6 +19,7 @@ import DecisionNode from './nodes/decision-node';
 import EventNode from './nodes/event-node';
 import FormulaNode from './nodes/formula-node';
 import ScenarioNode from './nodes/scenario-node';
+import CustomEdge from './custom-edge';
 
 import ScenarioSimulator from './utils/scenario-simulator';
 import PropertyPanel from './property-panel/index';
@@ -26,8 +27,6 @@ import Toolbar from './toolbar';
 import FormulaCalculator from './utils/formula-calculator';
 import {
   getConnectionLineStyle,
-  getEdgeStyle,
-  getConnectionParams,
   generateNodeId,
   getDefaultNodeLabel,
   getProcessMetrics
@@ -40,54 +39,6 @@ const nodeTypes = {
   event: EventNode,
   formula: FormulaNode,
   scenario: ScenarioNode
-};
-
-// Composant edge personnalisé pour gérer les styles
-const CustomEdge = (props) => {
-  const [edgePath, labelX, labelY] = getBezierPath({
-    sourceX: props.sourceX,
-    sourceY: props.sourceY,
-    sourcePosition: props.sourcePosition,
-    targetX: props.targetX,
-    targetY: props.targetY,
-    targetPosition: props.targetPosition,
-  });
-
-  // Récupérer les styles en fonction des données
-  const edgeStyle = getEdgeStyle(props.data);
-
-  return (
-    <>
-      <path
-        id={props.id}
-        className="react-flow__edge-path"
-        d={edgePath}
-        style={{
-          ...edgeStyle,
-          ...(props.selected && { strokeWidth: (edgeStyle.strokeWidth || 2) + 1, stroke: '#3b82f6' }),
-        }}
-        markerEnd={props.markerEnd}
-      />
-      {props.data?.label && (
-        <text
-          x={labelX}
-          y={labelY}
-          className="react-flow__edge-text"
-          style={{
-            fontSize: '12px',
-            fill: '#64748b',
-            stroke: 'white',
-            strokeWidth: '2px',
-            paintOrder: 'stroke',
-            textAnchor: 'middle',
-            dominantBaseline: 'middle',
-          }}
-        >
-          {props.data.label}
-        </text>
-      )}
-    </>
-  );
 };
 
 const edgeTypes = {
@@ -113,7 +64,7 @@ const ProcessCanvas = () => {
   // Gestionnaire de connexion de deux nœuds avec les paramètres améliorés
   const onConnect = useCallback(
     (params) => {
-      // Utilisez les paramètres de connexion des utils
+      // Créer une nouvelle connexion avec les données nécessaires
       const newEdge = {
         ...params,
         type: 'custom',
@@ -122,17 +73,75 @@ const ProcessCanvas = () => {
           targetHandle: params.targetHandle,
           label: '',
           animated: false,
-          style: {
-            strokeWidth: 2,
-            stroke: null // Sera défini automatiquement par getEdgeStyle
-          }
+          // Ajouter un timestamp pour initialiser l'arête
+          rotationUpdateTimestamp: Date.now()
         },
       };
 
+      // Ajouter la position des handles pour les nœuds de décision
+      const sourceNode = nodes.find(node => node.id === params.source);
+      if (sourceNode && sourceNode.type === 'decision' && sourceNode.data.rotation) {
+        newEdge.sourcePosition = getHandlePosition(sourceNode.data.rotation, params.sourceHandle);
+      }
+      
+      const targetNode = nodes.find(node => node.id === params.target);
+      if (targetNode && targetNode.type === 'decision' && targetNode.data.rotation) {
+        newEdge.targetPosition = getHandlePosition(targetNode.data.rotation, params.targetHandle);
+      }
+
       setEdges((eds) => addEdge(newEdge, eds));
     },
-    [setEdges]
+    [setEdges, nodes]
   );
+
+  // Fonction pour obtenir la position du handle en fonction de la rotation
+  const getHandlePosition = (rotation, handleId) => {
+    // Map de positions des handles pour chaque rotation
+    const positionMap = {
+      0: {
+        yes: 'bottom',
+        no: 'right',
+        alt: 'top',
+        back: 'left',
+        "target-top": 'top',
+        "target-right": 'right',
+        "target-bottom": 'bottom',
+        "target-left": 'left',
+      },
+      90: {
+        yes: 'left',
+        no: 'bottom',
+        alt: 'right',
+        back: 'top',
+        "target-top": 'right',
+        "target-right": 'bottom',
+        "target-bottom": 'left',
+        "target-left": 'top',
+      },
+      180: {
+        yes: 'top',
+        no: 'left',
+        alt: 'bottom',
+        back: 'right',
+        "target-top": 'bottom',
+        "target-right": 'left',
+        "target-bottom": 'top',
+        "target-left": 'right',
+      },
+      270: {
+        yes: 'right',
+        no: 'top',
+        alt: 'left',
+        back: 'bottom',
+        "target-top": 'left',
+        "target-right": 'top',
+        "target-bottom": 'right',
+        "target-left": 'bottom',
+      }
+    };
+    
+    return positionMap[rotation]?.[handleId] || null;
+  };
 
   // Ajouter un nouveau nœud au canvas
   const onDragOver = useCallback((event) => {
@@ -175,11 +184,18 @@ const ProcessCanvas = () => {
 
       // Ajouter des propriétés spécifiques selon le type de nœud
       if (type === 'decision') {
-        newNode.data.conditions = [
-          { id: 'yes', label: 'Oui', targetId: null },
-          { id: 'no', label: 'Non', targetId: null },
-          { id: 'alt', label: 'Autre', targetId: null }
-        ];
+        newNode.data = {
+          ...newNode.data,
+          conditions: [
+            { id: 'yes', label: 'Oui', targetId: null },
+            { id: 'no', label: 'Non', targetId: null },
+            { id: 'alt', label: 'Autre', targetId: null }
+          ],
+          rotation: 0, // Initialiser la rotation à 0
+          onNodeUpdate: (updatedProps) => {
+            updateNodeProperties(nodeId, updatedProps);
+          }
+        };
       } else if (type === 'event') {
         newNode.data.eventType = 'start';
       } else if (type === 'formula') {
@@ -224,12 +240,15 @@ const ProcessCanvas = () => {
     }
   }, []);
 
-  // Mettre à jour les propriétés d'un nœud avec recalcul des formules
-  const updateNodeProperties = useCallback((id, properties) => {
-    setNodes((nds) => {
-      const updatedNodes = nds.map((node) => {
-        if (node.id === id) {
-          // Mettre à jour le nœud avec les nouvelles propriétés
+// Mettre à jour les propriétés d'un nœud avec recalcul des formules
+const updateNodeProperties = useCallback((id, properties) => {
+  setNodes((nds) => {
+    const updatedNodes = nds.map((node) => {
+      if (node.id === id) {
+        // Si les propriétés incluent une rotation, nous devons également
+        // mettre à jour les arêtes connectées
+        if (properties.rotation !== undefined && node.type === 'decision') {
+          // Mettre à jour le nœud d'abord
           const updatedNode = {
             ...node,
             data: {
@@ -237,53 +256,90 @@ const ProcessCanvas = () => {
               ...properties,
             },
           };
-
-          // Si c'est une formule, recalculer le résultat
-          if (node.type === 'formula' && (properties.formula || properties.variables)) {
-            const processContext = {
-              nodes: nds.map(n => ({
-                id: n.id,
-                type: n.type,
-                data: n.data
-              }))
-            };
-
-            return FormulaCalculator.executeFormulaNode(updatedNode, processContext);
-          }
-
+          
+          // Forcer la mise à jour des arêtes connectées immédiatement
+          const timestamp = Date.now();
+          setEdges((eds) => 
+            eds.map((edge) => {
+              if (edge.source === id || edge.target === id) {
+                // Create a new edge object with updated properties
+                return {
+                  ...edge,
+                  data: {
+                    ...edge.data,
+                    rotationUpdateTimestamp: timestamp,
+                  },
+                  // Update positions if needed based on rotation
+                  ...(edge.source === id && edge.sourceHandle
+                    ? { sourcePosition: getHandlePosition(properties.rotation, edge.sourceHandle) }
+                    : {}),
+                  ...(edge.target === id && edge.targetHandle
+                    ? { targetPosition: getHandlePosition(properties.rotation, edge.targetHandle) }
+                    : {})
+                };
+              }
+              return edge;
+            })
+          );
+          
           return updatedNode;
         }
-        return node;
-      });
 
-      // Si une propriété a été mise à jour et qu'il existe des formules
-      // qui se déclenchent sur les changements, les recalculer
-      const automaticFormulas = updatedNodes.filter(
-        node => node.type === 'formula' && node.data.triggerType === 'onChange'
-      );
-
-      if (automaticFormulas.length > 0) {
-        const processContext = {
-          nodes: updatedNodes.map(node => ({
-            id: node.id,
-            type: node.type,
-            data: node.data
-          }))
+        // Mettre à jour le nœud avec les nouvelles propriétés
+        const updatedNode = {
+          ...node,
+          data: {
+            ...node.data,
+            ...properties,
+          },
         };
 
-        // Recalculer ces formules
-        automaticFormulas.forEach(formulaNode => {
-          const updatedFormula = FormulaCalculator.executeFormulaNode(formulaNode, processContext);
-          const nodeIndex = updatedNodes.findIndex(node => node.id === formulaNode.id);
-          if (nodeIndex !== -1) {
-            updatedNodes[nodeIndex] = updatedFormula;
-          }
-        });
-      }
+        // Si c'est une formule, recalculer le résultat
+        if (node.type === 'formula' && (properties.formula || properties.variables)) {
+          const processContext = {
+            nodes: nds.map(n => ({
+              id: n.id,
+              type: n.type,
+              data: n.data
+            }))
+          };
 
-      return updatedNodes;
+          return FormulaCalculator.executeFormulaNode(updatedNode, processContext);
+        }
+
+        return updatedNode;
+      }
+      return node;
     });
-  }, []);
+
+    // Si une propriété a été mise à jour et qu'il existe des formules
+    // qui se déclenchent sur les changements, les recalculer
+    const automaticFormulas = updatedNodes.filter(
+      node => node.type === 'formula' && node.data.triggerType === 'onChange'
+    );
+
+    if (automaticFormulas.length > 0) {
+      const processContext = {
+        nodes: updatedNodes.map(node => ({
+          id: node.id,
+          type: node.type,
+          data: node.data
+        }))
+      };
+
+      // Recalculer ces formules
+      automaticFormulas.forEach(formulaNode => {
+        const updatedFormula = FormulaCalculator.executeFormulaNode(formulaNode, processContext);
+        const nodeIndex = updatedNodes.findIndex(node => node.id === formulaNode.id);
+        if (nodeIndex !== -1) {
+          updatedNodes[nodeIndex] = updatedFormula;
+        }
+      });
+    }
+
+    return updatedNodes;
+  });
+}, [setNodes, setEdges]);
 
   // Mettre à jour les propriétés d'une arête
   const updateEdgeProperties = useCallback((id, properties) => {
@@ -296,6 +352,8 @@ const ProcessCanvas = () => {
             data: {
               ...edge.data,
               ...properties,
+              // Préserver le timestamp de rotation s'il existe
+              rotationUpdateTimestamp: edge.data?.rotationUpdateTimestamp || null,
             },
             // Si le label est défini, l'ajouter aussi directement à l'edge
             ...(properties.label !== undefined ? { label: properties.label } : {})
@@ -344,11 +402,19 @@ const ProcessCanvas = () => {
 
     // Propriétés spécifiques au type de nœud
     if (type === 'decision') {
-      newNode.data.conditions = [
-        { id: 'yes', label: 'Oui', targetId: null },
-        { id: 'no', label: 'Non', targetId: null },
-        { id: 'alt', label: 'Autre', targetId: null }
-      ];
+      newNode.data = {
+        ...newNode.data,
+        conditions: [
+          { id: 'yes', label: 'Oui', targetId: null },
+          { id: 'no', label: 'Non', targetId: null },
+          { id: 'alt', label: 'Autre', targetId: null }
+        ],
+        rotation: 0, // Initialiser la propriété de rotation à 0 degrés
+        // Ajouter une méthode pour mettre à jour les propriétés du nœud
+        onNodeUpdate: (updatedProps) => {
+          updateNodeProperties(nodeId, updatedProps);
+        }
+      };
     } else if (type === 'event') {
       newNode.data.eventType = 'start';
     } else if (type === 'formula') {
@@ -372,7 +438,7 @@ const ProcessCanvas = () => {
 
     setNodes((nds) => nds.concat(newNode));
     setNodeIdCounter(nodeIdCounter + 1);
-  }, [reactFlowInstance, nodeIdCounter, setNodes]);
+  }, [reactFlowInstance, nodeIdCounter, setNodes, updateNodeProperties]);
 
   // Fonction pour exécuter toutes les formules du processus
   const executeFormulas = useCallback(() => {

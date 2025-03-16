@@ -16,7 +16,7 @@ export const CtaBanner = () => {
           <div>
             <h2 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
               <span className="block">Prêt à transformer vos processus?</span>
-              <span className="block text-indigo-200">Démarrez votre essai gratuit aujourd'hui.</span>
+              <span className="block text-indigo-200">Démarrez dès aujourd'hui.</span>
             </h2>
             <p className="mt-4 text-lg text-indigo-100 max-w-md">
               Rejoignez les entreprises qui optimisent déjà leurs opérations grâce à Twool Labs.
@@ -26,7 +26,7 @@ export const CtaBanner = () => {
             <div className="rounded-md shadow-sm">
               <Link href="/auth/signup">
                 <span className="flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 transition-colors duration-300 cursor-pointer">
-                  Commencer gratuitement
+                  Commencer maintenant
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </span>
               </Link>

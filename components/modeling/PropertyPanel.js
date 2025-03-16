@@ -1,4 +1,3 @@
-// components/Modeling/PropertyPanel.js
 import React, { useState, useEffect } from 'react';
 import FormulaSelector from './FormulaSelector';
 

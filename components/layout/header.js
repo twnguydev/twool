@@ -57,7 +57,7 @@ const Header = ({ title }) => {
             </div>
 
             {/* Bouton de création */}
-            <Link href="/dashboard/modeling/workflows/create" className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-xs text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <Link href="/dashboard/modeling/workflows/create" className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-xs text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
               <PlusSquare size={16} className="mr-2" />
               Créer un workflow
             </Link>
@@ -108,7 +108,7 @@ const Header = ({ title }) => {
                   className="flex items-center max-w-xs text-sm rounded-full focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                 >
                   <div className="flex items-center">
-                    <div className="h-9 w-9 bg-linear-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white shadow-xs">
+                    <div className="h-9 w-9 bg-linear-to-r from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center text-white shadow-xs">
                       <UserRoundCheck size={20} />
                     </div>
                     <span className="ml-2 mr-1 text-sm font-medium text-gray-700 hidden lg:block">

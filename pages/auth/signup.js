@@ -852,7 +852,7 @@ export default function Signup() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      {isElectron ?? (
+      {!isElectron() && (
         <div className={`sm:mx-auto sm:w-full sm:max-w-xl ${step === 3 ? 'md:max-w-3xl' : 'md:max-w-2xl'}`}>
           <Link href="/" className="flex items-center text-gray-600 hover:text-gray-800 mb-15">
             <svg className="h-6 w-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

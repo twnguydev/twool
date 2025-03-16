@@ -466,8 +466,8 @@ const Navbar = () => {
                   : "bg-white text-indigo-600 hover:text-indigo-700 hover:bg-gray-100"
               }`}
             >
-              <span className="hidden md:inline">Essai gratuit</span>
-              <span className="inline md:hidden">Essai</span>
+              <span className="hidden md:inline">Inscription gratuite</span>
+              <span className="inline md:hidden">Inscription</span>
             </Link>
           </div>
 
@@ -585,7 +585,7 @@ const Navbar = () => {
               href="/auth/signup"
               className="block mx-3 mt-2 px-3 py-2 rounded-md text-base font-medium bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 text-center shadow-md"
             >
-              Essai gratuit
+              S'inscrire maintenant
             </Link>
           </div>
         </div>

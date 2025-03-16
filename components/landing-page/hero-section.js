@@ -29,7 +29,7 @@ export const HeroSection = () => {
             <div className="mt-10 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
               <Link href="/auth/signup">
                 <span className="flex items-center justify-center px-8 py-4 border border-transparent text-base font-medium rounded-md text-indigo-700 bg-white hover:bg-indigo-50 shadow-lg hover:shadow-xl transition duration-300 ease-in-out cursor-pointer">
-                  Démarrer gratuitement
+                  Démarrer maintenant
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </span>
               </Link>
