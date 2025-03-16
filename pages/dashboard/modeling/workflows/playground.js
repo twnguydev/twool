@@ -1,6 +1,6 @@
 import React from 'react';
-import Layout from '../components/layout/layout';
-import ProcessCanvas from '../components/modeling/canvas';
+import Layout from '/components/layout/layout';
+import ProcessCanvas from '/components/modeling/canvas';
 
 export default function Modeling() {
   return (

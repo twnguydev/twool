@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../components/Layout/Layout';
+import Layout from '/components/Layout/Layout';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -43,7 +43,7 @@ export default function Simulations() {
         qualityImprovement: 15
       }
     },
-
+    // Autres clusters...
     // Cluster 2: Intégration Client
     {
       id: 'c2',
@@ -63,54 +63,6 @@ export default function Simulations() {
         costSavings: 560,
         qualityImprovement: 22
       }
-    },
-
-    // Cluster 3: Traitement de Factures
-    {
-      id: 'c3',
-      workflowId: 'w3',
-      name: 'Traitement de Factures - Février 2025',
-      description: 'Analyse du processus de facturation',
-      lastUpdated: new Date(2025, 1, 18),
-      simulations: [
-        { id: 's8', name: 'Processus actuel', date: new Date(2025, 1, 17, 10, 0), status: 'completed', duration: 65, bottlenecks: 2 },
-        { id: 's9', name: 'Améliorations', date: new Date(2025, 1, 18, 11, 30), status: 'completed', duration: 48, bottlenecks: 1 }
-      ],
-      improvement: 26.2,
-      metrics: {
-        timeReduction: 17,
-        costSavings: 320,
-        qualityImprovement: 10
-      }
-    },
-
-    // Cluster 4: Processus de Recrutement (en cours)
-    {
-      id: 'c4',
-      workflowId: 'w4',
-      name: 'Recrutement - Mars 2025',
-      description: 'Optimisation du processus de recrutement',
-      lastUpdated: new Date(2025, 2, 2),
-      simulations: [
-        { id: 's10', name: 'Version actuelle', date: new Date(2025, 2, 2, 9, 0), status: 'completed', duration: 110, bottlenecks: 5 },
-        { id: 's11', name: 'Première optimisation', date: new Date(2025, 2, 2, 14, 30), status: 'running', duration: null, bottlenecks: null }
-      ],
-      improvement: null,
-      metrics: null
-    },
-
-    // Cluster 5: Support Client (vient de commencer)
-    {
-      id: 'c5',
-      workflowId: 'w5',
-      name: 'Support Client - Mars 2025',
-      description: 'Analyse du workflow de support',
-      lastUpdated: new Date(2025, 2, 3),
-      simulations: [
-        { id: 's12', name: 'Baseline', date: new Date(2025, 2, 3, 10, 15), status: 'running', duration: null, bottlenecks: null }
-      ],
-      improvement: null,
-      metrics: null
     }
   ];
 
@@ -163,43 +115,28 @@ export default function Simulations() {
     }
   }
 
-  // Fonction pour calculer le pourcentage d'amélioration entre la première et la dernière simulation d'un cluster
-  function calculateImprovement(simulations) {
-    if (!simulations || simulations.length < 2) return null;
-
-    const firstSimulation = simulations[0];
-    const lastSimulation = simulations[simulations.length - 1];
-
-    if (firstSimulation.status !== 'completed' || lastSimulation.status !== 'completed') return null;
-
-    const initialDuration = firstSimulation.duration;
-    const finalDuration = lastSimulation.duration;
-
-    return ((initialDuration - finalDuration) / initialDuration * 100).toFixed(1);
-  }
-
   return (
     <Layout title="Simulations">
-      <div className="p-6">
-        {/* En-tête avec titre et boutons d'action */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-end">
-          <div className="mt-4 md:mt-0 flex space-x-3">
-            <Link href="/modeling">
-              <div className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 cursor-pointer">
-                <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-                Nouvelle Simulation
-              </div>
-            </Link>
-            <Link href="/workflows">
-              <div className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">
-                <svg className="mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
-                Voir les Workflows
-              </div>
-            </Link>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* En-tête avec titre */}
+        <div className="mb-8 border-b border-gray-200 pb-5">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-medium text-gray-900">Simulations</h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Gérez et analysez les simulations de vos workflows
+              </p>
+            </div>
+            <div className="flex space-x-3">
+              <Link href="/modeling">
+                <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                  <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                  Nouvelle Simulation
+                </button>
+              </Link>
+            </div>
           </div>
         </div>
 
@@ -213,7 +150,7 @@ export default function Simulations() {
             </div>
             <input
               type="text"
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md w-full focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="Rechercher..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -221,7 +158,7 @@ export default function Simulations() {
           </div>
           <div className="flex space-x-2">
             <select
-              className="border border-gray-300 rounded-md px-3 py-2 bg-white text-sm focus:outline-hidden focus:ring-blue-500 focus:border-blue-500"
+              className="border border-gray-300 rounded-md px-3 py-2 bg-white text-sm focus:outline-hidden focus:ring-indigo-500 focus:border-indigo-500"
               value={selectedWorkflow || ''}
               onChange={(e) => setSelectedWorkflow(e.target.value || null)}
             >
@@ -234,47 +171,45 @@ export default function Simulations() {
         </div>
 
         {/* Affichage des clusters de simulation */}
-        <div className="space-y-8">
+        <div className="space-y-6">
           {filteredClusters.map(cluster => (
-            <div key={cluster.id} className="bg-white shadow-sm overflow-hidden rounded-lg">
+            <div key={cluster.id} className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden">
               {/* En-tête du cluster */}
-              <div className="px-4 py-5 sm:px-6 bg-blue-50 border-b border-blue-100">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                  <div>
-                    <h3 className="text-lg font-medium text-blue-800">{cluster.name}</h3>
-                    <p className="mt-1 max-w-2xl text-sm text-blue-600">
-                      {cluster.description}
-                    </p>
-                    <p className="mt-1 text-xs text-gray-500">
-                      Workflow: {getWorkflowName(cluster.workflowId)} ·
-                      Dernière mise à jour: {format(cluster.lastUpdated, 'dd MMM yyyy', { locale: fr })} ·
-                      {formatRelativeDate(cluster.lastUpdated)}
-                    </p>
-                  </div>
-                  <div className="mt-3 md:mt-0 flex flex-col md:items-end">
-                    {cluster.improvement && (
-                      <div className="flex items-center text-green-600 font-semibold">
-                        <svg className="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                        </svg>
-                        {cluster.improvement}% d'amélioration
-                      </div>
-                    )}
-                    <div className="mt-2">
-                      <Link href={`/simulations/cluster/${cluster.id}`}>
-                        <div className="inline-flex items-center px-3 py-1 border border-transparent text-sm font-medium rounded-sm text-blue-700 bg-blue-100 hover:bg-blue-200 cursor-pointer">
-                          Voir les détails
-                        </div>
-                      </Link>
+              <div className="px-4 py-4 sm:px-6 border-b border-gray-200 flex justify-between items-start">
+                <div>
+                  <h3 className="text-lg font-medium text-gray-900">{cluster.name}</h3>
+                  <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                    {cluster.description}
+                  </p>
+                  <p className="mt-1 text-xs text-gray-500">
+                    Workflow: {getWorkflowName(cluster.workflowId)} · 
+                    Dernière mise à jour: {format(cluster.lastUpdated, 'dd MMM yyyy', { locale: fr })} ·
+                    {formatRelativeDate(cluster.lastUpdated)}
+                  </p>
+                </div>
+                <div className="flex flex-col items-end">
+                  {cluster.improvement && (
+                    <div className="flex items-center text-green-600 font-semibold">
+                      <svg className="h-5 w-5 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                      </svg>
+                      {cluster.improvement}% d'amélioration
                     </div>
+                  )}
+                  <div className="mt-2">
+                    <Link href={`/simulations/cluster/${cluster.id}`}>
+                      <span className="text-sm text-indigo-600 hover:text-indigo-800 cursor-pointer">
+                        Voir les détails →
+                      </span>
+                    </Link>
                   </div>
                 </div>
               </div>
 
               {/* Timeline des simulations */}
-              <div className="px-4 py-5 sm:p-6">
-                <div className="mb-6">
-                  <h4 className="text-sm font-medium text-gray-500 uppercase tracking-wider">Progression des simulations</h4>
+              <div className="px-4 py-4 sm:px-6">
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-gray-500">Progression des simulations</h4>
                   <div className="mt-2 relative">
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                       <div className="w-full border-t border-gray-300"></div>
@@ -283,10 +218,11 @@ export default function Simulations() {
                       {cluster.simulations.map((simulation, index) => (
                         <div key={simulation.id} className="flex flex-col items-center">
                           <div
-                            className={`shrink-0 h-8 w-8 rounded-full flex items-center justify-center ${simulation.status === 'completed' ? 'bg-green-500' :
-                                simulation.status === 'running' ? 'bg-blue-500' :
-                                  'bg-gray-300'
-                              } border-2 border-white`}
+                            className={`shrink-0 h-8 w-8 rounded-full flex items-center justify-center ${
+                              simulation.status === 'completed' ? 'bg-green-500' :
+                              simulation.status === 'running' ? 'bg-indigo-500' :
+                              'bg-gray-300'
+                            } border-2 border-white`}
                           >
                             {simulation.status === 'completed' ? (
                               <svg className="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -311,49 +247,47 @@ export default function Simulations() {
                 </div>
 
                 {/* Liste des simulations */}
-                <div className="overflow-hidden rounded-md border border-gray-200">
+                <div className="mt-4 overflow-hidden rounded-md border border-gray-200">
                   <ul className="divide-y divide-gray-200">
                     {cluster.simulations.map((simulation) => (
-                      <li key={simulation.id} className="px-4 py-4 sm:px-6 hover:bg-gray-50">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <div className="min-w-0">
-                              <p className="text-sm font-medium text-blue-700 truncate">{simulation.name}</p>
-                              <div className="mt-1 flex items-center">
-                                <span className="text-xs text-gray-500 mr-2">
-                                  {format(simulation.date, 'dd MMM yyyy HH:mm', { locale: fr })}
-                                </span>
-                                <span className={`px-2 py-0.5 text-xs rounded-full ${getStatusColor(simulation.status)}`}>
-                                  {simulation.status === 'completed' ? 'Terminée' :
-                                    simulation.status === 'running' ? 'En cours' :
-                                      simulation.status === 'failed' ? 'Échec' : 'En attente'}
-                                </span>
-                              </div>
+                      <li key={simulation.id} className="px-4 py-3 hover:bg-gray-50 flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-gray-800 truncate">{simulation.name}</p>
+                            <div className="mt-1 flex items-center">
+                              <span className="text-xs text-gray-500 mr-2">
+                                {format(simulation.date, 'dd MMM yyyy HH:mm', { locale: fr })}
+                              </span>
+                              <span className={`px-2 py-0.5 text-xs rounded-full ${getStatusColor(simulation.status)}`}>
+                                {simulation.status === 'completed' ? 'Terminée' :
+                                 simulation.status === 'running' ? 'En cours' :
+                                 simulation.status === 'failed' ? 'Échec' : 'En attente'}
+                              </span>
                             </div>
                           </div>
-                          <div className="flex space-x-4 items-center">
-                            {simulation.status === 'completed' && (
-                              <>
-                                <div className="flex flex-col items-end">
-                                  <span className="text-sm font-medium text-gray-900">{simulation.duration} min</span>
-                                  <span className="text-xs text-gray-500">Durée</span>
-                                </div>
-                                <div className="flex flex-col items-end">
-                                  <span className="text-sm font-medium text-gray-900">{simulation.bottlenecks}</span>
-                                  <span className="text-xs text-gray-500">Goulets</span>
-                                </div>
-                              </>
-                            )}
-                            <div>
-                              <Link href={`/simulations/${simulation.id}`}>
-                                <div className="text-blue-600 hover:text-blue-900 cursor-pointer">
-                                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                  </svg>
-                                </div>
-                              </Link>
-                            </div>
+                        </div>
+                        <div className="flex space-x-4 items-center">
+                          {simulation.status === 'completed' && (
+                            <>
+                              <div className="flex flex-col items-end">
+                                <span className="text-sm font-medium text-gray-900">{simulation.duration} min</span>
+                                <span className="text-xs text-gray-500">Durée</span>
+                              </div>
+                              <div className="flex flex-col items-end">
+                                <span className="text-sm font-medium text-gray-900">{simulation.bottlenecks}</span>
+                                <span className="text-xs text-gray-500">Goulets</span>
+                              </div>
+                            </>
+                          )}
+                          <div>
+                            <Link href={`/simulations/${simulation.id}`}>
+                              <div className="text-indigo-600 hover:text-indigo-900 cursor-pointer">
+                                <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                              </div>
+                            </Link>
                           </div>
                         </div>
                       </li>
@@ -363,12 +297,12 @@ export default function Simulations() {
 
                 {/* Métriques (si disponibles) */}
                 {cluster.metrics && (
-                  <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-3">
-                    <div className="bg-white overflow-hidden shadow-sm rounded-lg">
-                      <div className="px-4 py-5 sm:p-6">
+                  <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div className="bg-white overflow-hidden rounded-md border border-gray-200">
+                      <div className="p-4">
                         <div className="flex items-center">
-                          <div className="shrink-0 bg-purple-100 rounded-md p-3">
-                            <svg className="h-6 w-6 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <div className="shrink-0 bg-indigo-100 rounded-md p-3">
+                            <svg className="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                           </div>
@@ -378,7 +312,7 @@ export default function Simulations() {
                                 Temps économisé
                               </dt>
                               <dd>
-                                <div className="text-lg font-semibold text-purple-600">
+                                <div className="text-lg font-semibold text-indigo-600">
                                   {cluster.metrics.timeReduction} minutes
                                 </div>
                               </dd>
@@ -388,11 +322,11 @@ export default function Simulations() {
                       </div>
                     </div>
 
-                    <div className="bg-white overflow-hidden shadow-sm rounded-lg">
-                      <div className="px-4 py-5 sm:p-6">
+                    <div className="bg-white overflow-hidden rounded-md border border-gray-200">
+                      <div className="p-4">
                         <div className="flex items-center">
-                          <div className="shrink-0 bg-yellow-100 rounded-md p-3">
-                            <svg className="h-6 w-6 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <div className="shrink-0 bg-indigo-100 rounded-md p-3">
+                            <svg className="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                           </div>
@@ -402,7 +336,7 @@ export default function Simulations() {
                                 Économies réalisées
                               </dt>
                               <dd>
-                                <div className="text-lg font-semibold text-yellow-600">
+                                <div className="text-lg font-semibold text-indigo-600">
                                   {cluster.metrics.costSavings}€
                                 </div>
                               </dd>
@@ -412,11 +346,11 @@ export default function Simulations() {
                       </div>
                     </div>
 
-                    <div className="bg-white overflow-hidden shadow-sm rounded-lg">
-                      <div className="px-4 py-5 sm:p-6">
+                    <div className="bg-white overflow-hidden rounded-md border border-gray-200">
+                      <div className="p-4">
                         <div className="flex items-center">
-                          <div className="shrink-0 bg-green-100 rounded-md p-3">
-                            <svg className="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <div className="shrink-0 bg-indigo-100 rounded-md p-3">
+                            <svg className="h-6 w-6 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                           </div>
@@ -426,7 +360,7 @@ export default function Simulations() {
                                 Amélioration qualité
                               </dt>
                               <dd>
-                                <div className="text-lg font-semibold text-green-600">
+                                <div className="text-lg font-semibold text-indigo-600">
                                   +{cluster.metrics.qualityImprovement}%
                                 </div>
                               </dd>
@@ -443,7 +377,7 @@ export default function Simulations() {
 
           {/* Message si aucun cluster trouvé */}
           {filteredClusters.length === 0 && (
-            <div className="bg-white shadow-sm overflow-hidden rounded-lg py-10 px-6 text-center">
+            <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden py-10 px-6 text-center">
               <svg className="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
@@ -453,7 +387,7 @@ export default function Simulations() {
               </p>
               <div className="mt-6">
                 <Link href="/modeling">
-                  <button type="button" className="inline-flex items-center px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  <button type="button" className="inline-flex items-center px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>

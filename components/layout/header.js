@@ -57,7 +57,7 @@ const Header = ({ title }) => {
             </div>
 
             {/* Bouton de création */}
-            <Link href="/modeling/workflows/new" className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-xs text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            <Link href="/dashboard/modeling/workflows/create" className="inline-flex items-center px-3 py-2 border border-transparent text-sm font-medium rounded-md shadow-xs text-white bg-blue-600 hover:bg-blue-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
               <PlusSquare size={16} className="mr-2" />
               Créer un workflow
             </Link>

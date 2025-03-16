@@ -41,7 +41,7 @@ const Sidebar = () => {
   const menuItems = [
     { 
       name: 'Tableau de bord', 
-      path: '/', 
+      path: '/dashboard', 
       icon: <LayoutDashboard size={collapsed ? 20 : 18} /> 
     },
     { 
@@ -50,9 +50,9 @@ const Sidebar = () => {
       isExpandable: true,
       section: 'modeling',
       subItems: [
-        { name: 'Workflows', path: '/modeling/workflows', icon: <Rocket size={16} /> },
-        { name: 'Processus', path: '/modeling/processes', icon: <FileLineChart size={16} /> },
-        { name: 'Diagrammes', path: '/modeling/diagrams', icon: <Code2 size={16} /> }
+        { name: 'Workflows', path: '/dashboard/modeling/workflows', icon: <Rocket size={16} /> },
+        { name: 'Processus', path: '/dashboard/processes', icon: <FileLineChart size={16} /> },
+        { name: 'Diagrammes', path: '/dashboard/diagrams', icon: <Code2 size={16} /> }
       ]
     },
     { 
@@ -89,8 +89,9 @@ const Sidebar = () => {
         {!collapsed && (
           <>
             <div className="flex items-center">
-              <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-                <Workflow size={18} className="text-white" />
+              <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center">
+                {/* <Workflow size={18} className="text-white" /> */}
+                <span className="text-white text-2xl font-medium">T</span>
               </div>
               <div className="flex flex-col ml-2">
                 <span className="ml-2 font-bold text-lg">Twool Labs</span>
@@ -100,8 +101,9 @@ const Sidebar = () => {
           </>
         )}
         {collapsed && (
-          <div className="w-8 h-8 bg-blue-500 rounded-md flex items-center justify-center">
-            <Workflow size={18} className="text-white" />
+          <div className="w-8 h-8 bg-blue-500 rounded flex items-center justify-center">
+            {/* <Workflow size={18} className="text-white" /> */}
+            <span className="text-white text-2xl font-medium">T</span>
           </div>
         )}
         <button 

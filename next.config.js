@@ -2,7 +2,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  devIndicators: false,
   
   // Désactiver l'exportation statique pour le développement
   // Nous l'utiliserons uniquement pour la production

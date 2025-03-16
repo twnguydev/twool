@@ -25,7 +25,7 @@ function Dashboard() {
     const now = new Date();
     const diffMs = now - date;
     const diffSec = Math.floor(diffMs / 1000);
-    
+
     if (diffSec < 60) return 'à l\'instant';
     if (diffSec < 3600) return `il y a ${Math.floor(diffSec / 60)} min`;
     if (diffSec < 86400) return `il y a ${Math.floor(diffSec / 3600)} h`;
@@ -36,7 +36,7 @@ function Dashboard() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        
+
         // 1. Récupérer les workflows de façon sécurisée
         let workflowsData = [];
         try {
@@ -61,23 +61,23 @@ function Dashboard() {
           console.error("Erreur générale lors du chargement des workflows:", err);
           workflowsData = [];
         }
-        
+
         setWorkflows(workflowsData);
-        
+
         // 2. Récupérer les simulations récentes pour ces workflows
         if (workflowsData.length > 0) {
-          const simulationPromises = workflowsData.map(workflow => 
+          const simulationPromises = workflowsData.map(workflow =>
             api.simulations.getSimulationsByWorkflow(workflow.id, { limit: 3 })
           );
-          
+
           const simulationsResults = await Promise.all(simulationPromises);
           const allSimulations = simulationsResults
             .flat()
             .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
             .slice(0, 5);
-            
+
           setSimulations(allSimulations);
-          
+
           // 3. Récupérer les optimisations liées à ces workflows
           let allOptimizations = [];
           try {
@@ -91,7 +91,7 @@ function Dashboard() {
                       return [];
                     });
                 });
-              
+
               const optimizationsResults = await Promise.all(optimizationPromises);
               const validResults = optimizationsResults.filter(Array.isArray);
 
@@ -108,10 +108,10 @@ function Dashboard() {
             console.error("Erreur lors du traitement des optimisations:", err);
             allOptimizations = [];
           }
-          
+
           setOptimizations(allOptimizations);
         }
-        
+
         // 4. Calculer les statistiques globales
         const statsData = {
           totalWorkflows: workflowsData.length,
@@ -120,7 +120,7 @@ function Dashboard() {
           timeOptimized: optimizations.reduce((sum, opt) => sum + (opt.metrics?.time_saved || 0), 0),
           costsReduced: optimizations.reduce((sum, opt) => sum + (opt.metrics?.cost_saved || 0), 0)
         };
-        
+
         setStats(statsData);
       } catch (error) {
         console.error('Erreur lors du chargement des données du dashboard:', error);
@@ -128,7 +128,7 @@ function Dashboard() {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, [user]);
 
@@ -157,21 +157,21 @@ function Dashboard() {
                   <span className="text-xl font-medium text-gray-900">{stats.totalWorkflows}</span>
                 </div>
               </div>
-              
+
               <div className="bg-white p-4 rounded-md border border-gray-200 shadow-sm">
                 <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">Simulations</div>
                 <div className="mt-2 flex items-baseline">
                   <span className="text-xl font-medium text-gray-900">{stats.totalSimulations}</span>
                 </div>
               </div>
-              
+
               <div className="bg-white p-4 rounded-md border border-gray-200 shadow-sm">
                 <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">Optimisations</div>
                 <div className="mt-2 flex items-baseline">
                   <span className="text-xl font-medium text-gray-900">{stats.totalOptimizations}</span>
                 </div>
               </div>
-              
+
               <div className="bg-white p-4 rounded-md border border-gray-200 shadow-sm">
                 <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">Temps optimisé</div>
                 <div className="mt-2 flex items-baseline">
@@ -179,7 +179,7 @@ function Dashboard() {
                   <span className="ml-1 text-xs text-gray-500">min</span>
                 </div>
               </div>
-              
+
               <div className="bg-white p-4 rounded-md border border-gray-200 shadow-sm">
                 <div className="text-xs font-medium text-gray-500 uppercase tracking-wide">Coûts réduits</div>
                 <div className="mt-2 flex items-baseline">
@@ -187,12 +187,12 @@ function Dashboard() {
                 </div>
               </div>
             </div>
-            
+
             {/* Actions rapides */}
             <div className="bg-white border border-gray-200 rounded-md shadow-sm p-4 mb-8">
               <h2 className="text-base font-medium text-gray-900 mb-4">Actions rapides</h2>
               <div className="flex flex-wrap gap-2">
-                <Link href="/modeling">
+                <Link href="/dashboard/modeling/workflows/create">
                   <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                     <svg className="h-4 w-4 mr-1 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -200,7 +200,7 @@ function Dashboard() {
                     Nouveau processus
                   </button>
                 </Link>
-                
+
                 <Link href="/simulations">
                   <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                     <svg className="h-4 w-4 mr-1 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -209,7 +209,7 @@ function Dashboard() {
                     Lancer une simulation
                   </button>
                 </Link>
-                
+
                 <Link href="/optimizations">
                   <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                     <svg className="h-4 w-4 mr-1 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -218,7 +218,7 @@ function Dashboard() {
                     Optimiser un processus
                   </button>
                 </Link>
-                
+
                 <Link href="/flow-analysis">
                   <button className="inline-flex items-center px-3 py-1.5 border border-gray-300 text-xs font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
                     <svg className="h-4 w-4 mr-1 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -322,14 +322,13 @@ function Dashboard() {
                                   <span className="text-xs text-gray-500">
                                     {formatRelativeDate(simulation.created_at)}
                                   </span>
-                                  <span className={`ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                                    simulation.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                                  <span className={`ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${simulation.status === 'completed' ? 'bg-green-100 text-green-800' :
                                     simulation.status === 'running' ? 'bg-yellow-100 text-yellow-800' :
-                                    'bg-gray-100 text-gray-800'
-                                  }`}>
-                                    {simulation.status === 'completed' ? 'Terminée' : 
-                                     simulation.status === 'running' ? 'En cours' : 
-                                     simulation.status === 'failed' ? 'Échec' : simulation.status}
+                                      'bg-gray-100 text-gray-800'
+                                    }`}>
+                                    {simulation.status === 'completed' ? 'Terminée' :
+                                      simulation.status === 'running' ? 'En cours' :
+                                        simulation.status === 'failed' ? 'Échec' : simulation.status}
                                   </span>
                                 </div>
                               </div>

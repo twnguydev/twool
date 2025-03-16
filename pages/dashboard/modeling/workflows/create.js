@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import Layout from '../../../components/layout/layout';
+import Layout from '/components/Layout/Layout';
 import Link from 'next/link';
 
 export default function CreateWorkflow() {
@@ -105,7 +105,7 @@ export default function CreateWorkflow() {
 
       // Redirection vers l'éditeur de workflow
       // Dans une vraie application, on récupérerait l'ID du workflow créé
-      router.push('/modeling?new=true');
+      router.push('/dashboard/modeling/workflows/playground');
     } catch (error) {
       console.error('Erreur lors de la création du workflow:', error);
       setErrors({ submit: "Une erreur est survenue lors de la création du workflow." });
@@ -116,25 +116,33 @@ export default function CreateWorkflow() {
 
   return (
     <Layout title="Créer un workflow">
-      <div className="p-6">
-        {/* En-tête */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-end">
-          <div className="mt-4 md:mt-0">
-            <Link href="/workflows">
-              <div className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">
-                <svg className="mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Retour
-              </div>
-            </Link>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* En-tête avec titre */}
+        <div className="mb-8 border-b border-gray-200 pb-5">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-medium text-gray-900">Créer un workflow</h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Définissez les informations de base et sélectionnez un template si nécessaire
+              </p>
+            </div>
+            <div>
+              <Link href="/workflows">
+                <div className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 cursor-pointer">
+                  <svg className="mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  Retour
+                </div>
+              </Link>
+            </div>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Formulaire principal */}
           <div className="md:col-span-2">
-            <div className="bg-white shadow-sm overflow-hidden rounded-lg">
+            <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden">
               <div className="px-4 py-5 sm:px-6 bg-indigo-50 border-b border-indigo-100">
                 <h3 className="text-lg font-medium text-indigo-800">Informations générales</h3>
                 <p className="mt-1 text-sm text-indigo-600">
@@ -253,7 +261,7 @@ export default function CreateWorkflow() {
 
           {/* Sélection de template */}
           <div className="md:col-span-1">
-            <div className="bg-white shadow-sm overflow-hidden rounded-lg">
+            <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden">
               <div className="px-4 py-5 sm:px-6 bg-indigo-50 border-b border-indigo-100">
                 <h3 className="text-lg font-medium text-indigo-800">Templates disponibles</h3>
                 <p className="mt-1 text-sm text-indigo-600">
@@ -314,7 +322,7 @@ export default function CreateWorkflow() {
         </div>
 
         {/* Message d'aide */}
-        <div className="mt-8 bg-linear-to-r from-indigo-500 to-purple-600 rounded-lg shadow-lg overflow-hidden">
+        <div className="mt-8 bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-lg shadow-lg overflow-hidden">
           <div className="px-6 py-8 md:flex md:items-center md:justify-between">
             <div className="max-w-xl md:max-w-2xl">
               <h2 className="text-xl font-bold text-white">Conseils pour un workflow efficace</h2>

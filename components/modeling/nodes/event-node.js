@@ -1,14 +1,17 @@
-// components/Modeling/Nodes/EventNode.js
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 
 const EventNode = ({ data, isConnectable, selected }) => {
+  // Déterminer les types d'événements
   const isStart = data.eventType === 'start';
   const isEndPositive = data.eventType === 'end' && data.endType === 'positive';
   const isEndNegative = data.eventType === 'end' && data.endType === 'negative';
   const isEndNeutral = data.eventType === 'end' && !data.endType;
+  // Variable combinée pour tous les types de fin
+  const isEnd = isEndPositive || isEndNegative || isEndNeutral;
   const isIntermediate = data.eventType === 'intermediate';
 
+  // Déterminer les couleurs et styles en fonction du type
   let borderStyle, badgeStyle, badgeText;
 
   if (isStart) {
@@ -51,7 +54,7 @@ const EventNode = ({ data, isConnectable, selected }) => {
         </div>
       )}
 
-      {/* Handles d'entrée - plus discrets */}
+      {/* Handles d'entrée - pour tous sauf les nœuds de début */}
       {!isStart && (
         <>
           <Handle
@@ -110,8 +113,8 @@ const EventNode = ({ data, isConnectable, selected }) => {
         </div>
       </div>
 
-      {/* Handles de sortie - plus discrets */}
-      {!isEndNeutral || !isEndNegative || !isEndPositive && (
+      {/* Handles de sortie - pour les nœuds de début et intermédiaires, pas pour les nœuds de fin */}
+      {!isEnd && (
         <>
           <Handle
             id="source-right"

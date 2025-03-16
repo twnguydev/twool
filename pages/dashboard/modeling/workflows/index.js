@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Layout from '../../components/Layout/Layout';
+import Layout from '/components/Layout/Layout';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -76,32 +76,6 @@ export default function Workflows() {
       author: 'Marie Laurent',
       simulations: 3,
       optimizations: 1
-    },
-    { 
-      id: 'w6', 
-      name: 'Gestion des Commandes', 
-      description: 'Process de traitement des commandes entrantes', 
-      lastModified: new Date(2025, 1, 29, 10, 30), 
-      createdAt: new Date(2025, 1, 18), 
-      status: 'archivé', 
-      nodes: 14,
-      edges: 17,
-      author: 'Jean Dupont',
-      simulations: 0,
-      optimizations: 0
-    },
-    { 
-      id: 'w7', 
-      name: 'Réapprovisionnement Stock', 
-      description: 'Workflow d\'optimisation des niveaux de stock', 
-      lastModified: new Date(2025, 1, 27, 9, 45), 
-      createdAt: new Date(2025, 1, 12), 
-      status: 'actif', 
-      nodes: 9,
-      edges: 11,
-      author: 'Sophie Martin',
-      simulations: 1,
-      optimizations: 0
     }
   ];
 
@@ -150,7 +124,7 @@ export default function Workflows() {
       const diffInDays = Math.floor(diffInHours / 24);
       return `il y a ${diffInDays} jour${diffInDays > 1 ? 's' : ''}`;
     }
-  }
+  };
 
   // Fonction pour changer le tri
   function handleSort(column) {
@@ -193,16 +167,32 @@ export default function Workflows() {
 
   return (
     <Layout title="Workflows">
-      <div className="p-6">
-        {/* En-tête avec titre et boutons d'action */}
-        <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-end">
-          <div className="mt-4 md:mt-0 flex space-x-3">
-            <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-              <svg className="mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
-              </svg>
-              Importer
-            </button>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {/* En-tête avec titre */}
+        <div className="mb-8 border-b border-gray-200 pb-5">
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-2xl font-medium text-gray-900">Workflows</h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Gérez et organisez vos processus métier
+              </p>
+            </div>
+            <div className="flex space-x-3">
+              <Link href="/dashboard/modeling/workflows/create">
+                <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700">
+                  <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                  </svg>
+                  Nouveau workflow
+                </button>
+              </Link>
+              <button className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-xs text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                <svg className="mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                </svg>
+                Importer
+              </button>
+            </div>
           </div>
         </div>
 
@@ -252,7 +242,7 @@ export default function Workflows() {
         </div>
 
         {/* Liste des workflows */}
-        <div className="bg-white shadow-sm overflow-hidden rounded-lg">
+        <div className="bg-white border border-gray-200 rounded-md shadow-sm overflow-hidden">
           {/* En-tête du tableau */}
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
@@ -387,7 +377,7 @@ export default function Workflows() {
                         </div>
                       </Link>
                       <Link href={`/simulations?workflow=${workflow.id}`}>
-                        <div className="text-blue-600 hover:text-blue-900 cursor-pointer">
+                        <div className="text-indigo-600 hover:text-indigo-900 cursor-pointer">
                           <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                           </svg>
@@ -421,7 +411,7 @@ export default function Workflows() {
                 {searchTerm ? 'Aucun résultat pour votre recherche.' : 'Commencez par créer votre premier workflow.'}
               </p>
               <div className="mt-6">
-                <Link href="/modeling">
+                <Link href="/dashboard/modeling/workflows/create">
                   <button type="button" className="inline-flex items-center px-4 py-2 border border-transparent shadow-xs text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     <svg className="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
